@@ -14,7 +14,7 @@ import { Sizes,Spacing } from '../../constants/Sizes';
 
 
 
-export const Login = () => {
+ const Login = () => {
  
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
@@ -46,10 +46,14 @@ export const Login = () => {
 
 
   
-  const moveToRegistration = () => {
-    router.navigate('/authentication/Registration')
-  };
-  
+  // const moveToRegistration = () => {
+  //   router.navigate('/authentication/Registration')
+  // };
+
+   const moveToRegistration = () => {
+     router.navigate('/authentication/Register')
+   };
+
   const moveToDashboard = () => {
     router.navigate('/(tabs)/Dashboard')
     };
