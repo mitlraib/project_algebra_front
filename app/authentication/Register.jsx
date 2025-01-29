@@ -18,6 +18,7 @@ export const Register = () => {
         confirmPassword: ''
     });
 
+
     const validateField = (fieldName) => {
         let valid = true;
         let newErrors = { ...errors };
