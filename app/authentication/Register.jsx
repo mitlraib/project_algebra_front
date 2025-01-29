@@ -13,6 +13,10 @@ export const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [hovered, setHovered] = useState(false); // מצב ריחוף
     const [showPassword, setShowPassword] = useState(false);
+    const [touched, setTouched] = useState({
+        password: false,
+        confirmPassword: false
+    });
     const [errors, setErrors] = useState({
         firstName: '',
         lastName: '',
@@ -52,11 +56,11 @@ export const Register = () => {
                 }
                 break;
             case 'password':
-                if (!password || password.length <= 6) {
+                if (!password || password.length < 6) {
                     newErrors.password = 'הסיסמה חייבת להיות לפחות 6 תווים';
                     valid = false;
                 } else {
-                    newErrors.password = '';
+                    newErrors.password = '✅ הסיסמה תקינה';
                 }
                 break;
             case 'confirmPassword':
@@ -64,7 +68,7 @@ export const Register = () => {
                     newErrors.confirmPassword = 'הסיסמאות אינן תואמות';
                     valid = false;
                 } else {
-                    newErrors.confirmPassword = '';
+                    newErrors.confirmPassword = '✅ אימות סיסמה תקין';
                 }
                 break;
             default:
@@ -156,10 +160,8 @@ export const Register = () => {
                 style={styles.input}
                 placeholder="מייל"
                 value={email}
-                onChangeText={(text) => {
-                    setEmail(text);
-                    validateField('email');
-                }}
+                onChangeText={setEmail}  // כאן לא נבדוק את השדה מיד
+                onBlur={() => validateField('email')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
                 keyboardType="email-address"
             />
             {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
@@ -173,6 +175,7 @@ export const Register = () => {
                         setPassword(text);
                         validateField('password');
                     }}
+                    onFocus={() => setTouched({ ...touched, password: true })}
                     secureTextEntry={!showPassword}
                 />
                 <Pressable onPress={toggleShowPassword}>
@@ -182,8 +185,11 @@ export const Register = () => {
                     />
                 </Pressable>
             </View>
-            {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
-
+            {touched.password && (
+                <Text style={[styles.errorText, errors.password.includes('✅') && styles.successText]}>
+                    {errors.password}
+                </Text>
+            )}
             <View style={styles.passwordContainer}>
                 <TextInput
                     style={styles.input}
@@ -193,6 +199,7 @@ export const Register = () => {
                         setConfirmPassword(text);
                         validateField('confirmPassword');
                     }}
+                    onFocus={() => setTouched({ ...touched, confirmPassword: true })}
                     secureTextEntry={!showPassword}
                 />
                 <Pressable onPress={toggleShowPassword}>
@@ -202,8 +209,11 @@ export const Register = () => {
                     />
                 </Pressable>
             </View>
-            {errors.confirmPassword ? <Text style={styles.errorText}>{errors.confirmPassword}</Text> : null}
-
+            {touched.confirmPassword && (
+                <Text style={[styles.errorText, errors.confirmPassword.includes('✅') && styles.successText]}>
+                    {errors.confirmPassword}
+                </Text>
+            )}
             <View style={styles.buttonContainer}>
                 <Button
                     title="הרשם"

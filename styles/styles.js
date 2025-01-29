@@ -71,6 +71,11 @@ const styles = StyleSheet.create({
     buttonActive: {
         backgroundColor: 'blue', // צבע background בעת נגיעה
     },
+    successText: {
+        color: 'green',
+        fontSize: 14,
+        marginTop: 5,
+    },
 });
 
 export default styles;
