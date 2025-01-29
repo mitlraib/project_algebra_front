@@ -1,5 +1,6 @@
 // styles.js
 import { StyleSheet } from 'react-native';
+import { Colors } from '../constants/Colors';
 
 const styles = StyleSheet.create({
     container: {
@@ -52,7 +53,24 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: 'black',
         marginBottom: 10,
-    }
+    },
+
+    // סגנון של הטקסט עם פס תחתון
+    linkText: {
+        borderBottomWidth: 1,
+        borderBottomColor: 'black',
+    },
+
+    // סגנון של הכפתור
+    button: {
+        padding: 5,
+        borderRadius: 5,
+        opacity: 1, // יש לשמור על אטימות רגילה
+    },
+// סגנון של הכפתור בריחוף
+    buttonActive: {
+        backgroundColor: 'blue', // צבע background בעת נגיעה
+    },
 });
 
 export default styles;

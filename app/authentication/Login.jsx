@@ -209,7 +209,6 @@
 import React, { useState } from 'react';
 import {Text, View, TextInput, StyleSheet, StatusBar, Platform, Image, Pressable, Button} from 'react-native';
 import { useRouter } from 'expo-router';
-import { Colors } from '../../constants/Colors';
 import { Sizes, Spacing } from '../../constants/Sizes';
 import styles from '../../styles/styles'; // ייבוא הסטיילים
 
@@ -217,6 +216,7 @@ const Login = () => {
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [hovered, setHovered] = useState(false); // מצב ריחוף
   const router = useRouter();
 
   const toggleShowPassword = () => {
@@ -272,8 +272,16 @@ const Login = () => {
             <Text style={styles.text}>לא רשומים עדיין לאפליקציה?</Text>
           </View>
           <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-            <Pressable onPress={moveToRegistration}>
-              <Text style={styles.registerButtonText}>הירשמו!</Text>
+            <Pressable
+                onPress={moveToRegistration}  // הוספת הניווט בלחיצה
+                onMouseEnter={() => setHovered(true)}  // הגדרת מצב ריחוף
+                onMouseLeave={() => setHovered(false)} // הגדרת מצב יציאה מריחוף
+                style={[
+                  styles.button,
+                  hovered && styles.buttonActive,  // שינוי צבע בריחוף
+                ]}
+            >
+              <Text style={styles.linkText}>הירשמו!</Text>
             </Pressable>
           </View>
         </View>

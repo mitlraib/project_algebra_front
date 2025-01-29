@@ -11,6 +11,7 @@ export const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [hovered, setHovered] = useState(false); // מצב ריחוף
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({
         firstName: '',
@@ -73,12 +74,12 @@ export const Register = () => {
         setErrors(newErrors);
         return valid;
     };
-
-    const handleRegistration = () => {
-        if (validateFields()) {
-            console.log("הרשמה הצליחה");
-        }
-    };
+    //
+    // const handleRegistration = () => {
+    //     if (validateFields()) {
+    //         console.log("הרשמה הצליחה");
+    //     }
+    // };
 
     const validateFields = () => {
         return (
@@ -96,6 +97,31 @@ export const Register = () => {
 
     const moveToLoginPage = () => {
         router.push('/authentication/Login');  // הניווט יקרה פה
+    };
+    const handleRegistration = async () => {
+        if (validateFields()) {
+            try {
+                const userData = {
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                };
+
+                // שליחה של הנתונים ל-API
+                const response = await axios.post('https://localhost:8080/api/register', userData);
+
+                if (response.data.success) {
+                    console.log("הרשמה הצליחה");
+                    // ניווט לעמוד הבא לאחר הצלחה
+                    router.push('/authentication/Login');
+                } else {
+                    console.log("הרשמה נכשלה");
+                }
+            } catch (error) {
+                console.error('Error during registration:', error);
+            }
+        }
     };
 
     return (
@@ -181,19 +207,24 @@ export const Register = () => {
             <View style={styles.buttonContainer}>
                 <Button
                     title="הרשם"
-                    onPress={handleRegistration}
+                    onPress={validateFields}
                 />
             </View>
 
             <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
                 <Text style={styles.text}> כבר יש לך חשבון אצלנו? </Text>
             </View>
-
             <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
                 <Pressable
                     onPress={moveToLoginPage}  // הוספת הניווט בלחיצה
+                    onMouseEnter={() => setHovered(true)}  // הגדרת מצב ריחוף
+                    onMouseLeave={() => setHovered(false)} // הגדרת מצב יציאה מריחוף
+                    style={[
+                        styles.button,
+                        hovered && styles.buttonActive,  // שינוי צבע בריחוף
+                    ]}
                 >
-                    <Text style={styles.text}> התחבר </Text>
+                    <Text style={styles.linkText}>התחבר</Text>
                 </Pressable>
             </View>
         </View>
