@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Pressable, Image } from 'react-native';
 import { useRouter } from 'expo-router';  // הוספת ה-import של useRouter
+import styles from '../../styles/styles.js';
+import {Spacing} from "../../constants/Sizes"; // חזור שני שלבים אחורה לתוך תיקיית styles
 
 export const Register = () => {
     const router = useRouter();  // יצירת משתנה router
@@ -183,8 +185,11 @@ export const Register = () => {
                 />
             </View>
 
-            <View style={styles.input}>
+            <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
                 <Text style={styles.text}> כבר יש לך חשבון אצלנו? </Text>
+            </View>
+
+            <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
                 <Pressable
                     onPress={moveToLoginPage}  // הוספת הניווט בלחיצה
                 >
@@ -195,58 +200,5 @@ export const Register = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 20,
-    },
-    header: {
-        fontSize: 24,
-        textAlign: 'center',
-        marginBottom: 20,
-    },
-    input: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 10,
-        paddingLeft: 8,
-        width: '30%',
-        alignSelf: 'center',
-        fontSize: 14,
-    },
-    errorText: {
-        color: 'red',
-        fontSize: 12,
-        marginBottom: 10,
-        alignSelf: 'center',
-    },
-    eyeIcon: {
-        width: 40,
-        height: 40,
-        position: 'absolute',
-        right: -48,
-        top: -26,
-    },
-    buttonContainer: {
-        width: '30%',
-        marginTop: 20,
-        alignSelf: 'center',
-    },
-    passwordContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        width: '90%',
-        alignSelf: 'center',
-        marginLeft: '60%',
-    },
-    text: {
-        fontSize: 14,
-        color: 'black',
-        marginBottom: 10,
-    }
-});
 
 export default Register;
