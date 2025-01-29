@@ -34,6 +34,7 @@ export const Register = () => {
                 } else {
                     newErrors.firstName = '';
                 }
+
                 break;
             case 'lastName':
                 if (!lastName) {
