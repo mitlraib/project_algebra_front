@@ -190,7 +190,7 @@ export const Register = () => {
                     {errors.password}
                 </Text>
             )}
-            <View style={styles.passwordContainer}>
+            <View >
                 <TextInput
                     style={styles.input}
                     placeholder="אימות סיסמה"
@@ -202,12 +202,12 @@ export const Register = () => {
                     onFocus={() => setTouched({ ...touched, confirmPassword: true })}
                     secureTextEntry={!showPassword}
                 />
-                <Pressable onPress={toggleShowPassword}>
-                    <Image
-                        source={{ uri: 'https://as2.ftcdn.net/jpg/01/46/11/95/220_F_146119533_BAlUoUk3eo9eSXBnMuMdUDPvLdeLpWJr.jpg' }}
-                        style={styles.eyeIcon}
-                    />
-                </Pressable>
+                {/*<Pressable onPress={toggleShowPassword}>*/}
+                {/*    <Image*/}
+                {/*        source={{ uri: 'https://as2.ftcdn.net/jpg/01/46/11/95/220_F_146119533_BAlUoUk3eo9eSXBnMuMdUDPvLdeLpWJr.jpg' }}*/}
+                {/*        style={styles.eyeIcon}*/}
+                {/*    />*/}
+                {/*</Pressable>*/}
             </View>
             {touched.confirmPassword && (
                 <Text style={[styles.errorText, errors.confirmPassword.includes('✅') && styles.successText]}>
