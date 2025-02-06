@@ -8,7 +8,7 @@ export const Register = () => {
     const router = useRouter();  // יצירת משתנה router
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
+    const [mail, setMail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [hovered, setHovered] = useState(false); // מצב ריחוף
@@ -20,7 +20,7 @@ export const Register = () => {
     const [errors, setErrors] = useState({
         firstName: '',
         lastName: '',
-        email: '',
+        mail: '',
         password: '',
         confirmPassword: ''
     });
@@ -47,12 +47,12 @@ export const Register = () => {
                     newErrors.lastName = '';
                 }
                 break;
-            case 'email':
-                if (!email || !email.includes('@')) {
-                    newErrors.email = 'כתובת המייל לא תקינה';
+            case 'mail':
+                if (!mail || !mail.includes('@')) {
+                    newErrors.mail = 'כתובת המייל לא תקינה';
                     valid = false;
                 } else {
-                    newErrors.email = '';
+                    newErrors.mail = '';
                 }
                 break;
             case 'password':
@@ -89,7 +89,7 @@ export const Register = () => {
         return (
             validateField('firstName') &&
             validateField('lastName') &&
-            validateField('email') &&
+            validateField('mail') &&
             validateField('password') &&
             validateField('confirmPassword')
         );
@@ -108,26 +108,25 @@ export const Register = () => {
                 const userData = {
                     firstName,
                     lastName,
-                    email,
+                    mail,
                     password,
                 };
 
-                // שליחה של הנתונים ל-API
-                const response = await axios.post('https://localhost:8080/api/register', userData);
+                const response = await axios.post('http://localhost:8080/api/register', userData);
+
+                console.log("Response from server:", response.data);
 
                 if (response.data.success) {
                     console.log("הרשמה הצליחה");
-                    // ניווט לעמוד הבא לאחר הצלחה
                     router.push('/authentication/Login');
                 } else {
-                    console.log("הרשמה נכשלה");
+                    console.log("הרשמה נכשלה:", response.data.message);
                 }
             } catch (error) {
-                console.error('Error during registration:', error);
+                console.error('Error during registration:', error.response ? error.response.data : error.message);
             }
         }
     };
-
     return (
         <View style={styles.container}>
             <Text style={styles.header}>הרשמה</Text>
@@ -159,12 +158,12 @@ export const Register = () => {
             <TextInput
                 style={styles.input}
                 placeholder="מייל"
-                value={email}
-                onChangeText={setEmail}  // כאן לא נבדוק את השדה מיד
-                onBlur={() => validateField('email')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
+                value={mail}
+                onChangeText={setMail}  // כאן לא נבדוק את השדה מיד
+                onBlur={() => validateField('mail')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
                 keyboardType="email-address"
             />
-            {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+            {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
 
             <View style={styles.passwordContainer}>
                 <TextInput
@@ -217,7 +216,7 @@ export const Register = () => {
             <View style={styles.buttonContainer}>
                 <Button
                     title="הרשם"
-                    onPress={validateFields}
+                    onPress={handleRegistration}
                 />
             </View>
 
