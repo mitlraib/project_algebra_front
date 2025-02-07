@@ -79,12 +79,7 @@ export const Register = () => {
         setErrors(newErrors);
         return valid;
     };
-    //
-    // const handleRegistration = () => {
-    //     if (validateFields()) {
-    //         console.log("הרשמה הצליחה");
-    //     }
-    // };
+
 
     const validateFields = () => {
         return (
@@ -102,7 +97,7 @@ export const Register = () => {
 
 
     const moveToLoginPage = () => {
-        router.push('/authentication/Login');  // הניווט יקרה פה
+        router.push('/authentication/Login');  // ניווט
     };
     const handleRegistration = async () => {
         if (validateFields()) {

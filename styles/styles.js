@@ -22,6 +22,8 @@ const styles = StyleSheet.create({
         width: '30%',
         alignSelf: 'center',
         fontSize: 14,
+        textAlign: 'right',
+        paddingRight:10
     },
     errorText: {
         color: 'red',
@@ -30,11 +32,11 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     eyeIcon: {
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         position: 'absolute',
-        right: -48,
-        top: -26,
+        right: -40,
+        top: -20,
     },
     buttonContainer: {
         width: '30%',
@@ -45,9 +47,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        width: '90%',
+        width: '100%',
         alignSelf: 'center',
-        marginLeft: '60%',
+        marginLeft: '70%',
     },
     text: {
         fontSize: 14,
