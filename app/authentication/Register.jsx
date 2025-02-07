@@ -2,7 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Pressable, Image } from 'react-native';
 import { useRouter } from 'expo-router';  // הוספת ה-import של useRouter
 import styles from '../../styles/styles.js';
-import {Spacing} from "../../constants/Sizes"; // חזור שני שלבים אחורה לתוך תיקיית styles
+import {Spacing} from "../../constants/Sizes";
+import axios from "axios"; // חזור שני שלבים אחורה לתוך תיקיית styles
 
 export const Register = () => {
     const router = useRouter();  // יצירת משתנה router
@@ -111,15 +112,16 @@ export const Register = () => {
                     mail,
                     password,
                 };
-
                 const response = await axios.post('http://localhost:8080/api/register', userData);
 
                 console.log("Response from server:", response.data);
 
                 if (response.data.success) {
+                    alert("ההרשמה הצליחה!");
                     console.log("הרשמה הצליחה");
                     router.push('/authentication/Login');
                 } else {
+                    alert("ההרשמה נכשלה, נסה שוב");
                     console.log("הרשמה נכשלה:", response.data.message);
                 }
             } catch (error) {
