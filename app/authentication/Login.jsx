@@ -212,7 +212,8 @@ import React, { useState } from 'react';
 import {Text, View, TextInput, StyleSheet, StatusBar, Platform, Image, Pressable, Button} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Sizes, Spacing } from '../../constants/Sizes';
-import styles from '../../styles/styles'; // ייבוא הסטיילים
+import styles from '../../styles/styles';
+import axios from "axios"; // ייבוא הסטיילים
 
 const Login = () => {
   const [mail, setMail] = useState('');
@@ -233,6 +234,36 @@ const Login = () => {
     router.navigate('/(tabs)/Dashboard');
   };
 
+  const handleLogin = async () => {
+    if (mail && password) { // אם המייל והסיסמא קיימים
+      try {
+        const loginData = {
+          mail,
+          password,
+        };
+
+        const response = await axios.post('http://localhost:8080/api/login', loginData);
+
+        console.log("Response from server:", response.data);
+
+        if (response.data.success) {
+          alert("ההתחברות הצליחה!");
+
+          setMail('');
+          setPassword('');
+
+          //router.push(''); // שינוי לדף הרלוונטי
+        } else {
+          alert("שם המשתמש או הסיסמה שגויים");
+          console.log("Error:", response.data.message);
+        }
+      } catch (error) {
+        console.error('Error during login:', error.response ? error.response.data : error.message);
+      }
+    } else {
+      alert("יש למלא את המייל והסיסמה");
+    }
+  };
   return (
       <View style={styles.container}>
         <View style={styles.innerContainer}>
@@ -266,7 +297,7 @@ const Login = () => {
           <View style={styles.buttonContainer}>
             <Button
                 title="התחבר"
-                //onPress={}
+                onPress={handleLogin}
             />
           </View>
           {/* Register Button */}

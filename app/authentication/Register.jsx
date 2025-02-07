@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Pressable, Image } from 'react-native';
 import { useRouter } from 'expo-router';  // הוספת ה-import של useRouter
 import styles from '../../styles/styles.js';
 import {Spacing} from "../../constants/Sizes";
-import axios from "axios"; // חזור שני שלבים אחורה לתוך תיקיית styles
+import axios from "axios";
 
 export const Register = () => {
     const router = useRouter();  // יצירת משתנה router
@@ -61,15 +61,15 @@ export const Register = () => {
                     newErrors.password = 'הסיסמה חייבת להיות לפחות 6 תווים';
                     valid = false;
                 } else {
-                    newErrors.password = '✅ הסיסמה תקינה';
+                    newErrors.password = '';
                 }
                 break;
             case 'confirmPassword':
-                if (password !== confirmPassword) {
+                if (!confirmPassword || password !== confirmPassword) {
                     newErrors.confirmPassword = 'הסיסמאות אינן תואמות';
                     valid = false;
                 } else {
-                    newErrors.confirmPassword = '✅ אימות סיסמה תקין';
+                    newErrors.confirmPassword = ' אימות סיסמה תקין ✅';
                 }
                 break;
             default:
@@ -100,6 +100,7 @@ export const Register = () => {
         setShowPassword(prevState => !prevState);
     };
 
+
     const moveToLoginPage = () => {
         router.push('/authentication/Login');  // הניווט יקרה פה
     };
@@ -119,7 +120,15 @@ export const Register = () => {
                 if (response.data.success) {
                     alert("ההרשמה הצליחה!");
                     console.log("הרשמה הצליחה");
-                    router.push('/authentication/Login');
+
+                    // איפוס השדות אחרי הרשמה מוצלחת
+                    setFirstName('');
+                    setLastName('');
+                    setMail('');
+                    setPassword('');
+                    setConfirmPassword('');
+
+                    //router.push('/authentication/Login');
                 } else {
                     alert("ההרשמה נכשלה, נסה שוב");
                     console.log("הרשמה נכשלה:", response.data.message);
@@ -161,7 +170,10 @@ export const Register = () => {
                 style={styles.input}
                 placeholder="מייל"
                 value={mail}
-                onChangeText={setMail}  // כאן לא נבדוק את השדה מיד
+                onChangeText={(text)=>{
+                    setMail(text);
+                    validateField('mail');
+                }}  // כאן לא נבדוק את השדה מיד
                 onBlur={() => validateField('mail')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
                 keyboardType="email-address"
             />
@@ -176,7 +188,8 @@ export const Register = () => {
                         setPassword(text);
                         validateField('password');
                     }}
-                    onFocus={() => setTouched({ ...touched, password: true })}
+                    onBlur={() => validateField('password')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
+                    //onFocus={() => setTouched({ ...touched, password: true })}
                     secureTextEntry={!showPassword}
                 />
                 <Pressable onPress={toggleShowPassword}>
@@ -186,11 +199,7 @@ export const Register = () => {
                     />
                 </Pressable>
             </View>
-            {touched.password && (
-                <Text style={[styles.errorText, errors.password.includes('✅') && styles.successText]}>
-                    {errors.password}
-                </Text>
-            )}
+            {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
             <View >
                 <TextInput
                     style={styles.input}
@@ -200,7 +209,8 @@ export const Register = () => {
                         setConfirmPassword(text);
                         validateField('confirmPassword');
                     }}
-                    onFocus={() => setTouched({ ...touched, confirmPassword: true })}
+                    onBlur={() => validateField('confirmPassword')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
+                    //onFocus={() => setTouched({ ...touched, confirmPassword: true })}
                     secureTextEntry={!showPassword}
                 />
                 {/*<Pressable onPress={toggleShowPassword}>*/}
@@ -210,15 +220,19 @@ export const Register = () => {
                 {/*    />*/}
                 {/*</Pressable>*/}
             </View>
-            {touched.confirmPassword && (
-                <Text style={[styles.errorText, errors.confirmPassword.includes('✅') && styles.successText]}>
+
+            <Text style={[styles.errorText, errors.confirmPassword.includes('✅') && styles.successText]}>
                     {errors.confirmPassword}
-                </Text>
-            )}
+
+            </Text>
+
             <View style={styles.buttonContainer}>
                 <Button
                     title="הרשם"
-                    onPress={handleRegistration}
+                    onPress={()=>{
+                        handleRegistration();
+                        moveToLoginPage()
+                    }}
                 />
             </View>
 
