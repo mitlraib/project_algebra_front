@@ -13,7 +13,7 @@ const Dashboard = () => {
     return (
         <View style={styles.container}>
             <Text>HOME</Text>
-            <Pressable onClick={() => router.navigate('/(tabs)/MyCourses')}>
+            <Pressable onPress={() => router.navigate('/(tabs)/MyCourses')}>
                 MyCourses
               </Pressable>
 
