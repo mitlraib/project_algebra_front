@@ -1,6 +1,6 @@
 // styles.js
 import { StyleSheet } from 'react-native';
-import { Colors } from '../constants/Colors';
+import {Colors as colors, Colors} from '../constants/Colors';
 
 const styles = StyleSheet.create({
     container: {
@@ -78,6 +78,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginTop: 5,
     },
+
+    dashboardBackground:{
+        backgroundColor: colors.lightBlue,
+    }
 });
 
 export default styles;

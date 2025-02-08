@@ -6,19 +6,19 @@ import { Sizes, Spacing } from '../../constants/Sizes';
 import styles from '../../styles/styles';
 import axios from "axios"; // ייבוא הסטיילים
 
-const Dashboard = () => {
+const MyCourses = () => {
     const router = useRouter();
 
 
     return (
         <View style={styles.container}>
-            <Text>HOME</Text>
+            <Text>MyCourses</Text>
             <Pressable onClick={() => router.navigate('/(tabs)/MyCourses')}>
                 MyCourses
-              </Pressable>
+            </Pressable>
 
         </View>
-)
+    )
 
 };
-export default Dashboard;
+export default MyCourses;

@@ -9,6 +9,7 @@ const tintColorDark = '#fff';
 export const Colors = {
   purple: '#A020F0',
   relativePurple: '#BC68F0',
+  lightBlue: '#DBEBFB',
   
   light: {
     text: '#11181C',
