@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, FlatList, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Card } from 'react-native-paper';
 import styles from '../../styles/styles';
 import { courses } from '../../constants/CoursesNames';
 
@@ -13,20 +14,24 @@ const MyCourses = () => {
 
             <FlatList
                 data={courses}
-                keyExtractor={course => course.id.toString()}
+                keyExtractor={(course) => course.id.toString()}
                 renderItem={({ item: course }) => (
                     <View style={styles.courseContainer}>
                         <Text style={styles.courseTitle}>{course.title}</Text>
 
+                        {/* הצגת הנושאים ככרטיסים */}
                         <FlatList
                             data={course.topics}
-                            keyExtractor={topic => topic.id.toString()}
+                            keyExtractor={(topic) => topic.id.toString()}
+                            numColumns={3} // שני כרטיסים בכל שורה
+                            columnWrapperStyle={styles.row} // סידור יפה של הכרטיסים
                             renderItem={({ item: topic }) => (
-                                <Pressable
-                                    style={styles.topicButton}
-                                    onPress={() => router.push(`/course/${topic.id}`)}
-                                >
-                                    <Text style={styles.topicText}>{topic.name}</Text>
+                                <Pressable onPress={() => router.push(`/course/${topic.id}`)}>
+                                    <Card style={styles.card}>
+                                        <Card.Content>
+                                            <Text style={styles.cardTitle}>{topic.name}</Text>
+                                        </Card.Content>
+                                    </Card>
                                 </Pressable>
                             )}
                         />
@@ -38,4 +43,3 @@ const MyCourses = () => {
 };
 
 export default MyCourses;
-

@@ -1,6 +1,5 @@
-// styles.js
 import { StyleSheet } from 'react-native';
-import {Colors as colors, Colors} from '../constants/Colors';
+import { Colors as colors } from '../constants/Colors';
 
 const styles = StyleSheet.create({
     container: {
@@ -23,7 +22,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         fontSize: 14,
         textAlign: 'right',
-        paddingRight:10
+        paddingRight: 10,
     },
     errorText: {
         color: 'red',
@@ -56,32 +55,49 @@ const styles = StyleSheet.create({
         color: 'black',
         marginBottom: 10,
     },
-
-    // סגנון של הטקסט עם פס תחתון
     linkText: {
         borderBottomWidth: 1,
         borderBottomColor: 'black',
     },
-
-    // סגנון של הכפתור
     button: {
         padding: 5,
         borderRadius: 5,
-        opacity: 1, // יש לשמור על אטימות רגילה
+        opacity: 1,
     },
-// סגנון של הכפתור בריחוף
     buttonActive: {
-        backgroundColor: 'blue', // צבע background בעת נגיעה
+        backgroundColor: 'blue',
     },
     successText: {
         color: 'green',
         fontSize: 14,
         marginTop: 5,
     },
-
-    dashboardBackground:{
+    dashboardBackground: {
         backgroundColor: colors.lightBlue,
-    }
+    },
+
+    // 🎴 סגנון לכרטיסיות (נושאים)
+
+    card: {
+        width: 200,  // ✨ קובע רוחב קבוע
+        height: 200, // ✨ קובע גובה קבוע
+        backgroundColor: '#ffffff',
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 5, // צל לכרטיס
+        borderRadius: 10,
+        margin: 10,
+        padding: 15,
+    },
+    row: {
+        justifyContent: 'space-between',
+        marginBottom: 5,
+    },
+    cardTitle: {
+        fontSize: 18, // ✨ הגדלת טקסט
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
 });
 
 export default styles;
