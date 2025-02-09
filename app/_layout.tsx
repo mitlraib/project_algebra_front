@@ -7,7 +7,6 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -23,18 +22,24 @@ export default function RootLayout() {
   }, [loaded]);
 
   if (!loaded) {
-    return null;
+    return (
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+    );
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-        <Stack.Screen name="(tabs)/MyCourses" options={{ title: 'My Courses' }} />
-        <Stack.Screen name="course/[id]" options={{ title: 'Course Details' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          {/* דף הלוגין יטען ראשון */}
+          <Stack.Screen name="authentication/Login" options={{ headerShown: false }} />
+
+          {/* שאר הדפים */}
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
+          <Stack.Screen name="(tabs)/MyCourses" options={{ title: 'My Courses' }} />
+          {/*<Stack.Screen name="course/[id]" options={{ title: 'Course Details' }} />*/}
+        </Stack>
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      </ThemeProvider>
   );
 }

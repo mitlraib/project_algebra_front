@@ -217,7 +217,7 @@ export const Register = () => {
             </View>
 
             <Text style={[styles.errorText, errors.confirmPassword.includes('✅') && styles.successText]}>
-                    {errors.confirmPassword}
+                {errors.confirmPassword}
 
             </Text>
 
