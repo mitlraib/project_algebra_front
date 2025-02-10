@@ -4,6 +4,9 @@ import { useRouter } from 'expo-router';  // הוספת ה-import של useRouter
 import styles from '../../styles/styles.js';
 import {Spacing} from "../../constants/Sizes";
 import axios from "axios";
+import ProtectedRoute from '@/components/ProtectedRoute';
+import Cookies from 'js-cookie';
+
 
 export const Register = () => {
     const router = useRouter();  // יצירת משתנה router
@@ -25,7 +28,9 @@ export const Register = () => {
         password: '',
         confirmPassword: ''
     });
-
+    const moveToDashboard = () => {
+        router.navigate('/(tabs)/Dashboard');
+    };
 
     const validateField = (fieldName) => {
         let valid = true;
@@ -134,6 +139,8 @@ export const Register = () => {
         }
     };
     return (
+        <ProtectedRoute requireAuth={false}>
+
         <View style={styles.container}>
             <Text style={styles.header}>הרשמה</Text>
 
@@ -208,12 +215,7 @@ export const Register = () => {
                     //onFocus={() => setTouched({ ...touched, confirmPassword: true })}
                     secureTextEntry={!showPassword}
                 />
-                {/*<Pressable onPress={toggleShowPassword}>*/}
-                {/*    <Image*/}
-                {/*        source={{ uri: 'https://as2.ftcdn.net/jpg/01/46/11/95/220_F_146119533_BAlUoUk3eo9eSXBnMuMdUDPvLdeLpWJr.jpg' }}*/}
-                {/*        style={styles.eyeIcon}*/}
-                {/*    />*/}
-                {/*</Pressable>*/}
+
             </View>
 
             <Text style={[styles.errorText, errors.confirmPassword.includes('✅') && styles.successText]}>
@@ -248,6 +250,7 @@ export const Register = () => {
                 </Pressable>
             </View>
         </View>
+        </ProtectedRoute>
     );
 };
 

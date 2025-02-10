@@ -4,7 +4,9 @@ import {Text, View, TextInput, StyleSheet, StatusBar, Platform, Image, Pressable
 import { useRouter } from 'expo-router';
 import { Sizes, Spacing } from '@/constants/Sizes';
 import styles from '../../styles/styles';
-import axios from "axios";
+import axios from "axios"; // ייבוא הסטיילים
+import Cookies from 'js-cookie';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 const Login = () => {
     const [mail, setMail] = useState('');
@@ -39,7 +41,7 @@ const Login = () => {
 
                 if (response.data.success) {
                     alert("ההתחברות הצליחה!");
-
+                    Cookies.set('userToken', response.data.token, { expires: 7 });
                     setMail('');
                     setPassword('');
                     moveToDashboard();
@@ -57,6 +59,8 @@ const Login = () => {
         }
     };
     return (
+        <ProtectedRoute requireAuth={false}>
+
         <View style={styles.container}>
             <View style={styles.innerContainer}>
                 <Text style={styles.header}>כניסה לאיזור האישי:</Text>
@@ -113,6 +117,7 @@ const Login = () => {
                 </View>
             </View>
         </View>
+        </ProtectedRoute>
     );
 };
 
