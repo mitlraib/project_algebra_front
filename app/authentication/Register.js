@@ -181,25 +181,25 @@ export const Register = () => {
             />
             {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
 
+            {/* Password */}
             <View style={styles.passwordContainer}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="סיסמה"
-                    value={password}
-                    onChangeText={(text) => {
-                        setPassword(text);
-                        validateField('password');
-                    }}
-                    onBlur={() => validateField('password')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
-                    //onFocus={() => setTouched({ ...touched, password: true })}
-                    secureTextEntry={!showPassword}
-                />
                 <Pressable onPress={toggleShowPassword}>
                     <Image
                         source={{ uri: 'https://as2.ftcdn.net/jpg/01/46/11/95/220_F_146119533_BAlUoUk3eo9eSXBnMuMdUDPvLdeLpWJr.jpg' }}
                         style={styles.eyeIcon}
                     />
                 </Pressable>
+
+                <TextInput
+                    style={styles.input}
+                    placeholder={": סיסמה "}
+                    onChangeText={(text) => {
+                        setPassword(text);
+                        validateField('password');
+                    }}
+                    onBlur={() => validateField('password')}
+                    secureTextEntry={!showPassword}
+                />
             </View>
             {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
             <View >
