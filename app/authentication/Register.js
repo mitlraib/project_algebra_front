@@ -181,7 +181,6 @@ export const Register = () => {
             />
             {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
 
-            {/* Password */}
             <View style={styles.passwordContainer}>
                 <Pressable onPress={toggleShowPassword}>
                     <Image
@@ -189,15 +188,16 @@ export const Register = () => {
                         style={styles.eyeIcon}
                     />
                 </Pressable>
-
                 <TextInput
                     style={styles.input}
-                    placeholder={": סיסמה "}
+                    placeholder="סיסמה"
+                    value={password}
                     onChangeText={(text) => {
                         setPassword(text);
                         validateField('password');
                     }}
-                    onBlur={() => validateField('password')}
+                    onBlur={() => validateField('password')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
+                    //onFocus={() => setTouched({ ...touched, password: true })}
                     secureTextEntry={!showPassword}
                 />
             </View>

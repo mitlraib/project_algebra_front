@@ -31,6 +31,37 @@ const Login = () => {
         router.navigate('/(tabs)/Dashboard');
     };
 
+    const handleLogin = async () => {
+        if (mail && password) { // אם המייל והסיסמא קיימים
+            try {
+                const loginData = {
+                    mail,
+                    password,
+                };
+
+                const response = await axios.post('http://localhost:8080/api/login', loginData);
+
+                console.log("Response from server:", response.data);
+
+                if (response.data.success) {
+                    alert("ההתחברות הצליחה!");
+                    Cookies.set('userToken', response.data.token, { expires: 7 });
+                    setMail('');
+                    setPassword('');
+                    moveToDashboard();
+
+                    //router.push(''); // שינוי לדף הרלוונטי
+                } else {
+                    alert("שם המשתמש או הסיסמה שגויים");
+                    console.log("Error:", response.data.message);
+                }
+            } catch (error) {
+                console.error('Error during login:', error.response ? error.response.data : error.message);
+            }
+        } else {
+            alert("יש למלא את המייל והסיסמה");
+        }
+    };
     const validateField = (fieldName) => {
         let valid = true;
         let newErrors = { ...errors };
@@ -66,37 +97,7 @@ const Login = () => {
             validateField('mail') &&
             validateField('password')
         );
-    };
-
-    const handleLogin = async () => {
-        if (mail && password) {
-            try {
-                const loginData = {
-                    mail,
-                    password,
-                };
-
-                const response = await axios.post('http://localhost:8080/api/login', loginData);
-
-                console.log("Response from server:", response.data);
-
-                if (response.data.success) {
-                    alert("ההתחברות הצליחה!");
-                    setMail('');
-                    setPassword('');
-                    moveToDashboard();
-                } else {
-                    alert(response.data.message);  // הצגת הודעת השגיאה מהשרת
-                    console.log("Error:", response.data.message);
-                }
-            } catch (error) {
-                console.error('Error during login:', error.response ? error.response.data : error.message);
-                alert("הייתה שגיאה במהלך הכניסה");
-            }
-        } else {
-            alert("יש למלא את המייל והסיסמה");
-        }
-    };
+    }
     return (
         <ProtectedRoute requireAuth={false}>
 
@@ -116,6 +117,7 @@ const Login = () => {
                     onBlur={() => validateField('mail')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
                 />
                 {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
+
 
                 {/* Password */}
                 <View style={styles.passwordContainer}>
@@ -141,8 +143,6 @@ const Login = () => {
                 <View >
 
                 </View>
-
-
 
                 {/* Login Button */}
                 <View style={styles.buttonContainer}>
