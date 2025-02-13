@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';  // הוספת ה-import של useRouter
 import styles from '../../styles/styles.js';
 import {Spacing} from "../../constants/Sizes";
 import axios from "axios";
-import ProtectedRoute from '@/components/ProtectedRoute';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import Cookies from 'js-cookie';
 
 

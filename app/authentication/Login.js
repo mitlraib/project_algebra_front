@@ -6,7 +6,7 @@ import { Sizes, Spacing } from '@/constants/Sizes';
 import styles from '../../styles/styles';
 import axios from "axios"; // ייבוא הסטיילים
 import Cookies from 'js-cookie';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import ProtectedRoute from '../../components/ProtectedRoute';
 
 const Login = () => {
     const [mail, setMail] = useState('');
