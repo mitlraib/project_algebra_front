@@ -1,14 +1,20 @@
-import { View, Image, StyleSheet, Platform } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Redirect } from 'expo-router';
+import Cookies from 'js-cookie';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import Login from '../authentication/Login';
+export default function Index() {
+  const [user, setUser] = useState(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-export default function HomeScreen() {
-  return (
-  <Login/>
-  );
+  useEffect(() => {
+    const token = Cookies.get('userToken');
+    setUser(token || null);
+    setCheckingAuth(false);
+  }, []);
+
+  if (checkingAuth) {
+    return null; // מחכה לוודא אם המשתמש מחובר
+  }
+
+  return user ? <Redirect href="/(tabs)/Dashboard" /> : <Redirect href="/authentication/Login" />;
 }
-

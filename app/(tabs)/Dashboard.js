@@ -8,6 +8,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import styles from '../../styles/styles';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import Cookies from 'js-cookie';
+
 
 export default function Dashboard() {
     const router = useRouter();
@@ -15,11 +18,13 @@ export default function Dashboard() {
 
 
     const handleLogout = () => {
-        // כאן תוכל להוסיף את הלוגיקה של ההתנתקות
-        // לאחר מכן, נווט לעמוד ה-login שלך
-        router.push('/authentication/Login');     };
+        Cookies.remove('userToken');
+        router.replace('/authentication/Login');
+        };
 
     return (
+        <ProtectedRoute requireAuth={true}>
+
         <View style={{ flex: 1 }}>
             {/* סרגל ניווט */}
             <Box sx={{ flexGrow: 1 }}>
@@ -56,5 +61,6 @@ export default function Dashboard() {
                 </Pressable>
             </View>
         </View>
+        </ProtectedRoute>
     );
 }
