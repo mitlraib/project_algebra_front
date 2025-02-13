@@ -118,6 +118,7 @@ export const Register = () => {
                 console.log("Response from server:", response.data);
 
                 if (response.data.success) {
+                    moveToLoginPage()
                     alert("ההרשמה הצליחה!");
                     console.log("הרשמה הצליחה");
 
@@ -228,7 +229,6 @@ export const Register = () => {
                     title="הרשם"
                     onPress={()=>{
                         handleRegistration();
-                        moveToLoginPage()
                     }}
                 />
             </View>
