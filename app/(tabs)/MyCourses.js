@@ -19,7 +19,7 @@ const MyCourses = () => {
                     <View style={styles.courseContainer}>
                         <Text style={styles.courseTitle}>{course.title}</Text>
 
-                        {/* הצגת הנושאים ככרטיסים */}
+                        {/* הצגת הנושאים ככרטיסים   */}
                         <FlatList
                             data={course.topics}
                             keyExtractor={(topic) => topic.id.toString()}
