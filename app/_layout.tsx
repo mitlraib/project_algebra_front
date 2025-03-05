@@ -36,16 +36,20 @@ export default function RootLayout() {
 
   return (
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
+        <Stack
+            screenOptions={{
+              headerShown: false, // 🔹 מבטל את כל הכותרות כברירת מחדל!
+            }}
+        >
           {user ? (
               <>
-                <Stack.Screen name="(tabs)/Dashboard" options={{ title: 'Dashboard' }} />
+                <Stack.Screen name="(tabs)/Dashboard" />
+                <Stack.Screen name="(tabs)/MyCourses" />
+                <Stack.Screen name="course/[id]" />
                 <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
-                <Stack.Screen name="(tabs)/MyCourses" options={{ title: 'My Courses' }} />
-                <Stack.Screen name="course/[id]" options={{ title: 'Course Details' }} />
               </>
           ) : (
-              <Stack.Screen name="authentication/Login" options={{ headerShown: false }} />
+              <Stack.Screen name="authentication/Login" />
           )}
         </Stack>
         <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />

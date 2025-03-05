@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';  // הוספת ה-import של useRouter
 import styles from '../../styles/styles.js';
 import {Spacing} from "../../constants/Sizes";
 import axios from "axios";
-import ProtectedRoute from '@/components/ProtectedRoute';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import Cookies from 'js-cookie';
 
 
@@ -118,6 +118,7 @@ export const Register = () => {
                 console.log("Response from server:", response.data);
 
                 if (response.data.success) {
+                    moveToLoginPage()
                     alert("ההרשמה הצליחה!");
                     console.log("הרשמה הצליחה");
 
@@ -181,7 +182,6 @@ export const Register = () => {
             />
             {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
 
-            {/* Password */}
             <View style={styles.passwordContainer}>
                 <Pressable onPress={toggleShowPassword}>
                     <Image
@@ -189,15 +189,16 @@ export const Register = () => {
                         style={styles.eyeIcon}
                     />
                 </Pressable>
-
                 <TextInput
                     style={styles.input}
-                    placeholder={": סיסמה "}
+                    placeholder="סיסמה"
+                    value={password}
                     onChangeText={(text) => {
                         setPassword(text);
                         validateField('password');
                     }}
-                    onBlur={() => validateField('password')}
+                    onBlur={() => validateField('password')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
+                    //onFocus={() => setTouched({ ...touched, password: true })}
                     secureTextEntry={!showPassword}
                 />
             </View>
@@ -228,7 +229,6 @@ export const Register = () => {
                     title="הרשם"
                     onPress={()=>{
                         handleRegistration();
-                        moveToLoginPage()
                     }}
                 />
             </View>
