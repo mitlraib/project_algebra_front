@@ -3,7 +3,7 @@ import { Redirect } from 'expo-router';
 import Cookies from 'js-cookie';
 
 export default function Index() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<string | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
