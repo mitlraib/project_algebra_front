@@ -6,7 +6,7 @@ export const courses = [
             { id: 1, name: 'חיבור' },
             { id: 2, name: 'חיסור' },
             { id: 3, name: 'כפל' },
-            { id: 3, name: 'חילוק' }
+            { id: 4, name: 'חילוק' }
 
         ]
     },
@@ -14,10 +14,10 @@ export const courses = [
         id: 2,
         title: 'שברים:',
         topics: [
-            { id: 1, name: 'חיבור שברים' },
-            { id: 2, name: 'חיסור שברים' },
-            { id: 3, name: 'כפל שברים' },
-            { id: 3, name: 'חילוק שברים' }
+            { id: 5, name: 'חיבור שברים' },
+            { id: 6, name: 'חיסור שברים' },
+            { id: 7, name: 'כפל שברים' },
+            { id: 8, name: 'חילוק שברים' }
         ]
     }
 ];

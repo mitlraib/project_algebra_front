@@ -20,8 +20,8 @@ export default function CoursePage() {
 
     // פונקציה שמייצרת שאלה חדשה
     function generateQuestion() {
-        const first = getRandomNumber();
-        const second = getRandomNumber();
+        let first = getRandomNumber();
+        let second = getRandomNumber();
         let correctAnswer = 42; // התשובה לחיים, ליקום ולהכל
         if (topic.name === 'חיבור') {
             correctAnswer = first + second;
@@ -29,6 +29,16 @@ export default function CoursePage() {
         if (topic.name === 'חיסור') {
             correctAnswer = first >= second ? first - second : second - first;
         }
+        if (topic.name === 'כפל') {
+            correctAnswer = first * second;
+        }
+        if (topic.name === 'חילוק') {
+            // מוודאים שהמנה תהיה מספר שלם
+            correctAnswer = getRandomNumber(); // בוחרים מנה שלמה אקראית
+            second = getRandomNumber(); // בוחרים מחלק אקראי
+            first = correctAnswer * second; // יוצרים מספר ראשון כך שיתחלק בדיוק
+        }
+
         const answers = [correctAnswer, correctAnswer + 1, correctAnswer - 1, correctAnswer + 5].sort(() => Math.random() - 0.5);
         return { first, second, correctAnswer, answers };
     }
@@ -72,12 +82,16 @@ export default function CoursePage() {
             <Text style={localStyles.title}>נושא: {topic.name}</Text>
             <Text style={localStyles.question}>
                 {topic.name === 'חיבור'
-                    ? `כמה זה ${currentQuestion.second} + ${currentQuestion.first}?`
+                    ? `כמה זה ${currentQuestion.first} + ${currentQuestion.second}?`
                     : topic.name === 'חיסור'
                         ? currentQuestion.first >= currentQuestion.second
                             ? ` כמה זה ${currentQuestion.second} - ${currentQuestion.first}?`
                             : ` כמה זה ${currentQuestion.first} - ${currentQuestion.second}?`
-                        : "לא"}
+                        :topic.name === 'כפל'
+                            ? `כמה זה ${currentQuestion.first} * ${currentQuestion.second}?`
+                            : topic.name === 'חילוק'
+                                ? `כמה זה ${currentQuestion.second} ÷ ${currentQuestion.first}?`
+                            : "לא"}
             </Text>
 
             {currentQuestion.answers.map((ans, idx) => {
