@@ -2,7 +2,7 @@
 // import { Text, View, StyleSheet, Pressable } from 'react-native';
 // import styles from '../../styles/styles';
 //
-// export default function AdditionPage() {
+// export default function SubtractionPage() {
 //     const [currentQuestion, setCurrentQuestion] = useState(generateQuestion());
 //     const [selectedAnswer, setSelectedAnswer] = useState(null);
 //     const [showResult, setShowResult] = useState(false);
