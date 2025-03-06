@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Text, View, StyleSheet, Pressable } from 'react-native';
 import { courses } from '../../constants/CoursesNames';
 import styles from '../../styles/styles';
 
 export default function CoursePage() {
     const { id } = useLocalSearchParams();
+    const router = useRouter();
     const topic = courses.flatMap(course => course.topics).find(topic => topic.id.toString() === id);
 
     const [currentQuestion, setCurrentQuestion] = useState(generateQuestion());
@@ -23,13 +24,12 @@ export default function CoursePage() {
         const second = getRandomNumber();
         let correctAnswer = 42; // התשובה לחיים, ליקום ולהכל
         if (topic.name === 'חיבור') {
-         correctAnswer = first + second;
-            }
-        if (topic.name === 'חיסור') {
-            if (first>=second){correctAnswer = first - second;}
-            else {correctAnswer = second-first;}
+            correctAnswer = first + second;
         }
-        const answers = [correctAnswer, correctAnswer + 1, correctAnswer - 1, correctAnswer + 5].sort(() => Math.random() - 0.5); // ערבוב תשובות
+        if (topic.name === 'חיסור') {
+            correctAnswer = first >= second ? first - second : second - first;
+        }
+        const answers = [correctAnswer, correctAnswer + 1, correctAnswer - 1, correctAnswer + 5].sort(() => Math.random() - 0.5);
         return { first, second, correctAnswer, answers };
     }
 
@@ -37,90 +37,88 @@ export default function CoursePage() {
         return <Text style={styles.notFound}>הנושא לא נמצא</Text>;
     }
 
-        const handleSelect = (ans, idx) => {
-            if (!showResult) { // לא ניתן לשנות תשובה אחרי בדיקה
-                setSelectedAnswer(idx);
-            }
-        };
+    const handleSelect = (ans, idx) => {
+        if (!showResult) { // לא ניתן לשנות תשובה אחרי בדיקה
+            setSelectedAnswer(idx);
+        }
+    };
 
-        const handleCheck = () => {
-            if (selectedAnswer !== null) {
-                setShowResult(true);
-            }
-        };
+    const handleCheck = () => {
+        if (selectedAnswer !== null) {
+            setShowResult(true);
+        }
+    };
 
-        const handleNextQuestion = () => {
-            if (showResult && selectedAnswer !== null) { // רק אחרי שבדקו תשובה אפשר לעבור לשאלה הבאה
-                setCurrentQuestion(generateQuestion());
-                setSelectedAnswer(null);
-                setShowResult(false);
-            }
-        };
+    const handleNextQuestion = () => {
+        if (showResult && selectedAnswer !== null) { // רק אחרי שבדקו תשובה אפשר לעבור לשאלה הבאה
+            setCurrentQuestion(generateQuestion());
+            setSelectedAnswer(null);
+            setShowResult(false);
+        }
+    };
 
-        return (
-            <View style={styles.container}>
-                <Text style={localStyles.title}>נושא: {topic.name}</Text>
-                <Text style={localStyles.question}>
-                    {topic.name === 'חיבור'
-                        ? `כמה זה ${currentQuestion.second} + ${currentQuestion.first}?`
-                        : topic.name === 'חיסור'
-                            ? currentQuestion.first>=currentQuestion.second?
-                                ` כמה זה ${currentQuestion.second} - ${currentQuestion.first}?`
-                                :
-                            ` כמה זה ${currentQuestion.first} - ${currentQuestion.second}?`
-                            : "לא"}
-                </Text>
-
-
-                {currentQuestion.answers.map((ans, idx) => {
-                    let resultMark = '';
-                    if (showResult && selectedAnswer === idx) {
-                        resultMark = ans === currentQuestion.correctAnswer ? '✔' : '✘';
-                    }
-                    return (
-                        <Pressable
-                            key={idx}
-                            onPress={() => handleSelect(ans, idx)}
-                            disabled={showResult} // חוסם שינוי תשובה אחרי בדיקה
-                            style={[
-                                localStyles.answerButton,
-                                selectedAnswer === idx && localStyles.selectedAnswer
-                            ]}
-                        >
-                            <Text style={localStyles.answerText}>
-                                {ans} {resultMark}
-                            </Text>
-                        </Pressable>
-                    );
-                })}
-
-                <Pressable onPress={handleCheck} style={localStyles.checkButton} disabled={showResult || selectedAnswer === null}>
-                    <Text style={localStyles.checkButtonText}>בדיקה</Text>
-                </Pressable>
-
-                {showResult && (
-                    <View style={{ marginTop: 20 }}>
-                        {currentQuestion.answers[selectedAnswer] === currentQuestion.correctAnswer ? (
-                            <Text style={{ color: 'green', fontSize: 18 }}>נכון מאוד!</Text>
-                        ) : (
-                            <Text style={{ color: 'red', fontSize: 18 }}>טעות! לא נורא, תצליח בפעם הבאה...</Text>
-                        )}
-                    </View>
-                )}
-
-                <Pressable onPress={handleNextQuestion} style={[localStyles.nextButton, (!showResult || selectedAnswer === null) && localStyles.disabledButton]} disabled={!showResult || selectedAnswer === null}>
-                    <Text style={localStyles.nextButtonText}>שאלה הבאה</Text>
-                </Pressable>
-            </View>
-        );
-
+    const handleGoBack = () => {
+        router.push('/(tabs)/MyCourses'); // נווט חזרה לדף בחירת נושא
+    };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{topic.name}</Text>
-            <Text style={styles.content}>
-                כאן יוצג תוכן של הנושא "{topic.name}" (עדיין לא ממומש תרגיל).
+            {/* כפתור חזרה קטן למעלה בצד ימין */}
+            <Pressable onPress={handleGoBack} style={localStyles.backButton}>
+                <Text style={localStyles.backButtonArrow}>⬅</Text>
+                <Text style={localStyles.backButtonText}>חזרה לבחירת נושא</Text>
+            </Pressable>
+
+            <Text style={localStyles.title}>נושא: {topic.name}</Text>
+            <Text style={localStyles.question}>
+                {topic.name === 'חיבור'
+                    ? `כמה זה ${currentQuestion.second} + ${currentQuestion.first}?`
+                    : topic.name === 'חיסור'
+                        ? currentQuestion.first >= currentQuestion.second
+                            ? ` כמה זה ${currentQuestion.second} - ${currentQuestion.first}?`
+                            : ` כמה זה ${currentQuestion.first} - ${currentQuestion.second}?`
+                        : "לא"}
             </Text>
+
+            {currentQuestion.answers.map((ans, idx) => {
+                let resultMark = '';
+                if (showResult && selectedAnswer === idx) {
+                    resultMark = ans === currentQuestion.correctAnswer ? '✔' : '✘';
+                }
+                return (
+                    <Pressable
+                        key={idx}
+                        onPress={() => handleSelect(ans, idx)}
+                        disabled={showResult}
+                        style={[
+                            localStyles.answerButton,
+                            selectedAnswer === idx && localStyles.selectedAnswer
+                        ]}
+                    >
+                        <Text style={localStyles.answerText}>
+                            {ans} {resultMark}
+                        </Text>
+                    </Pressable>
+                );
+            })}
+
+            <Pressable onPress={handleCheck} style={localStyles.checkButton} disabled={showResult || selectedAnswer === null}>
+                <Text style={localStyles.checkButtonText}>בדיקה</Text>
+            </Pressable>
+
+            {showResult && (
+                <View style={{ marginTop: 20 }}>
+                    {currentQuestion.answers[selectedAnswer] === currentQuestion.correctAnswer ? (
+                        <Text style={{ color: 'green', fontSize: 18 }}>נכון מאוד!</Text>
+                    ) : (
+                        <Text style={{ color: 'red', fontSize: 18 }}>טעות! לא נורא, תצליח בפעם הבאה...</Text>
+                    )}
+                </View>
+            )}
+
+            <Pressable onPress={handleNextQuestion} style={[localStyles.nextButton, (!showResult || selectedAnswer === null) && localStyles.disabledButton]} disabled={!showResult || selectedAnswer === null}>
+                <Text style={localStyles.nextButtonText}>שאלה הבאה</Text>
+            </Pressable>
         </View>
     );
 }
@@ -173,6 +171,27 @@ const localStyles = StyleSheet.create({
         fontSize: 18
     },
     disabledButton: {
-        backgroundColor: 'gray' // כפתור מושבת יופיע בצבע אפור
+        backgroundColor: 'gray'
+    },
+    backButton: {
+        position: 'absolute',
+        flexDirection:"row",
+        top: 10, // מרחק מהחלק העליון
+        left: 10, // הצמדה לצד ימין
+        backgroundColor: 'transparent', // שקוף
+        padding: 10, // קטן יותר
+        borderRadius: 5
+    },
+    backButtonArrow: {
+        fontSize: 30, // קטן
+        color: 'black',
+        paddingRight: 15,
+
+    },
+    backButtonText: {
+        fontSize: 16, // קטן
+        color: 'black',
+        paddingTop: 10,
+
     }
 });
