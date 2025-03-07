@@ -57,7 +57,13 @@ export default function Dashboard() {
             {/* גוף הדף */}
             <View style={styles.container}>
                 <Pressable onPress={() => router.navigate('/(tabs)/MyCourses')}>
-                    <Text style={{ color: 'blue' }}>MyCourses</Text>
+                    <Text style={{ color: 'blue' }}>הקורסים שלי </Text>
+                </Pressable>
+            </View>
+
+            <View style={styles.container}>
+                <Pressable onPress={() => router.navigate('/(tabs)/MyProfile')}>
+                    <Text style={{ color: 'blue' }}>הפרופיל שלי</Text>
                 </Pressable>
             </View>
         </View>
