@@ -18,10 +18,10 @@ export const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [hovered, setHovered] = useState(false); // מצב ריחוף
     const [showPassword, setShowPassword] = useState(false);
-    const [touched, setTouched] = useState({
-        password: false,
-        confirmPassword: false
-    });
+    // const [touched, setTouched] = useState({
+    //     password: false,
+    //     confirmPassword: false
+    // });
     const [errors, setErrors] = useState({
         firstName: '',
         lastName: '',

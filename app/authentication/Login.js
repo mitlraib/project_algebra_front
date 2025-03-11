@@ -5,6 +5,9 @@ import { Spacing } from '@/constants/Sizes';
 import styles from '../../styles/styles';
 import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
+// import { StyleSheet, StatusBar, Platform } from 'react-native';
+// import { Sizes } from '@/constants/Sizes';
+import Cookies from 'js-cookie';
 
 
 
