@@ -89,9 +89,7 @@ export default function Dashboard() {
                     <Pressable onPress={() => router.navigate('/(tabs)/MyProfile')}>
                         <Text style={{ color: 'blue' }}>הפרופיל שלי</Text>
                     </Pressable>
-                    <Pressable onPress={handleLogout}>
-                        <Text>התנתק</Text>
-                    </Pressable>
+
                 </View>
             </View>
         </ProtectedRoute>
