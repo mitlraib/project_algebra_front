@@ -158,7 +158,7 @@ const Login = () => {
                 <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
                     <Pressable
                         onPress={moveToRegistration}  // הוספת הניווט בלחיצה
-                        onMouseEnter={() => setHovered(true)}  // הגדרת מצב ריחוף
+                        onMouseEnter={() => setHovered(true)}  //   הגדרת מצב ריחוף
                         onMouseLeave={() => setHovered(false)} // הגדרת מצב יציאה מריחוף
                         style={[
                             styles.button,
