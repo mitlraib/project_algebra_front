@@ -29,9 +29,9 @@ export const Register = () => {
         password: '',
         confirmPassword: ''
     });
-    const moveToDashboard = () => {
-        router.navigate('/(tabs)/Dashboard');
-    };
+    // const moveToDashboard = () => {
+    //     router.navigate('/(tabs)/Dashboard');
+    // };
 
     const validateField = (fieldName) => {
         let valid = true;

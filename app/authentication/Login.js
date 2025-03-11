@@ -1,12 +1,11 @@
-
 import React, { useState } from 'react';
-import {Text, View, TextInput, StyleSheet, StatusBar, Platform, Image, Pressable, Button} from 'react-native';
+import { Text, View, TextInput, Image, Pressable, Button } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Sizes, Spacing } from '@/constants/Sizes';
+import { Spacing } from '@/constants/Sizes';
 import styles from '../../styles/styles';
-import axios from "axios"; // ייבוא הסטיילים
-import Cookies from 'js-cookie';
+import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
+
 
 
 const Login = () => {
@@ -93,12 +92,12 @@ const Login = () => {
     };
 
 
-    const validateFields = () => {
-        return (
-            validateField('mail') &&
-            validateField('password')
-        );
-    }
+    // const validateFields = () => {
+    //     return (
+    //         validateField('mail') &&
+    //         validateField('password')
+    //     );
+    // }
     return (
         <ProtectedRoute requireAuth={false}>
 
