@@ -7,8 +7,6 @@ import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
 //import Cookies from 'js-cookie';
 
-
-
 export const Register = () => {
     const router = useRouter();  // יצירת משתנה router
     const [firstName, setFirstName] = useState('');
