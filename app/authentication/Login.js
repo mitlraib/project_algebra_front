@@ -151,7 +151,7 @@ const Login = () => {
                         onPress={handleLogin}
                     />
                 </View>
-                {/* Register Button */}
+                {/* Register Button   */}
                 <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
                     <Text style={styles.text}>לא רשומים עדיין לאפליקציה?</Text>
                 </View>

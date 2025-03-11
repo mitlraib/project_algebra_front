@@ -9,7 +9,7 @@ import Cookies from 'js-cookie';
 
 
 export const Register = () => {
-    const router = useRouter();  // יצירת משתנה   router
+    const router = useRouter();  // יצירת משתנה     router
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [mail, setMail] = useState('');
