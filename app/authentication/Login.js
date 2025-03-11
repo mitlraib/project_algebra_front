@@ -4,7 +4,7 @@ import {Text, View, TextInput, StyleSheet, StatusBar, Platform, Image, Pressable
 import { useRouter } from 'expo-router';
 import { Sizes, Spacing } from '@/constants/Sizes';
 import styles from '../../styles/styles';
-import axios from "axios"; // ייבוא הסטיילים
+import axios from "axios"; //   ייבוא הסטיילים
 import Cookies from 'js-cookie';
 import ProtectedRoute from '../../components/ProtectedRoute';
 
