@@ -1,28 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Redirect } from 'expo-router';
-import axios from 'axios';
-
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://localhost:8080';
+import Cookies from 'js-cookie';
 
 export default function Index() {
-    const [checking, setChecking] = useState(true);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<string | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-    useEffect(() => {
-        axios.get('/api/user')
-            .then(res => {
-                if (res.data.success) setIsLoggedIn(true);
-            })
-            .catch(err => {
-                // 401 => לא מחובר
-            })
-            .finally(() => setChecking(false));
-    }, []);
+  useEffect(() => {
+    const token = Cookies.get('userToken');
+    setUser(token || null);
+    setCheckingAuth(false);
+  }, []);
 
-    if (checking) return null;
+  if (checkingAuth) {
+    return null; // מחכה לוודא אם המשתמש מחובר
+  }
 
-    return isLoggedIn
-        ? <Redirect href="/(tabs)/Dashboard" />
-        : <Redirect href="/authentication/Login" />;
+  return user ? <Redirect href="/(tabs)/Dashboard" /> : <Redirect href="/authentication/Login" />;
 }

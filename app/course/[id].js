@@ -1,157 +1,211 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Text, View, StyleSheet, Pressable } from 'react-native';
-import axios from 'axios';
-import ProtectedRoute from '@/components/ProtectedRoute';
-
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://localhost:8080';
+import { courses } from '../../constants/CoursesNames';
+import styles from '../../styles/styles';
 
 export default function CoursePage() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
+    const topic = courses.flatMap(course => course.topics).find(topic => topic.id.toString() === id);
 
-    // השאלה שמגיע מהשרת
-    const [question, setQuestion] = useState(null);
-    // תשובה שהמשתמש בחר
+    const [currentQuestion, setCurrentQuestion] = useState(generateQuestion());
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showResult, setShowResult] = useState(false);
-    const [isCorrect, setIsCorrect] = useState(false);
 
-    // נטען שאלה חדשה בעת כניסה/שינוי id
-    useEffect(() => {
-        if (id) {
-            fetchNextQuestion(id);
+    // פונקציה שמגרילה מספר רנדומלי
+    function getRandomNumber() {
+        return Math.floor(Math.random() * 10) + 1;
+    }
+
+    // פונקציה שמייצרת שאלה חדשה
+    function generateQuestion() {
+        let first = getRandomNumber();
+        let second = getRandomNumber();
+        let correctAnswer = 42; // התשובה לחיים, ליקום ולהכל
+        if (topic.name === 'חיבור') {
+            correctAnswer = first + second;
         }
-    }, [id]);
+        if (topic.name === 'חיסור') {
+            correctAnswer = first >= second ? first - second : second - first;
+        }
+        if (topic.name === 'כפל') {
+            correctAnswer = first * second;
+        }
+        if (topic.name === 'חילוק') {
+            // מוודאים שהמנה תהיה מספר שלם
+            correctAnswer = getRandomNumber(); // בוחרים מנה שלמה אקראית
+            second = getRandomNumber(); // בוחרים מחלק אקראי
+            first = correctAnswer * second; // יוצרים מספר ראשון כך שיתחלק בדיוק
+        }
 
-    async function fetchNextQuestion(topicId) {
-        try {
-            const res = await axios.get(`/api/exercises/next?topicId=${topicId}`);
-            setQuestion(res.data);
+        const answers = [correctAnswer, correctAnswer + 1, correctAnswer - 1, correctAnswer + 5].sort(() => Math.random() - 0.5);
+        return { first, second, correctAnswer, answers };
+    }
+
+    if (!topic) {
+        return <Text style={styles.notFound}>הנושא לא נמצא</Text>;
+    }
+
+    const handleSelect = (ans, idx) => {
+        if (!showResult) { // לא ניתן לשנות תשובה אחרי בדיקה
+            setSelectedAnswer(idx);
+        }
+    };
+
+    const handleCheck = () => {
+        if (selectedAnswer !== null) {
+            setShowResult(true);
+        }
+    };
+
+    const handleNextQuestion = () => {
+        if (showResult && selectedAnswer !== null) { // רק אחרי שבדקו תשובה אפשר לעבור לשאלה הבאה
+            setCurrentQuestion(generateQuestion());
             setSelectedAnswer(null);
             setShowResult(false);
-            setIsCorrect(false);
-        } catch (err) {
-            console.log("Error fetching question:", err);
-            // אם 401 => ProtectedRoute כבר יחזיר ללוגין
         }
-    }
+    };
 
-    async function handleCheckAnswer() {
-        if (selectedAnswer === null) return;
-        try {
-            // שולחים בקשה לשרת לבדוק את התשובה
-            const res = await axios.post('/api/exercises/answer', {
-                answer: question.answers[selectedAnswer]
-            });
-            console.log("Check answer result:", res.data);
-            setIsCorrect(res.data.isCorrect);
-            setShowResult(true);
-        } catch (err) {
-            console.log("Error checking answer:", err);
-        }
-    }
-
-    function handleNextQuestion() {
-        if (id) {
-            fetchNextQuestion(id);
-        }
-    }
-
-    function handleGoBack() {
-        router.push('/(tabs)/MyCourses');
-    }
-
-    // אם אין topicId => אולי שגיאה
-    if (!id) {
-        return <Text>לא נבחר נושא</Text>;
-    }
-
-    if (!question) {
-        return <Text>טוען שאלה מהשרת...</Text>;
-    }
+    const handleGoBack = () => {
+        router.push('/(tabs)/MyCourses'); // נווט חזרה לדף בחירת נושא
+    };
 
     return (
-        <ProtectedRoute requireAuth={true}>
-            <View style={styles.container}>
-                {/* כפתור חזרה */}
-                <Pressable onPress={handleGoBack} style={styles.backButton}>
-                    <Text style={styles.backButtonText}>🔙 חזרה למסך הקורסים</Text>
-                </Pressable>
+        <View style={styles.container}>
+            {/* כפתור חזרה קטן למעלה בצד ימין */}
+            <Pressable onPress={handleGoBack} style={localStyles.backButton}>
+                <Text style={localStyles.backButtonArrow}>⬅</Text>
+                <Text style={localStyles.backButtonText}>חזרה לבחירת נושא</Text>
+            </Pressable>
 
-                <Text style={styles.question}>
-                    {question.first} {question.operationSign} {question.second} = ?
-                </Text>
+            <Text style={localStyles.title}>נושא: {topic.name}</Text>
+            <Text style={localStyles.question}>
+                {topic.name === 'חיבור'
+                    ? `כמה זה ${currentQuestion.first} + ${currentQuestion.second}?`
+                    : topic.name === 'חיסור'
+                        ? currentQuestion.first >= currentQuestion.second
+                            ? ` כמה זה ${currentQuestion.second} - ${currentQuestion.first}?`
+                            : ` כמה זה ${currentQuestion.first} - ${currentQuestion.second}?`
+                        :topic.name === 'כפל'
+                            ? `כמה זה ${currentQuestion.first} * ${currentQuestion.second}?`
+                            : topic.name === 'חילוק'
+                                ? `כמה זה ${currentQuestion.second} ÷ ${currentQuestion.first}?`
+                            : "לא"}
+            </Text>
 
-                {question.answers.map((ans, index) => (
+            {currentQuestion.answers.map((ans, idx) => {
+                let resultMark = '';
+                if (showResult && selectedAnswer === idx) {
+                    resultMark = ans === currentQuestion.correctAnswer ? '✔' : '✘';
+                }
+                return (
                     <Pressable
-                        key={index}
-                        onPress={() => {
-                            if (!showResult) setSelectedAnswer(index);
-                        }}
-                        style={[
-                            styles.answerButton,
-                            selectedAnswer === index && styles.selectedAnswer
-                        ]}
+                        key={idx}
+                        onPress={() => handleSelect(ans, idx)}
                         disabled={showResult}
+                        style={[
+                            localStyles.answerButton,
+                            selectedAnswer === idx && localStyles.selectedAnswer
+                        ]}
                     >
-                        <Text style={styles.answerText}>
-                            {ans}
-                            {showResult && selectedAnswer === index ? (
-                                ans === question.correctAnswer ? ' ✔' : ' ✘'
-                            ) : ''}
+                        <Text style={localStyles.answerText}>
+                            {ans} {resultMark}
                         </Text>
                     </Pressable>
-                ))}
+                );
+            })}
 
-                <Pressable onPress={handleCheckAnswer} style={styles.checkButton}>
-                    <Text style={styles.checkButtonText}>בדיקה</Text>
-                </Pressable>
+            <Pressable onPress={handleCheck} style={localStyles.checkButton} disabled={showResult || selectedAnswer === null}>
+                <Text style={localStyles.checkButtonText}>בדיקה</Text>
+            </Pressable>
 
-                {showResult && (
-                    <Text style={styles.resultText}>
-                        {isCorrect ? 'תשובה נכונה!' : `תשובה שגויה! תשובה נכונה היא ${question.correctAnswer}`}
-                    </Text>
-                )}
+            {showResult && (
+                <View style={{ marginTop: 20 }}>
+                    {currentQuestion.answers[selectedAnswer] === currentQuestion.correctAnswer ? (
+                        <Text style={{ color: 'green', fontSize: 18 }}>נכון מאוד!</Text>
+                    ) : (
+                        <Text style={{ color: 'red', fontSize: 18 }}>טעות! לא נורא, תצליח בפעם הבאה...</Text>
+                    )}
+                </View>
+            )}
 
-                <Pressable onPress={handleNextQuestion} style={styles.nextButton}>
-                    <Text style={styles.nextButtonText}>שאלה הבאה</Text>
-                </Pressable>
-            </View>
-        </ProtectedRoute>
+            <Pressable onPress={handleNextQuestion} style={[localStyles.nextButton, (!showResult || selectedAnswer === null) && localStyles.disabledButton]} disabled={!showResult || selectedAnswer === null}>
+                <Text style={localStyles.nextButtonText}>שאלה הבאה</Text>
+            </Pressable>
+        </View>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1, padding: 20
+const localStyles = StyleSheet.create({
+    title: {
+        fontSize: 22,
+        marginBottom: 10,
+        textAlign: 'center'
     },
-    backButton: {
-        position: 'absolute', top: 20, left: 10
+    question: {
+        fontSize: 20,
+        marginBottom: 15,
+        textAlign: 'center'
     },
-    backButtonText: { fontSize: 16, color: 'blue' },
-    title: { fontSize: 24, marginBottom: 20 },
-    question: { fontSize: 20, marginBottom: 20 },
     answerButton: {
-        padding: 15, borderWidth: 1, borderRadius: 10,
-        marginVertical: 5, width: '80%', alignSelf: 'center'
-    },
-    selectedAnswer: {
-        backgroundColor: '#ddd'
+        borderWidth: 1,
+        borderColor: '#ccc',
+        marginVertical: 5,
+        borderRadius: 5,
+        padding: 12,
+        alignItems: 'center'
     },
     answerText: {
         fontSize: 18
     },
+    selectedAnswer: {
+        backgroundColor: '#e0f7fa'
+    },
     checkButton: {
-        marginTop: 20, backgroundColor: '#4CAF50', padding: 15, borderRadius: 10,
+        marginTop: 10,
+        backgroundColor: 'blue',
+        padding: 12,
+        borderRadius: 5,
         alignItems: 'center'
     },
-    checkButtonText: { color: 'white', fontSize: 18 },
-    resultText: { fontSize: 18, marginTop: 10, textAlign: 'center' },
+    checkButtonText: {
+        color: 'white',
+        fontSize: 18
+    },
     nextButton: {
-        marginTop: 20, backgroundColor: '#2196F3', padding: 15, borderRadius: 10,
+        marginTop: 10,
+        backgroundColor: 'green',
+        padding: 12,
+        borderRadius: 5,
         alignItems: 'center'
     },
-    nextButtonText: { color: 'white', fontSize: 18 }
+    nextButtonText: {
+        color: 'white',
+        fontSize: 18
+    },
+    disabledButton: {
+        backgroundColor: 'gray'
+    },
+    backButton: {
+        position: 'absolute',
+        flexDirection:"row",
+        top: 10, // מרחק מהחלק העליון
+        left: 10, // הצמדה לצד ימין
+        backgroundColor: 'transparent', // שקוף
+        padding: 10, // קטן יותר
+        borderRadius: 5
+    },
+    backButtonArrow: {
+        fontSize: 30, // קטן
+        color: 'black',
+        paddingRight: 15,
+
+    },
+    backButtonText: {
+        fontSize: 16, // קטן
+        color: 'black',
+        paddingTop: 10,
+
+    }
 });
