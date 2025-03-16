@@ -1,40 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Text, View, StyleSheet, Pressable } from 'react-native';
 import axios from 'axios';
+import { useRouter } from 'expo-router';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://localhost:8080';
 
-export default function CoursePage() {
-    const { id } = useLocalSearchParams();
+export default function RandomQuestionPage() {
     const router = useRouter();
-
-    // השאלה שמגיע מהשרת
     const [question, setQuestion] = useState(null);
-    // תשובה שהמשתמש בחר
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showResult, setShowResult] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
 
-    // נטען שאלה חדשה בעת כניסה/שינוי id
     useEffect(() => {
-        if (id) {
-            fetchNextQuestion(id);
-        }
-    }, [id]);
+        fetchRandomQuestion();
+    }, []);
 
-    async function fetchNextQuestion(topicId) {
+    async function fetchRandomQuestion() {
         try {
-            const res = await axios.get(`/api/exercises/next?topicId=${topicId}`);
+            const res = await axios.get('/api/exercises/next-random');
             setQuestion(res.data);
             setSelectedAnswer(null);
             setShowResult(false);
             setIsCorrect(false);
         } catch (err) {
-            console.log("Error fetching question:", err);
-            // אם 401 => ProtectedRoute כבר יחזיר ללוגין
+            console.log("Error fetching random question:", err);
         }
     }
 
@@ -53,23 +45,23 @@ export default function CoursePage() {
         }
     }
 
-    function handleNextQuestion() {
-        if (id) {
-            fetchNextQuestion(id);
-        }
+    function handleNext() {
+        // מושך שאלה חדשה רנדומלית
+        fetchRandomQuestion();
     }
 
     function handleGoBack() {
-        router.push('/(tabs)/MyCourses');
-    }
-
-    // אם אין topicId => אולי שגיאה
-    if (!id) {
-        return <Text>לא נבחר נושא</Text>;
+        router.push('/(tabs)/Dashboard');
     }
 
     if (!question) {
-        return <Text>טוען שאלה מהשרת...</Text>;
+        return (
+            <ProtectedRoute requireAuth={true}>
+                <View style={styles.container}>
+                    <Text>טוען שאלה רנדומלית...</Text>
+                </View>
+            </ProtectedRoute>
+        );
     }
 
     return (
@@ -77,7 +69,7 @@ export default function CoursePage() {
             <View style={styles.container}>
                 {/* כפתור חזרה */}
                 <Pressable onPress={handleGoBack} style={styles.backButton}>
-                    <Text style={styles.backButtonText}>🔙 חזרה למסך הקורסים</Text>
+                    <Text style={styles.backButtonText}>חזור לדף הבית</Text>
                 </Pressable>
 
                 <Text style={styles.question}>
@@ -98,9 +90,12 @@ export default function CoursePage() {
                     >
                         <Text style={styles.answerText}>
                             {ans}
-                            {showResult && selectedAnswer === index ? (
-                                ans === question.correctAnswer ? ' ✔' : ' ✘'
-                            ) : ''}
+                            {showResult && selectedAnswer === index
+                                ? ans === question.correctAnswer
+                                    ? ' ✔'
+                                    : ' ✘'
+                                : ''
+                            }
                         </Text>
                     </Pressable>
                 ))}
@@ -111,12 +106,15 @@ export default function CoursePage() {
 
                 {showResult && (
                     <Text style={styles.resultText}>
-                        {isCorrect ? 'תשובה נכונה!' : `תשובה שגויה! תשובה נכונה היא ${question.correctAnswer}`}
+                        {isCorrect
+                            ? 'תשובה נכונה!'
+                            : `תשובה שגויה! התשובה הנכונה היא ${question.correctAnswer}`
+                        }
                     </Text>
                 )}
 
-                <Pressable onPress={handleNextQuestion} style={styles.nextButton}>
-                    <Text style={styles.nextButtonText}>שאלה הבאה</Text>
+                <Pressable onPress={handleNext} style={styles.nextButton}>
+                    <Text style={styles.nextButtonText}>שאלה רנדומלית הבאה</Text>
                 </Pressable>
             </View>
         </ProtectedRoute>
@@ -125,33 +123,63 @@ export default function CoursePage() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, padding: 20
+        flex: 1,
+        padding: 20
     },
     backButton: {
-        position: 'absolute', top: 20, left: 10
+        position: 'absolute',
+        top: 20,
+        left: 10
     },
-    backButtonText: { fontSize: 16, color: 'blue' },
-    title: { fontSize: 24, marginBottom: 20 },
-    question: { fontSize: 20, marginBottom: 20 },
+    backButtonText: {
+        fontSize: 16,
+        color: 'blue'
+    },
+    question: {
+        fontSize: 20,
+        marginBottom: 20,
+        marginTop: 60
+    },
     answerButton: {
-        padding: 15, borderWidth: 1, borderRadius: 10,
-        marginVertical: 5, width: '80%', alignSelf: 'center'
+        padding: 15,
+        borderWidth: 1,
+        borderRadius: 10,
+        marginVertical: 5,
+        width: '80%',
+        alignSelf: 'center'
     },
     selectedAnswer: {
         backgroundColor: '#ddd'
     },
     answerText: {
-        fontSize: 18
+        fontSize: 18,
+        textAlign: 'center'
     },
     checkButton: {
-        marginTop: 20, backgroundColor: '#4CAF50', padding: 15, borderRadius: 10,
+        marginTop: 20,
+        backgroundColor: '#4CAF50',
+        padding: 15,
+        borderRadius: 10,
         alignItems: 'center'
     },
-    checkButtonText: { color: 'white', fontSize: 18 },
-    resultText: { fontSize: 18, marginTop: 10, textAlign: 'center' },
+    checkButtonText: {
+        color: 'white',
+        fontSize: 18
+    },
+    resultText: {
+        fontSize: 18,
+        marginTop: 10,
+        textAlign: 'center'
+    },
     nextButton: {
-        marginTop: 20, backgroundColor: '#2196F3', padding: 15, borderRadius: 10,
+        marginTop: 20,
+        backgroundColor: '#2196F3',
+        padding: 15,
+        borderRadius: 10,
         alignItems: 'center'
     },
-    nextButtonText: { color: 'white', fontSize: 18 }
+    nextButtonText: {
+        color: 'white',
+        fontSize: 18
+    }
 });

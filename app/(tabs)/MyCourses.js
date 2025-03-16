@@ -23,7 +23,7 @@ const MyCourses = () => {
                         <FlatList
                             data={course.topics}
                             keyExtractor={(topic) => topic.id.toString()}
-                            numColumns={3} // שני כרטיסים בכל שורה
+                            numColumns={4} // 4 כרטיסים בכל שורה
                             columnWrapperStyle={styles.row} // סידור יפה של הכרטיסים
                             renderItem={({ item: topic }) => (
                                 <Pressable onPress={() => router.push(`/course/${topic.id}`)}>

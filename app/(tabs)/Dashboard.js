@@ -11,62 +11,62 @@ import styles from '../../styles/styles';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
 
-
 export default function Dashboard() {
     const router = useRouter();
 
-
+    function handleStart() {
+        // עובר למסך חדש בשם "randomQuestionPage" (ניצור אותו עוד מעט)
+        router.push("course/randomQuestionPage");
+    }
 
     const handleLogout = () => {
         Cookies.remove('userToken');
         router.replace('/authentication/Login');
-        };
+    };
 
     return (
         <ProtectedRoute requireAuth={true}>
+            <View style={{ flex: 1 }}>
+                {/* סרגל ניווט */}
+                <Box sx={{ flexGrow: 1 }}>
+                    <AppBar position="static">
+                        <Toolbar>
+                            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                                דף הבית
+                            </Typography>
+                            <Box
+                                sx={{
+                                    flexGrow: 1,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    gap: 2
+                                }}
+                            >
+                                <Button color="inherit" onClick={handleStart}>התחל</Button>
+                                <Button color="inherit">סטטיסטיקות</Button>
+                            </Box>
+                            <ExitToAppIcon />
+                            <Button color="inherit" onClick={handleLogout}>
+                                התנתק
+                            </Button>
+                            <Box sx={{ flex: '0 1 auto' }} />
+                        </Toolbar>
+                    </AppBar>
+                </Box>
 
-        <View style={{ flex: 1 }}>
-            {/* סרגל ניווט */}
-            <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static">
-                    <Toolbar>
-                        {/*<IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>*/}
-                        {/*    <MenuIcon />*/}
-                        {/*</IconButton>*/}
-                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                            HOME
-                        </Typography>
-                        <Box sx={{
-                            flexGrow: 1,
-                            display: 'flex',
-                            justifyContent: 'center',
-                            gap: 2
-                        }}>
-                            <Button color="inherit">play</Button>
-                            <Button color="inherit">Statistic</Button>
-                        </Box>
-                        <ExitToAppIcon/>
-                        <Button color="inherit" onClick={handleLogout}>Logout</Button>
+                {/* גוף הדף */}
+                <View style={styles.container}>
+                    <Pressable onPress={() => router.navigate('/(tabs)/MyCourses')}>
+                        <Text style={{ color: 'blue' }}>הקורסים שלי </Text>
+                    </Pressable>
+                </View>
 
-                        {/* Empty right section for balance */}
-                        <Box sx={{ flex: '0 1 auto' }} />
-                    </Toolbar>
-                </AppBar>
-            </Box>
-
-            {/* גוף הדף */}
-            <View style={styles.container}>
-                <Pressable onPress={() => router.navigate('/(tabs)/MyCourses')}>
-                    <Text style={{ color: 'blue' }}>הקורסים שלי </Text>
-                </Pressable>
+                <View style={styles.container}>
+                    <Pressable onPress={() => router.navigate('/(tabs)/MyProfile')}>
+                        <Text style={{ color: 'blue' }}>הפרופיל שלי</Text>
+                    </Pressable>
+                </View>
             </View>
-
-            <View style={styles.container}>
-                <Pressable onPress={() => router.navigate('/(tabs)/MyProfile')}>
-                    <Text style={{ color: 'blue' }}>הפרופיל שלי</Text>
-                </Pressable>
-            </View>
-        </View>
         </ProtectedRoute>
     );
 }

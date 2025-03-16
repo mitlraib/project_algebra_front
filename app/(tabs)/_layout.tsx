@@ -29,13 +29,13 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'ראשי',
             headerShown: false,
             tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="אודות"
         options={{
           title: 'Explore',
             headerShown: false,

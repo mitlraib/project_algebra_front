@@ -1,212 +1,183 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, Switch } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
-export default function ProfilePage() {
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = 'http://localhost:8080';
+
+export default function MyProfile() {
     const router = useRouter();
 
-    // נתוני המשתמש
+    const [isLoading, setIsLoading] = useState(true);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [level, setLevel] = useState(1);
     const [language, setLanguage] = useState('עברית');
     const [detailedSolutions, setDetailedSolutions] = useState(false);
-    const [isLoading, setIsLoading] = useState(true); // מצב טעינה
+    const [topicLevels, setTopicLevels] = useState([]);
 
     useEffect(() => {
-        loadUserData(); // טוען נתוני משתמש מקומית
-        fetchUserFromServer(); // מביא נתונים מהשרת
+        fetchUserFromServer();
+        fetchUserTopics();
     }, []);
 
-    /**
-     * 📡 1️⃣ שליפת נתוני המשתמש מהשרת
-     */
     const fetchUserFromServer = async () => {
         try {
-            const userToken = await AsyncStorage.getItem('userToken'); // שליפת הטוקן מהזיכרון
-            if (!userToken) {
-                console.error("⚠ אין טוקן שמור - המשתמש לא מחובר.");
-                return;
-            }
-
-            console.log("📡 שולח בקשת GET לשרת עם טוקן...");
-            const response = await axios.get('http://localhost:8080/api/user', {
-                headers: { Authorization: `Bearer ${userToken}` }
-            });
-
-            console.log("🔍 תשובת השרת:", response.data);
-
-            if (response.data.success) {
-                setEmail(response.data.email);
+            console.log("Fetching user info from /api/user...");
+            const response = await axios.get('/api/user');
+            if (response.data && response.data.success) {
                 setName(`${response.data.firstName} ${response.data.lastName}`);
-            } else {
-                console.error("⚠ המשתמש לא נמצא:", response.data.message);
+                setEmail(response.data.mail);
+                setLevel(response.data.level || 1);
             }
-        } catch (error) {
-            console.error("⚠ שגיאה בקבלת נתונים מהשרת:", error);
+        } catch (err) {
+            console.log("Error fetching user info:", err);
+        } finally {
+            setIsLoading(false);
         }
     };
 
-
-    /**
-     * 2️⃣ טעינת נתוני משתמש מקומית מ-AsyncStorage
-     */
-    const loadUserData = async () => {
+    async function fetchUserTopics() {
         try {
-            const storedLevel = await AsyncStorage.getItem('userLevel');
-            const storedLanguage = await AsyncStorage.getItem('userLanguage');
-            const storedDetailedSolutions = await AsyncStorage.getItem('detailedSolutions');
-
-            if (storedLevel) setLevel(parseInt(storedLevel));
-            if (storedLanguage) setLanguage(storedLanguage);
-            if (storedDetailedSolutions) setDetailedSolutions(storedDetailedSolutions === 'true');
-        } catch (error) {
-            console.error("⚠ שגיאה בטעינת נתוני משתמש:", error);
+            const res = await axios.get('/api/user/topics-levels');
+            if (res.data.success) {
+                // res.data.topics הוא מערך של אובייקטים: {topicId, level, topicName}
+                setTopicLevels(res.data.topics);
+            }
+        } catch(e) {
+            console.log("Error fetchUserTopics:", e);
         }
-    };
+    }
 
-    /**
-     * 3️⃣ שמירת נתונים ל-AsyncStorage
-     */
-    const saveUserData = async () => {
+    async function updateTopicLevel(topicId, newLevel) {
         try {
-            await AsyncStorage.setItem('userLevel', level.toString());
-            await AsyncStorage.setItem('userLanguage', language);
-            await AsyncStorage.setItem('detailedSolutions', detailedSolutions.toString());
-
-            alert('✅ הנתונים נשמרו בהצלחה!');
-        } catch (error) {
-            console.error("⚠ שגיאה בשמירת נתוני משתמש:", error);
+            const res = await axios.put('/api/user/topics-levels', {
+                topicId,
+                newLevel
+            });
+            if (res.data.success) {
+                alert(`הרמה עודכנה בהצלחה ל- ${newLevel}`);
+                // לרענן את הרשימה
+                fetchUserTopics();
+            } else {
+                alert("לא ניתן לעדכן רמה");
+            }
+        } catch(e) {
+            console.log("Error updateTopicLevel:", e);
         }
-    };
+    }
 
-    /**
-     * 4️⃣ מעבר לדאשבורד
-     */
     const handleGoToDashboard = () => {
-        console.log("🔄 מעבר לדאשבורד...");
         router.push('/(tabs)/Dashboard');
     };
 
+    const saveUserDataLocally = () => {
+        // אם תרצי לשמור הגדרות מקומיות
+        alert("שינויים נשמרו (לוקלי)");
+    };
+
     return (
-        <View style={styles.container}>
-            {/* 🔙 כפתור חזרה לדאשבורד */}
-            <Pressable onPress={handleGoToDashboard} style={styles.backButton}>
-                <Text style={styles.backButtonText}>⬅ חזרה לדאשבורד</Text>
-            </Pressable>
+        <ProtectedRoute requireAuth={true}>
+            <View style={styles.container}>
+                <Pressable onPress={handleGoToDashboard} style={styles.backButton}>
+                    <Text style={styles.backButtonText}>⬅ חזרה לדאשבורד</Text>
+                </Pressable>
 
-            <Text style={styles.title}>פרופיל המשתמש</Text>
+                <Text style={styles.title}>פרופיל המשתמש</Text>
 
-            {/* אם הנתונים עדיין נטענים */}
-            {isLoading ? (
-                <Text style={styles.loadingText}>🔄 טוען נתוני משתמש...</Text>
-            ) : (
-                <>
-                    {/* 🖐️ ברכת שלום */}
-                    <Text style={styles.welcomeText}>שלום {name || "משתמש"}!</Text>
+                {isLoading ? (
+                    <Text style={styles.loadingText}>טוען נתוני משתמש...</Text>
+                ) : (
+                    <>
+                        <Text style={styles.label}>שלום {name || 'משתמש'}!</Text>
+                        <Text style={styles.label}>אימייל: {email}</Text>
 
-                    {/* 📨 הצגת האימייל (ללא אפשרות עריכה) */}
-                    <Text style={styles.label}>אימייל:</Text>
-                    <Text style={styles.staticText}>{email || "לא נמצא"}</Text>
+                        <Text style={styles.label}>רמת משתמש כוללת (ישן): {level}</Text>
 
-                    {/* 🎮 רמת משתמש */}
-                    <Text style={styles.label}>רמת משתמש:</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={level.toString()}
-                        onChangeText={(text) => setLevel(text.replace(/[^0-9]/g, ''))}
-                        keyboardType="numeric"
-                    />
+                        <Text style={[styles.label, { marginTop: 15, fontWeight: 'bold' }]}>
+                            רמת משתמש בכל נושא:
+                        </Text>
+                        {topicLevels.map((t) => (
+                            <View key={t.topicId} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                                <Text style={{ marginRight: 10 }}>
+                                    <Text style={{ fontWeight: 'bold' }}>נושא:</Text> {t.topicName} |{' '}
+                                    <Text style={{ fontWeight: 'bold' }}>רמה:</Text> {t.level}
+                                </Text>
+                                {/* כפתור להורדת רמה */}
+                                {t.level > 1 && (
+                                    <Pressable
+                                        onPress={() => updateTopicLevel(t.topicId, t.level - 1)}
+                                        style={{ backgroundColor: '#ddd', padding: 5, borderRadius: 4 }}
+                                    >
+                                        <Text style={{ color: 'blue' }}>הורד רמה</Text>
+                                    </Pressable>
+                                )}
+                            </View>
+                        ))}
 
-                    {/* 🌍 שפת ממשק */}
-                    <Text style={styles.label}>שפת ממשק:</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={language}
-                        onChangeText={setLanguage}
-                        placeholder="בחר שפה"
-                    />
-
-                    {/* 🔍 אפשרות להציג פתרונות מודרכים */}
-                    <View style={styles.switchContainer}>
-                        <Text style={styles.label}>הצגת פתרונות מודרכים מפורטים:</Text>
-                        <Switch
-                            value={detailedSolutions}
-                            onValueChange={setDetailedSolutions}
+                        <Text style={styles.label}>שפת ממשק:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={language}
+                            onChangeText={setLanguage}
                         />
-                    </View>
 
-                    {/* 💾 כפתור שמירה */}
-                    <Pressable onPress={saveUserData} style={styles.saveButton}>
-                        <Text style={styles.saveButtonText}>💾 שמירת שינויים</Text>
-                    </Pressable>
-                </>
-            )}
-        </View>
+                        <View style={styles.switchContainer}>
+                            <Text style={styles.label}>הצגת פתרונות מודרכים:</Text>
+                            <Switch
+                                value={detailedSolutions}
+                                onValueChange={setDetailedSolutions}
+                            />
+                        </View>
+
+                        <Pressable onPress={saveUserDataLocally} style={styles.saveButton}>
+                            <Text style={styles.saveButtonText}>שמור שינויים</Text>
+                        </Pressable>
+                    </>
+                )}
+            </View>
+        </ProtectedRoute>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: 'white'
+        flex: 1, padding: 20
     },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        textAlign: 'center'
-    },
-    welcomeText: {
         fontSize: 22,
         fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 15
-    },
-    loadingText: {
-        fontSize: 18,
-        color: 'gray',
-        textAlign: 'center',
-        marginTop: 20
+        marginBottom: 10
     },
     label: {
         fontSize: 18,
         marginBottom: 5
     },
-    staticText: {
-        fontSize: 16,
-        backgroundColor: '#f3f3f3',
-        padding: 10,
-        borderRadius: 5,
-        marginBottom: 15
-    },
     input: {
         borderWidth: 1,
         borderColor: '#ccc',
         padding: 10,
-        borderRadius: 5,
-        marginBottom: 15,
-        fontSize: 16
+        marginBottom: 15
     },
     switchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 15
+        flexDirection: 'row', alignItems: 'center', marginBottom: 15
     },
     saveButton: {
         backgroundColor: 'blue',
         padding: 12,
         borderRadius: 5,
-        alignItems: 'center',
-        marginTop: 20
+        alignItems: 'center'
     },
     saveButtonText: {
         color: 'white',
-        fontSize: 18
+        fontSize: 16
+    },
+    loadingText: {
+        fontSize: 16,
+        color: 'gray',
+        marginTop: 20
     },
     backButton: {
         position: 'absolute',
