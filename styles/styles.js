@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     row: {
         justifyContent: 'space-between',
         marginBottom: 5,
+
     },
     cardTitle: {
         fontSize: 18, // ✨ הגדלת טקסט

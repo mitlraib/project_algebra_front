@@ -1,4 +1,3 @@
-// RootLayout.jsx
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -32,24 +31,22 @@ export default function RootLayout() {
     }, [loaded]);
 
     if (checkingAuth) {
-        return null; // מחכה לוודא אם המשתמש מחובר לפני טעינת המסכים
+        return null;
     }
 
     return (
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <Stack
-                screenOptions={{
-                    headerShown: false, // מבטל את כל הכותרות כברירת מחדל
-                }}
-            >
+            <Stack screenOptions={{ headerShown: false }}>
                 {user ? (
                     <>
-                        <Stack.Screen name="(tabs)/Dashboard"  options={{ title: 'דף הבית' }} />
-                        <Stack.Screen name="(tabs)/MyCourses" options={{ title: 'הקורסים שלי '}} />
+                        {/* הטאב הראשי */}
+                        <Stack.Screen name="(tabs)/TabLayout" />
+                        {/* מסכים פנימיים */}
+                        <Stack.Screen name="Dashboard" />
+                        <Stack.Screen name="MyCourses" />
+                        <Stack.Screen name="MyProfile" />
                         <Stack.Screen name="course/[id]" />
-
-                        {/* הוספנו את המסך החדש */}
-                        <Stack.Screen name="randomQuestionPage" options={{ title: 'שאלה רנדומלית' }} />
+                        <Stack.Screen name="randomQuestionPage" />
 
                         <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
                     </>

@@ -11,14 +11,12 @@ export default function CoursePage() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
 
-    // השאלה שמגיע מהשרת
     const [question, setQuestion] = useState(null);
-    // תשובה שהמשתמש בחר
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showResult, setShowResult] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
 
-    // נטען שאלה חדשה בעת כניסה/שינוי id
+    // בכל פעם שמשתנה id -> נטען שאלה חדשה
     useEffect(() => {
         if (id) {
             fetchNextQuestion(id);
@@ -34,18 +32,15 @@ export default function CoursePage() {
             setIsCorrect(false);
         } catch (err) {
             console.log("Error fetching question:", err);
-            // אם 401 => ProtectedRoute כבר יחזיר ללוגין
         }
     }
 
     async function handleCheckAnswer() {
         if (selectedAnswer === null) return;
         try {
-            // שולחים בקשה לשרת לבדוק את התשובה
             const res = await axios.post('/api/exercises/answer', {
                 answer: question.answers[selectedAnswer]
             });
-            console.log("Check answer result:", res.data);
             setIsCorrect(res.data.isCorrect);
             setShowResult(true);
         } catch (err) {
@@ -60,31 +55,55 @@ export default function CoursePage() {
     }
 
     function handleGoBack() {
-        router.push('/(tabs)/MyCourses');
+        router.push('/MyCourses');
     }
 
-    // אם אין topicId => אולי שגיאה
     if (!id) {
         return <Text>לא נבחר נושא</Text>;
     }
-
     if (!question) {
         return <Text>טוען שאלה מהשרת...</Text>;
+    }
+
+    // אם זה שבר => נצטרך להמיר את התשובות ל-String (X/Y)
+    // כי בשרת שמרנו מקודד (num*1000+den). נבדוק אם question.answers הם int[] שעשויים להיות > 999?
+    let displayAnswers = [];
+    if (typeof question.first === 'string' && question.first.includes('/')) {
+        // כנראה שברי
+        displayAnswers = question.answers.map((encoded) => {
+            // encoded = num*1000 + den
+            const num = Math.floor(encoded / 1000);
+            const den = encoded % 1000;
+            return `${num}/${den}`;
+        });
+    } else {
+        // מקרה רגיל
+        displayAnswers = question.answers;
+    }
+
+    // מומר גם התשובה הנכונה
+    let correctDisplay = '';
+    if (typeof question.first === 'string' && question.first.includes('/')) {
+        const c = question.correctAnswer;
+        const num = Math.floor(c / 1000);
+        const den = c % 1000;
+        correctDisplay = `${num}/${den}`;
+    } else {
+        correctDisplay = question.correctAnswer;
     }
 
     return (
         <ProtectedRoute requireAuth={true}>
             <View style={styles.container}>
-                {/* כפתור חזרה */}
                 <Pressable onPress={handleGoBack} style={styles.backButton}>
                     <Text style={styles.backButtonText}>🔙 חזרה למסך הקורסים</Text>
                 </Pressable>
 
                 <Text style={styles.question}>
-                    {question.first} {question.operationSign} {question.second} = ?
+                    {question.first} {convertSign(question.operationSign)} {question.second} = ?
                 </Text>
 
-                {question.answers.map((ans, index) => (
+                {displayAnswers.map((ans, index) => (
                     <Pressable
                         key={index}
                         onPress={() => {
@@ -99,7 +118,7 @@ export default function CoursePage() {
                         <Text style={styles.answerText}>
                             {ans}
                             {showResult && selectedAnswer === index ? (
-                                ans === question.correctAnswer ? ' ✔' : ' ✘'
+                                ans === correctDisplay ? ' ✔' : ' ✘'
                             ) : ''}
                         </Text>
                     </Pressable>
@@ -111,7 +130,10 @@ export default function CoursePage() {
 
                 {showResult && (
                     <Text style={styles.resultText}>
-                        {isCorrect ? 'תשובה נכונה!' : `תשובה שגויה! תשובה נכונה היא ${question.correctAnswer}`}
+                        {isCorrect
+                            ? 'תשובה נכונה!'
+                            : `תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`
+                        }
                     </Text>
                 )}
 
@@ -123,35 +145,76 @@ export default function CoursePage() {
     );
 }
 
+function convertSign(sign) {
+    if (sign === 'fracAdd') return '+';
+    if (sign === 'fracSub') return '-';
+    if (sign === 'fracMul') return '×';
+    if (sign === 'fracDiv') return '÷';
+    return sign;
+}
+
 const styles = StyleSheet.create({
     container: {
-        flex: 1, padding: 20
+        flex: 1,
+        padding: 20
     },
     backButton: {
-        position: 'absolute', top: 20, left: 10
+        position: 'absolute',
+        top: 20,
+        left: 10
     },
-    backButtonText: { fontSize: 16, color: 'blue' },
-    title: { fontSize: 24, marginBottom: 20 },
-    question: { fontSize: 20, marginBottom: 20 },
+    backButtonText: {
+        fontSize: 16,
+        color: 'blue'
+    },
+    question: {
+        fontSize: 20,
+        marginBottom: 20,
+        marginTop: 70,
+        textAlign: 'center',
+        flexWrap: 'wrap'
+    },
     answerButton: {
-        padding: 15, borderWidth: 1, borderRadius: 10,
-        marginVertical: 5, width: '80%', alignSelf: 'center'
+        padding: 8,
+        borderWidth: 1,
+        borderRadius: 10,
+        marginVertical: 5,
+        width: '80%',
+        alignSelf: 'center'
     },
     selectedAnswer: {
         backgroundColor: '#ddd'
     },
     answerText: {
-        fontSize: 18
+        fontSize: 16,
+        textAlign: 'center',
+        flexWrap: 'wrap'
     },
     checkButton: {
-        marginTop: 20, backgroundColor: '#4CAF50', padding: 15, borderRadius: 10,
+        marginTop: 20,
+        backgroundColor: '#4CAF50',
+        padding: 15,
+        borderRadius: 10,
         alignItems: 'center'
     },
-    checkButtonText: { color: 'white', fontSize: 18 },
-    resultText: { fontSize: 18, marginTop: 10, textAlign: 'center' },
+    checkButtonText: {
+        color: 'white',
+        fontSize: 18
+    },
+    resultText: {
+        fontSize: 18,
+        marginTop: 10,
+        textAlign: 'center'
+    },
     nextButton: {
-        marginTop: 20, backgroundColor: '#2196F3', padding: 15, borderRadius: 10,
+        marginTop: 20,
+        backgroundColor: '#2196F3',
+        padding: 15,
+        borderRadius: 10,
         alignItems: 'center'
     },
-    nextButtonText: { color: 'white', fontSize: 18 }
+    nextButtonText: {
+        color: 'white',
+        fontSize: 18
+    }
 });

@@ -23,60 +23,53 @@ export default function MyProfile() {
         fetchUserTopics();
     }, []);
 
-    const fetchUserFromServer = async () => {
+    async function fetchUserFromServer() {
         try {
-            console.log("Fetching user info from /api/user...");
-            const response = await axios.get('/api/user');
-            if (response.data && response.data.success) {
-                setName(`${response.data.firstName} ${response.data.lastName}`);
-                setEmail(response.data.mail);
-                setLevel(response.data.level || 1);
+            const res = await axios.get('/api/user');
+            if (res.data && res.data.success) {
+                setName(`${res.data.firstName} ${res.data.lastName}`);
+                setEmail(res.data.mail);
+                setLevel(res.data.level || 1);
             }
         } catch (err) {
             console.log("Error fetching user info:", err);
         } finally {
             setIsLoading(false);
         }
-    };
+    }
 
     async function fetchUserTopics() {
         try {
             const res = await axios.get('/api/user/topics-levels');
             if (res.data.success) {
-                // res.data.topics הוא מערך של אובייקטים: {topicId, level, topicName}
-                setTopicLevels(res.data.topics);
+                setTopicLevels(res.data.topics); // { topicId, level, topicName }
             }
-        } catch(e) {
+        } catch (e) {
             console.log("Error fetchUserTopics:", e);
         }
     }
 
     async function updateTopicLevel(topicId, newLevel) {
         try {
-            const res = await axios.put('/api/user/topics-levels', {
-                topicId,
-                newLevel
-            });
+            const res = await axios.put('/api/user/topics-levels', { topicId, newLevel });
             if (res.data.success) {
-                alert(`הרמה עודכנה בהצלחה ל- ${newLevel}`);
-                // לרענן את הרשימה
+                alert(`עודכן רמה ל-${newLevel} בנושא ID=${topicId}`);
                 fetchUserTopics();
             } else {
-                alert("לא ניתן לעדכן רמה");
+                alert("לא ניתן לעדכן רמה (אולי היא גבוהה מדי)");
             }
-        } catch(e) {
-            console.log("Error updateTopicLevel:", e);
+        } catch (err) {
+            console.log("Error updateTopicLevel:", err);
         }
     }
 
-    const handleGoToDashboard = () => {
-        router.push('/(tabs)/Dashboard');
-    };
+    function handleGoToDashboard() {
+        router.push('/Dashboard');
+    }
 
-    const saveUserDataLocally = () => {
-        // אם תרצי לשמור הגדרות מקומיות
-        alert("שינויים נשמרו (לוקלי)");
-    };
+    function saveUserDataLocally() {
+        alert("שינויים נשמרו (לוקלי בלבד)");
+    }
 
     return (
         <ProtectedRoute requireAuth={true}>
@@ -85,31 +78,34 @@ export default function MyProfile() {
                     <Text style={styles.backButtonText}>⬅ חזרה לדאשבורד</Text>
                 </Pressable>
 
-                <Text style={styles.title}>פרופיל המשתמש</Text>
+                <Text style={styles.title}>הפרופיל שלי</Text>
 
                 {isLoading ? (
                     <Text style={styles.loadingText}>טוען נתוני משתמש...</Text>
                 ) : (
                     <>
-                        <Text style={styles.label}>שלום {name || 'משתמש'}!</Text>
+                        <Text style={styles.label}>שלום {name}!</Text>
                         <Text style={styles.label}>אימייל: {email}</Text>
-
-                        <Text style={styles.label}>רמת משתמש כוללת (ישן): {level}</Text>
-
-                        <Text style={[styles.label, { marginTop: 15, fontWeight: 'bold' }]}>
-                            רמת משתמש בכל נושא:
+                        <Text style={styles.label}>
+                            (רמת משתמש כללית ישנה: {level})
                         </Text>
-                        {topicLevels.map((t) => (
-                            <View key={t.topicId} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-                                <Text style={{ marginRight: 10 }}>
-                                    <Text style={{ fontWeight: 'bold' }}>נושא:</Text> {t.topicName} |{' '}
-                                    <Text style={{ fontWeight: 'bold' }}>רמה:</Text> {t.level}
+
+                        <Text style={[styles.label, { marginTop: 10, fontWeight: 'bold' }]}>
+                            רמת קושי בכל נושא:
+                        </Text>
+                        {topicLevels.map(t => (
+                            <View
+                                key={t.topicId}
+                                style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}
+                            >
+                                <Text style={{ fontSize: 16, marginRight: 10 }}>
+                                    {t.topicName} (#{t.topicId}): רמה {t.level}
                                 </Text>
-                                {/* כפתור להורדת רמה */}
+                                {/* כפתור הורדת רמה */}
                                 {t.level > 1 && (
                                     <Pressable
                                         onPress={() => updateTopicLevel(t.topicId, t.level - 1)}
-                                        style={{ backgroundColor: '#ddd', padding: 5, borderRadius: 4 }}
+                                        style={{ backgroundColor: '#ddd', padding: 5, borderRadius: 5 }}
                                     >
                                         <Text style={{ color: 'blue' }}>הורד רמה</Text>
                                     </Pressable>
@@ -117,7 +113,7 @@ export default function MyProfile() {
                             </View>
                         ))}
 
-                        <Text style={styles.label}>שפת ממשק:</Text>
+                        <Text style={[styles.label, { marginTop: 10 }]}>שפת ממשק:</Text>
                         <TextInput
                             style={styles.input}
                             value={language}
@@ -144,40 +140,8 @@ export default function MyProfile() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, padding: 20
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 10
-    },
-    label: {
-        fontSize: 18,
-        marginBottom: 5
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        marginBottom: 15
-    },
-    switchContainer: {
-        flexDirection: 'row', alignItems: 'center', marginBottom: 15
-    },
-    saveButton: {
-        backgroundColor: 'blue',
-        padding: 12,
-        borderRadius: 5,
-        alignItems: 'center'
-    },
-    saveButtonText: {
-        color: 'white',
-        fontSize: 16
-    },
-    loadingText: {
-        fontSize: 16,
-        color: 'gray',
-        marginTop: 20
+        flex: 1,
+        padding: 20
     },
     backButton: {
         position: 'absolute',
@@ -193,5 +157,42 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: 'black'
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center'
+    },
+    loadingText: {
+        marginTop: 20,
+        fontSize: 16,
+        color: 'gray',
+        textAlign: 'center'
+    },
+    label: {
+        fontSize: 18,
+        marginBottom: 5
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        padding: 10,
+        marginBottom: 10
+    },
+    switchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 15
+    },
+    saveButton: {
+        backgroundColor: 'blue',
+        padding: 12,
+        borderRadius: 5,
+        alignItems: 'center'
+    },
+    saveButtonText: {
+        color: 'white',
+        fontSize: 16
     }
 });

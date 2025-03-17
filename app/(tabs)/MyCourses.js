@@ -1,16 +1,24 @@
 import React from 'react';
-import { Text, View, FlatList, Pressable } from 'react-native';
+import { Text, View, FlatList, Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Card } from 'react-native-paper';
 import styles from '../../styles/styles';
 import { courses } from '../../constants/CoursesNames';
 
-const MyCourses = () => {
+export default function MyCourses() {
     const router = useRouter();
+
+    function handleGoBack() {
+        router.push('/Dashboard');
+    }
+
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>MyCourses</Text>
+            <Text style={styles.title}>הקורסים שלי</Text>
+            <Pressable onPress={handleGoBack} style={styles.backButton}>
+                <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
+            </Pressable>
 
             <FlatList
                 data={courses}
@@ -19,17 +27,20 @@ const MyCourses = () => {
                     <View style={styles.courseContainer}>
                         <Text style={styles.courseTitle}>{course.title}</Text>
 
-                        {/* הצגת הנושאים ככרטיסים   */}
+                        {/* הצגת הנושאים ככרטיסים */}
                         <FlatList
                             data={course.topics}
                             keyExtractor={(topic) => topic.id.toString()}
-                            numColumns={4} // 4 כרטיסים בכל שורה
-                            columnWrapperStyle={styles.row} // סידור יפה של הכרטיסים
+                            numColumns={4}
+                            columnWrapperStyle={styles.row}
                             renderItem={({ item: topic }) => (
-                                <Pressable onPress={() => router.push(`/course/${topic.id}`)}>
-                                    <Card style={styles.card}>
+                                <Pressable
+                                    onPress={() => router.push(`/course/${topic.id}`)}
+                                    style={{ margin: 5 }}
+                                >
+                                    <Card style={localStyles.card}>
                                         <Card.Content>
-                                            <Text style={styles.cardTitle}>{topic.name}</Text>
+                                            <Text style={localStyles.cardTitle}>{topic.name}</Text>
                                         </Card.Content>
                                     </Card>
                                 </Pressable>
@@ -40,6 +51,31 @@ const MyCourses = () => {
             />
         </View>
     );
-};
+}
 
-export default MyCourses;
+const localStyles = StyleSheet.create({
+    card: {
+        width: 200,
+        height: 200,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 50,
+    },
+    cardTitle: {
+        fontSize: 20,
+        textAlign: 'center'
+    },
+    backButton: {
+        position: 'absolute',
+        top: 20,
+        left: 10,
+        textAlign: 'left',
+        alignSelf: 'flex-end',
+    },
+    backButtonText: {
+        fontSize: 16,
+        color: 'blue',
+
+
+    },
+});

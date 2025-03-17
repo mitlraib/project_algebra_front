@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Pressable, Text } from 'react-native';
+import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -15,7 +15,7 @@ export default function Dashboard() {
     const router = useRouter();
 
     function handleStart() {
-        // עובר למסך חדש בשם "randomQuestionPage" (ניצור אותו עוד מעט)
+        // מעבר לשאלות רנדומליות
         router.push("course/randomQuestionPage");
     }
 
@@ -55,18 +55,23 @@ export default function Dashboard() {
                 </Box>
 
                 {/* גוף הדף */}
-                <View style={styles.container}>
-                    <Pressable onPress={() => router.navigate('/(tabs)/MyCourses')}>
-                        <Text style={{ color: 'blue' }}>הקורסים שלי </Text>
+                <View style={[styles.container, localStyles.centerArea]}>
+                    <Pressable onPress={() => router.push('/MyCourses')}>
+                        <Text style={{ color: 'blue', fontSize: 20, margin: 10 }}>הקורסים שלי</Text>
                     </Pressable>
-                </View>
 
-                <View style={styles.container}>
-                    <Pressable onPress={() => router.navigate('/(tabs)/MyProfile')}>
-                        <Text style={{ color: 'blue' }}>הפרופיל שלי</Text>
+                    <Pressable onPress={() => router.push('/MyProfile')}>
+                        <Text style={{ color: 'blue', fontSize: 20, margin: 10 }}>הפרופיל שלי</Text>
                     </Pressable>
                 </View>
             </View>
         </ProtectedRoute>
     );
 }
+
+const localStyles = StyleSheet.create({
+    centerArea: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+});

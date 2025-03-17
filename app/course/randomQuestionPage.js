@@ -33,11 +33,9 @@ export default function RandomQuestionPage() {
     async function handleCheckAnswer() {
         if (selectedAnswer === null) return;
         try {
-            // שולחים בקשה לשרת לבדוק את התשובה
             const res = await axios.post('/api/exercises/answer', {
                 answer: question.answers[selectedAnswer]
             });
-            console.log("Check answer result:", res.data);
             setIsCorrect(res.data.isCorrect);
             setShowResult(true);
         } catch (err) {
@@ -46,37 +44,54 @@ export default function RandomQuestionPage() {
     }
 
     function handleNext() {
-        // מושך שאלה חדשה רנדומלית
         fetchRandomQuestion();
     }
 
     function handleGoBack() {
-        router.push('/(tabs)/Dashboard');
+        router.push('/Dashboard');
     }
 
     if (!question) {
         return (
             <ProtectedRoute requireAuth={true}>
-                <View style={styles.container}>
+                <View style={[styles.container, styles.centerAll]}>
                     <Text>טוען שאלה רנדומלית...</Text>
                 </View>
             </ProtectedRoute>
         );
     }
 
+    let displayAnswers = [];
+    let correctDisplay = '';
+    if (typeof question.first === 'string' && question.first.includes('/')) {
+        // כנראה שבר
+        displayAnswers = question.answers.map((encoded) => {
+            const num = Math.floor(encoded / 1000);
+            const den = encoded % 1000;
+            return `${num}/${den}`;
+        });
+        const c = question.correctAnswer;
+        const num = Math.floor(c / 1000);
+        const den = c % 1000;
+        correctDisplay = `${num}/${den}`;
+    } else {
+        // רגיל
+        displayAnswers = question.answers;
+        correctDisplay = question.correctAnswer;
+    }
+
     return (
         <ProtectedRoute requireAuth={true}>
-            <View style={styles.container}>
-                {/* כפתור חזרה */}
+            <View style={[styles.container, styles.centerAll]}>
                 <Pressable onPress={handleGoBack} style={styles.backButton}>
                     <Text style={styles.backButtonText}>חזור לדף הבית</Text>
                 </Pressable>
 
                 <Text style={styles.question}>
-                    {question.first} {question.operationSign} {question.second} = ?
+                    {question.first} {convertSign(question.operationSign)} {question.second} = ?
                 </Text>
 
-                {question.answers.map((ans, index) => (
+                {displayAnswers.map((ans, index) => (
                     <Pressable
                         key={index}
                         onPress={() => {
@@ -91,7 +106,7 @@ export default function RandomQuestionPage() {
                         <Text style={styles.answerText}>
                             {ans}
                             {showResult && selectedAnswer === index
-                                ? ans === question.correctAnswer
+                                ? ans === correctDisplay
                                     ? ' ✔'
                                     : ' ✘'
                                 : ''
@@ -108,7 +123,7 @@ export default function RandomQuestionPage() {
                     <Text style={styles.resultText}>
                         {isCorrect
                             ? 'תשובה נכונה!'
-                            : `תשובה שגויה! התשובה הנכונה היא ${question.correctAnswer}`
+                            : `תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`
                         }
                     </Text>
                 )}
@@ -121,10 +136,22 @@ export default function RandomQuestionPage() {
     );
 }
 
+function convertSign(sign) {
+    if (sign === 'fracAdd') return '+';
+    if (sign === 'fracSub') return '-';
+    if (sign === 'fracMul') return '×';
+    if (sign === 'fracDiv') return '÷';
+    return sign;
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20
+    },
+    centerAll: {
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     backButton: {
         position: 'absolute',
@@ -138,22 +165,23 @@ const styles = StyleSheet.create({
     question: {
         fontSize: 20,
         marginBottom: 20,
-        marginTop: 60
+        marginTop: 60,
+        textAlign: 'center',
+        flexWrap: 'wrap'
     },
     answerButton: {
-        padding: 15,
+        padding: 8,
         borderWidth: 1,
         borderRadius: 10,
         marginVertical: 5,
         width: '80%',
-        alignSelf: 'center'
+        alignItems: 'center'
     },
     selectedAnswer: {
         backgroundColor: '#ddd'
     },
     answerText: {
-        fontSize: 18,
-        textAlign: 'center'
+        fontSize: 18
     },
     checkButton: {
         marginTop: 20,
