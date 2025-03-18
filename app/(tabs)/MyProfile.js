@@ -117,7 +117,8 @@ export default function MyProfile() {
                         <TextInput
                             style={styles.input}
                             value={language}
-                            onChangeText={setLanguage}
+                            editable={false}
+                           // onChangeText={setLanguage}
                         />
 
                         <View style={styles.switchContainer}>
