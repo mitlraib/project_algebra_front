@@ -10,12 +10,12 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 // הוספנו כאן 4 טאבים: דף הבית, הקורסים שלי, הפרופיל שלי, ואודות.
 // אפשר כמובן להתאים לפי הצורך
-
 export default function TabLayout() {
     const colorScheme = useColorScheme();
 
     return (
         <Tabs
+            initialRouteName="Dashboard" // הגדרת הטאב הראשי כ- "Dashboard"
             screenOptions={{
                 tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
                 headerShown: false,
@@ -29,6 +29,8 @@ export default function TabLayout() {
                 }),
             }}
         >
+            <Tabs.Screen name="index" options={{ href: null }} />
+
             <Tabs.Screen
                 name="Dashboard"
                 options={{
@@ -38,7 +40,6 @@ export default function TabLayout() {
                     ),
                 }}
             />
-
             <Tabs.Screen
                 name="MyCourses"
                 options={{
@@ -48,7 +49,6 @@ export default function TabLayout() {
                     ),
                 }}
             />
-
             <Tabs.Screen
                 name="MyProfile"
                 options={{
@@ -59,15 +59,6 @@ export default function TabLayout() {
                 }}
             />
 
-            <Tabs.Screen
-                name="אודות" // זה שם התיקייה/רואט, לדוגמה
-                options={{
-                    title: 'אודות',
-                    tabBarIcon: ({ color }) => (
-                        <IconSymbol size={28} name="info.circle.fill" color={color} />
-                    ),
-                }}
-            />
         </Tabs>
     );
 }
