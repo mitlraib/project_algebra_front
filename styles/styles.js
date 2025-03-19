@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
         color: 'blue', // צבע גופן מעניין (אפשר לשנות לצבע שתרצה)
         //marginBottom: 10, // רווח בין הטקסט לתמונה או אלמנטים אחרים
         fontFamily: 'Lato', //
-        marginTop: 20, // הוספת רווח מעל התת-כותרת
+        marginTop: 120, // הוספת רווח מעל התת-כותרת
 
     },
     appSubtitle: {
@@ -165,14 +165,14 @@ const styles = StyleSheet.create({
         fontWeight: 'normal',
         color: 'blue', // צבע חיוור יותר לטקסט השני
         textAlign: 'center', // ממקם את הטקסט במרכז
-        //marginBottom: 0, // רווח תחת הטקסט
+        marginBottom: 450, // רווח תחת הטקסט
         fontFamily: 'Cochin', // גופן פשוט יותר לקריאות
-        marginTop: 30, // הוספת רווח מעל הכותרת
+        //marginTop: 1, // הוספת רווח מעל הכותרת
     },
     imageStyle: {
-        width: 600, // רוחב התמונה
-        height: 600, // גובה התמונה
-        marginBottom: 300, // רווח מתחת לתמונה
+        width: 500, // רוחב התמונה
+        height: 500, // גובה התמונה
+      //  marginBottom: 10, // רווח מתחת לתמונה
         resizeMode: 'contain', // לשמור על יחס הגובה לרוחב של התמונה
         borderRadius: 100, // קצוות מעוגלים
         shadowColor: '#000', // צבע הצל

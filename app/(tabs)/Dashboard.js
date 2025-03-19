@@ -57,6 +57,11 @@ export default function Dashboard() {
                 {/* גוף הדף */}
                 <View style={[styles.container, styles.centerArea]}>
                     <Text style={styles.appTitle}>ברוכים הבאים לMathJourney!</Text>
+                    {/* הוספת תמונה */}
+                    <Image
+                        source={require('../../assets/images/learning-math.jpg')} // הנתיב לתמונה המקומית שלך
+                        style={styles.imageStyle} // סטייל עבור התמונה
+                    />
                     <Text style={styles.appSubtitle}>
                         האתר שלנו נועד לעזור לך ללמוד חשבון בצורה חכמה ומהנה,
                         {'\n'}
@@ -65,11 +70,7 @@ export default function Dashboard() {
                         בהצלחה!
                     </Text>
 
-                    {/* הוספת תמונה */}
-                    <Image
-                        source={require('../../assets/images/learning-math.jpg')} // הנתיב לתמונה המקומית שלך
-                        style={styles.imageStyle} // סטייל עבור התמונה
-                    />
+
                 </View>
             </View>
         </ProtectedRoute>
