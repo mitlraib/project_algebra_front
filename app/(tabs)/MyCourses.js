@@ -17,16 +17,16 @@ export default function MyCourses() {
             <Text style={styles.title}>הקורסים שלי</Text>
 
             {/* כפתור חזרה בצד שמאל */}
-            <Pressable onPress={handleGoBack} style={localStyles.backButton}>
-                <Text style={localStyles.backButtonText}>🔙 חזרה למסך הראשי</Text>
+            <Pressable onPress={handleGoBack} style={styles.backButton}>
+                <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
             </Pressable>
 
             <FlatList
                 data={courses}
                 keyExtractor={(course) => course.id.toString()}
                 renderItem={({ item: course }) => (
-                    <View style={styles.courseContainer}>
-                        <Text style={styles.courseTitle}>{course.title}</Text>
+                    <View style={styles.container}>
+                        <Text style={styles.title}>{course.title}</Text>
 
                         {/* הצגת הנושאים ככרטיסים */}
                         <FlatList
@@ -39,9 +39,9 @@ export default function MyCourses() {
                                     onPress={() => router.push(`/course/${topic.id}`)}
                                     style={{ margin: 5 }}
                                 >
-                                    <Card style={localStyles.card}>
+                                    <Card style={styles.card}>
                                         <Card.Content>
-                                            <Text style={localStyles.cardTitle}>{topic.name}</Text>
+                                            <Text style={styles.cardTitle}>{topic.name}</Text>
                                         </Card.Content>
                                     </Card>
                                 </Pressable>
@@ -52,31 +52,31 @@ export default function MyCourses() {
             />
         </View>
     );
-}
+};
 
-const localStyles = StyleSheet.create({
-    backButton: {
-        position: 'absolute',
-        top: 20,
-        left: 10,
-        paddingVertical: 8,
-        paddingHorizontal: 12,
-        backgroundColor: '#eeeeee',
-        borderRadius: 6,
-    },
-    backButtonText: {
-        fontSize: 16,
-        color: 'blue',
-    },
-    card: {
-        width: 200,
-        height: 200,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 50,
-    },
-    cardTitle: {
-        fontSize: 20,
-        textAlign: 'center',
-    },
-});
+// const localStyles = StyleSheet.create({
+//     backButton: {
+//         position: 'absolute',
+//         top: 20,
+//         left: 10,
+//         paddingVertical: 8,
+//         paddingHorizontal: 12,
+//         backgroundColor: '#eeeeee',
+//         borderRadius: 6,
+//     },
+//     backButtonText: {
+//         fontSize: 16,
+//         color: 'blue',
+//     },
+//     card: {
+//         width: 200,
+//         height: 200,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         marginBottom: 50,
+//     },
+//     cardTitle: {
+//         fontSize: 20,
+//         textAlign: 'center',
+//     },
+// });

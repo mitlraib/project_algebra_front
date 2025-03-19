@@ -3,6 +3,8 @@ import { View, Text, TextInput, Pressable, StyleSheet, Switch } from 'react-nati
 import { useRouter } from 'expo-router';
 import axios from 'axios';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import styles from '../../styles/styles';
+
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://localhost:8080';
@@ -137,63 +139,63 @@ export default function MyProfile() {
             </View>
         </ProtectedRoute>
     );
-}
+};
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20
-    },
-    backButton: {
-        position: 'absolute',
-        top: 20,
-        left: 10,
-        backgroundColor: '#ddd',
-        paddingVertical: 8,
-        paddingHorizontal: 15,
-        borderRadius: 5,
-        zIndex: 10
-    },
-    backButtonText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: 'black'
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        textAlign: 'center'
-    },
-    loadingText: {
-        marginTop: 20,
-        fontSize: 16,
-        color: 'gray',
-        textAlign: 'center'
-    },
-    label: {
-        fontSize: 18,
-        marginBottom: 5
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        marginBottom: 10
-    },
-    switchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 15
-    },
-    saveButton: {
-        backgroundColor: 'blue',
-        padding: 12,
-        borderRadius: 5,
-        alignItems: 'center'
-    },
-    saveButtonText: {
-        color: 'white',
-        fontSize: 16
-    }
-});
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         padding: 20
+//     },
+//     backButton: {
+//         position: 'absolute',
+//         top: 20,
+//         left: 10,
+//         backgroundColor: '#ddd',
+//         paddingVertical: 8,
+//         paddingHorizontal: 15,
+//         borderRadius: 5,
+//         zIndex: 10
+//     },
+//     backButtonText: {
+//         fontSize: 16,
+//         fontWeight: 'bold',
+//         color: 'black'
+//     },
+//     title: {
+//         fontSize: 22,
+//         fontWeight: 'bold',
+//         marginBottom: 10,
+//         textAlign: 'center'
+//     },
+//     loadingText: {
+//         marginTop: 20,
+//         fontSize: 16,
+//         color: 'gray',
+//         textAlign: 'center'
+//     },
+//     label: {
+//         fontSize: 18,
+//         marginBottom: 5
+//     },
+//     input: {
+//         borderWidth: 1,
+//         borderColor: '#ccc',
+//         padding: 10,
+//         marginBottom: 10
+//     },
+//     switchContainer: {
+//         flexDirection: 'row',
+//         alignItems: 'center',
+//         marginBottom: 15
+//     },
+//     saveButton: {
+//         backgroundColor: 'blue',
+//         padding: 12,
+//         borderRadius: 5,
+//         alignItems: 'center'
+//     },
+//     saveButtonText: {
+//         color: 'white',
+//         fontSize: 16
+//     }
+// });

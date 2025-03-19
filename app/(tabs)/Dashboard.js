@@ -55,7 +55,7 @@ export default function Dashboard() {
                 </Box>
 
                 {/* גוף הדף */}
-                <View style={[styles.container, localStyles.centerArea]}>
+                <View style={[styles.container, styles.centerArea]}>
                     <Pressable onPress={() => router.push('/MyCourses')}>
                         <Text style={{ color: 'blue', fontSize: 20, margin: 10 }}>הקורסים שלי</Text>
                     </Pressable>
@@ -69,9 +69,4 @@ export default function Dashboard() {
     );
 }
 
-const localStyles = StyleSheet.create({
-    centerArea: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    }
-});
+;

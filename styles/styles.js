@@ -99,6 +99,58 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
+    centerArea: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    backButton: {
+        position: 'absolute',
+        textAlign: 'left',
+        alignSelf: 'flex-end',
+        top: 20,
+        left: 10,
+        backgroundColor: '#ddd',
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        borderRadius: 5,
+        zIndex: 10
+    },
+    backButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'black'
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center'
+    },
+    loadingText: {
+        marginTop: 20,
+        fontSize: 16,
+        color: 'gray',
+        textAlign: 'center'
+    },
+    label: {
+        fontSize: 18,
+        marginBottom: 5
+    },
+    switchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 15
+    },
+    saveButton: {
+        backgroundColor: 'blue',
+        padding: 12,
+        borderRadius: 5,
+        alignItems: 'center'
+    },
+    saveButtonText: {
+        color: 'white',
+        fontSize: 16
+    }
 });
 
 export default styles;
