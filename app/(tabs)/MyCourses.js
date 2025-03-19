@@ -12,12 +12,13 @@ export default function MyCourses() {
         router.push('/Dashboard');
     }
 
-
     return (
         <View style={styles.container}>
             <Text style={styles.title}>הקורסים שלי</Text>
-            <Pressable onPress={handleGoBack} style={styles.backButton}>
-                <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
+
+            {/* כפתור חזרה בצד שמאל */}
+            <Pressable onPress={handleGoBack} style={localStyles.backButton}>
+                <Text style={localStyles.backButtonText}>🔙 חזרה למסך הראשי</Text>
             </Pressable>
 
             <FlatList
@@ -54,6 +55,19 @@ export default function MyCourses() {
 }
 
 const localStyles = StyleSheet.create({
+    backButton: {
+        position: 'absolute',
+        top: 20,
+        left: 10,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        backgroundColor: '#eeeeee',
+        borderRadius: 6,
+    },
+    backButtonText: {
+        fontSize: 16,
+        color: 'blue',
+    },
     card: {
         width: 200,
         height: 200,
@@ -63,19 +77,6 @@ const localStyles = StyleSheet.create({
     },
     cardTitle: {
         fontSize: 20,
-        textAlign: 'center'
-    },
-    backButton: {
-        position: 'absolute',
-        top: 20,
-        left: 10,
-        textAlign: 'left',
-        alignSelf: 'flex-end',
-    },
-    backButtonText: {
-        fontSize: 16,
-        color: 'blue',
-
-
+        textAlign: 'center',
     },
 });

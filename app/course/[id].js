@@ -3,9 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Text, View, StyleSheet, Pressable } from 'react-native';
 import axios from 'axios';
 import ProtectedRoute from '@/components/ProtectedRoute';
-
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://localhost:8080';
+import Cookies from 'js-cookie';
 
 export default function CoursePage() {
     const { id } = useLocalSearchParams();
@@ -16,7 +14,6 @@ export default function CoursePage() {
     const [showResult, setShowResult] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
 
-    // בכל פעם שמשתנה id -> נטען שאלה חדשה
     useEffect(() => {
         if (id) {
             fetchNextQuestion(id);
@@ -32,6 +29,11 @@ export default function CoursePage() {
             setIsCorrect(false);
         } catch (err) {
             console.log("Error fetching question:", err);
+            // אם מקבלים 401 – ננתק ונעביר לדף התחברות
+            if (err.response && err.response.status === 401) {
+                Cookies.remove('userToken');
+                router.replace('/authentication/Login');
+            }
         }
     }
 
@@ -45,6 +47,10 @@ export default function CoursePage() {
             setShowResult(true);
         } catch (err) {
             console.log("Error checking answer:", err);
+            if (err.response && err.response.status === 401) {
+                Cookies.remove('userToken');
+                router.replace('/authentication/Login');
+            }
         }
     }
 
@@ -65,23 +71,19 @@ export default function CoursePage() {
         return <Text>טוען שאלה מהשרת...</Text>;
     }
 
-    // אם זה שבר => נצטרך להמיר את התשובות ל-String (X/Y)
-    // כי בשרת שמרנו מקודד (num*1000+den). נבדוק אם question.answers הם int[] שעשויים להיות > 999?
+    // המרת תשובות (למקרה של שברים)
     let displayAnswers = [];
     if (typeof question.first === 'string' && question.first.includes('/')) {
-        // כנראה שברי
         displayAnswers = question.answers.map((encoded) => {
-            // encoded = num*1000 + den
             const num = Math.floor(encoded / 1000);
             const den = encoded % 1000;
             return `${num}/${den}`;
         });
     } else {
-        // מקרה רגיל
         displayAnswers = question.answers;
     }
 
-    // מומר גם התשובה הנכונה
+    // גם לתשובה הנכונה
     let correctDisplay = '';
     if (typeof question.first === 'string' && question.first.includes('/')) {
         const c = question.correctAnswer;

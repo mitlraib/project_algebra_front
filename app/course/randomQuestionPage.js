@@ -3,9 +3,7 @@ import { Text, View, StyleSheet, Pressable } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import ProtectedRoute from '@/components/ProtectedRoute';
-
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://localhost:8080';
+import Cookies from 'js-cookie';
 
 export default function RandomQuestionPage() {
     const router = useRouter();
@@ -27,6 +25,10 @@ export default function RandomQuestionPage() {
             setIsCorrect(false);
         } catch (err) {
             console.log("Error fetching random question:", err);
+            if (err.response && err.response.status === 401) {
+                Cookies.remove('userToken');
+                router.replace('/authentication/Login');
+            }
         }
     }
 
@@ -40,6 +42,10 @@ export default function RandomQuestionPage() {
             setShowResult(true);
         } catch (err) {
             console.log("Error checking answer:", err);
+            if (err.response && err.response.status === 401) {
+                Cookies.remove('userToken');
+                router.replace('/authentication/Login');
+            }
         }
     }
 
@@ -64,7 +70,7 @@ export default function RandomQuestionPage() {
     let displayAnswers = [];
     let correctDisplay = '';
     if (typeof question.first === 'string' && question.first.includes('/')) {
-        // כנראה שבר
+        // המרת תשובות של שברים
         displayAnswers = question.answers.map((encoded) => {
             const num = Math.floor(encoded / 1000);
             const den = encoded % 1000;
@@ -83,8 +89,10 @@ export default function RandomQuestionPage() {
     return (
         <ProtectedRoute requireAuth={true}>
             <View style={[styles.container, styles.centerAll]}>
+
+                {/* שינוי קטן: אייקון חזרה - 🔙 */}
                 <Pressable onPress={handleGoBack} style={styles.backButton}>
-                    <Text style={styles.backButtonText}>חזור לדף הבית</Text>
+                    <Text style={styles.backButtonText}>🔙 חזור לדף הבית</Text>
                 </Pressable>
 
                 <Text style={styles.question}>
@@ -137,11 +145,13 @@ export default function RandomQuestionPage() {
 }
 
 function convertSign(sign) {
-    if (sign === 'fracAdd') return '+';
-    if (sign === 'fracSub') return '-';
-    if (sign === 'fracMul') return '×';
-    if (sign === 'fracDiv') return '÷';
-    return sign;
+    switch (sign) {
+        case 'fracAdd': return '+';
+        case 'fracSub': return '-';
+        case 'fracMul': return '×';
+        case 'fracDiv': return '÷';
+        default: return sign;
+    }
 }
 
 const styles = StyleSheet.create({
