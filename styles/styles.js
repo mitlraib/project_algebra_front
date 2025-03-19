@@ -76,11 +76,11 @@ const styles = StyleSheet.create({
         backgroundColor: colors.lightBlue,
     },
 
-    // 🎴 סגנון לכרטיסיות (נושאים)
+    //  סגנון לכרטיסיות (נושאים)
 
     card: {
-        width: 200,  // ✨ קובע רוחב קבוע
-        height: 200, // ✨ קובע גובה קבוע
+        width: 200,  //  קובע רוחב קבוע
+        height: 200, //  קובע גובה קבוע
         backgroundColor: '#ffffff',
         justifyContent: 'center',
         alignItems: 'center',
