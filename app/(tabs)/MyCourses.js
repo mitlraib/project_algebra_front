@@ -53,30 +53,3 @@ export default function MyCourses() {
         </View>
     );
 };
-
-// const localStyles = StyleSheet.create({
-//     backButton: {
-//         position: 'absolute',
-//         top: 20,
-//         left: 10,
-//         paddingVertical: 8,
-//         paddingHorizontal: 12,
-//         backgroundColor: '#eeeeee',
-//         borderRadius: 6,
-//     },
-//     backButtonText: {
-//         fontSize: 16,
-//         color: 'blue',
-//     },
-//     card: {
-//         width: 200,
-//         height: 200,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         marginBottom: 50,
-//     },
-//     cardTitle: {
-//         fontSize: 20,
-//         textAlign: 'center',
-//     },
-// });

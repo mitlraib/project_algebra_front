@@ -70,14 +70,6 @@ export default function Dashboard() {
                         source={require('../../assets/images/learning-math.jpg')} // הנתיב לתמונה המקומית שלך
                         style={styles.imageStyle} // סטייל עבור התמונה
                     />
-
-                    {/*<Pressable onPress={() => router.push('/MyCourses')}>*/}
-                    {/*    <Text style={{ color: 'blue', fontSize: 20, margin: 10 }}>הקורסים שלי</Text>*/}
-                    {/*</Pressable>*/}
-
-                    {/*<Pressable onPress={() => router.push('/MyProfile')}>*/}
-                    {/*    <Text style={{ color: 'blue', fontSize: 20, margin: 10 }}>הפרופיל שלי</Text>*/}
-                    {/*</Pressable>*/}
                 </View>
             </View>
         </ProtectedRoute>
