@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Pressable, Text, StyleSheet } from 'react-native';
+import { View, Pressable, Text, Image, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -56,13 +56,28 @@ export default function Dashboard() {
 
                 {/* גוף הדף */}
                 <View style={[styles.container, styles.centerArea]}>
-                    <Pressable onPress={() => router.push('/MyCourses')}>
-                        <Text style={{ color: 'blue', fontSize: 20, margin: 10 }}>הקורסים שלי</Text>
-                    </Pressable>
+                    <Text style={styles.appTitle}>ברוכים הבאים לMathJourney!</Text>
+                    <Text style={styles.appSubtitle}>
+                        האתר שלנו נועד לעזור לך ללמוד חשבון בצורה חכמה ומהנה,
+                        {'\n'}
+                        עם שאלות מותאמות אישית והתקדמות לפי היכולת שלך
+                        {'\n'}
+                        בהצלחה!
+                    </Text>
 
-                    <Pressable onPress={() => router.push('/MyProfile')}>
-                        <Text style={{ color: 'blue', fontSize: 20, margin: 10 }}>הפרופיל שלי</Text>
-                    </Pressable>
+                    {/* הוספת תמונה */}
+                    <Image
+                        source={require('../../assets/images/learning-math.jpg')} // הנתיב לתמונה המקומית שלך
+                        style={styles.imageStyle} // סטייל עבור התמונה
+                    />
+
+                    {/*<Pressable onPress={() => router.push('/MyCourses')}>*/}
+                    {/*    <Text style={{ color: 'blue', fontSize: 20, margin: 10 }}>הקורסים שלי</Text>*/}
+                    {/*</Pressable>*/}
+
+                    {/*<Pressable onPress={() => router.push('/MyProfile')}>*/}
+                    {/*    <Text style={{ color: 'blue', fontSize: 20, margin: 10 }}>הפרופיל שלי</Text>*/}
+                    {/*</Pressable>*/}
                 </View>
             </View>
         </ProtectedRoute>

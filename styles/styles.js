@@ -150,6 +150,36 @@ const styles = StyleSheet.create({
     saveButtonText: {
         color: 'white',
         fontSize: 16
+    },
+    appTitle: {
+        fontSize: 60, // גודל גדול
+        fontWeight: 'bold', // הגדרת גופן עבה
+        color: 'blue', // צבע גופן מעניין (אפשר לשנות לצבע שתרצה)
+        //marginBottom: 10, // רווח בין הטקסט לתמונה או אלמנטים אחרים
+        fontFamily: 'Lato', //
+        marginTop: 20, // הוספת רווח מעל התת-כותרת
+
+    },
+    appSubtitle: {
+        fontSize: 40, // גודל טקסט קטן יותר
+        fontWeight: 'normal',
+        color: 'blue', // צבע חיוור יותר לטקסט השני
+        textAlign: 'center', // ממקם את הטקסט במרכז
+        //marginBottom: 0, // רווח תחת הטקסט
+        fontFamily: 'Cochin', // גופן פשוט יותר לקריאות
+        marginTop: 30, // הוספת רווח מעל הכותרת
+    },
+    imageStyle: {
+        width: 600, // רוחב התמונה
+        height: 600, // גובה התמונה
+        marginBottom: 300, // רווח מתחת לתמונה
+        resizeMode: 'contain', // לשמור על יחס הגובה לרוחב של התמונה
+        borderRadius: 100, // קצוות מעוגלים
+        shadowColor: '#000', // צבע הצל
+        shadowOffset: { width: 0, height: 5 }, // מרחק הצל
+        shadowOpacity: 0.3, // שקיפות הצל
+        shadowRadius: 10, // רדיוס הצל
+        elevation: 10, // הצל באנדרואיד
     }
 });
 
