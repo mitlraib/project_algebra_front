@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         padding: 20,
+
     },
     header: {
         fontSize: 24,
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
         opacity: 1,
     },
     buttonActive: {
-        backgroundColor: 'blue',
+        backgroundColor: '#2196F3',
     },
     successText: {
         color: 'green',
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     saveButton: {
-        backgroundColor: 'blue',
+        backgroundColor: '#2196F3',
         padding: 12,
         borderRadius: 5,
         alignItems: 'center'
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
     appTitle: {
         fontSize: 60, // גודל גדול
         fontWeight: 'bold', // הגדרת גופן עבה
-        color: 'blue', // צבע גופן מעניין (אפשר לשנות לצבע שתרצה)
+        color: '#2196F3', // צבע גופן מעניין (אפשר לשנות לצבע שתרצה)
         //marginBottom: 10, // רווח בין הטקסט לתמונה או אלמנטים אחרים
         fontFamily: 'Lato', //
         marginTop: 120, // הוספת רווח מעל התת-כותרת
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
     appSubtitle: {
         fontSize: 40, // גודל טקסט קטן יותר
         fontWeight: 'normal',
-        color: 'blue', // צבע חיוור יותר לטקסט השני
+        color: '#2196F3', // צבע חיוור יותר לטקסט השני
         textAlign: 'center', // ממקם את הטקסט במרכז
         marginBottom: 450, // רווח תחת הטקסט
         fontFamily: 'Cochin', // גופן פשוט יותר לקריאות
@@ -180,7 +181,61 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3, // שקיפות הצל
         shadowRadius: 10, // רדיוס הצל
         elevation: 10, // הצל באנדרואיד
-    }
+    },
+    question: {
+        fontSize: 20,
+        marginBottom: 20,
+        marginTop: 70,
+        textAlign: 'center',
+        flexWrap: 'wrap'
+    },
+    answerButton: {
+        padding: 8,
+        borderWidth: 1,
+        borderRadius: 10,
+        marginVertical: 5,
+        width: '80%',
+        alignSelf: 'center'
+    },
+    selectedAnswer: {
+        backgroundColor: '#ddd'
+    },
+    answerText: {
+        fontSize: 16,
+        textAlign: 'center',
+        flexWrap: 'wrap'
+    },
+    checkButton: {
+        marginTop: 20,
+        backgroundColor: '#4CAF50',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center'
+    },
+    checkButtonText: {
+        color: 'white',
+        fontSize: 18
+    },
+    resultText: {
+        fontSize: 18,
+        marginTop: 10,
+        textAlign: 'center'
+    },
+    nextButton: {
+        marginTop: 20,
+        backgroundColor: '#2196F3',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center'
+    },
+    nextButtonText: {
+        color: 'white',
+        fontSize: 18
+    },
+    centerAll: {
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
 });
 
 export default styles;

@@ -4,6 +4,9 @@ import axios from 'axios';
 import { useRouter } from 'expo-router';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
+import { Alert } from 'react-native';
+import styles from '../../styles/styles.js';
+
 
 export default function RandomQuestionPage() {
     const router = useRouter();
@@ -11,6 +14,9 @@ export default function RandomQuestionPage() {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showResult, setShowResult] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
+
+    const [responseMessage, setResponseMessage] = useState('');
+
 
     useEffect(() => {
         fetchRandomQuestion();
@@ -32,16 +38,39 @@ export default function RandomQuestionPage() {
         }
     }
 
+    // async function handleCheckAnswer() {
+    //     if (selectedAnswer === null) return;
+    //     try {
+    //         const res = await axios.post('/api/exercises/answer', {
+    //             answer: question.answers[selectedAnswer]
+    //         });
+    //         setIsCorrect(res.data.isCorrect);
+    //         setShowResult(true);
+    //     } catch (err) {
+    //         console.log("Error checking answer:", err);
+    //         if (err.response && err.response.status === 401) {
+    //             Cookies.remove('userToken');
+    //             router.replace('/authentication/Login');
+    //         }
+    //     }
+    // }
+
     async function handleCheckAnswer() {
         if (selectedAnswer === null) return;
         try {
             const res = await axios.post('/api/exercises/answer', {
                 answer: question.answers[selectedAnswer]
             });
+
+            console.log("Response from server:", res.data);  // חשוב לוודא שהשרת מחזיר את התוצאה
+
             setIsCorrect(res.data.isCorrect);
             setShowResult(true);
+            setResponseMessage(`תשובה נכונה! רמה חדשה: ${res.data.currentLevel}`);  // הצגת התוצאה
+
         } catch (err) {
             console.log("Error checking answer:", err);
+            setResponseMessage("שגיאה, אנא נסה שוב.");
             if (err.response && err.response.status === 401) {
                 Cookies.remove('userToken');
                 router.replace('/authentication/Login');
@@ -126,6 +155,8 @@ export default function RandomQuestionPage() {
                 <Pressable onPress={handleCheckAnswer} style={styles.checkButton}>
                     <Text style={styles.checkButtonText}>בדיקה</Text>
                 </Pressable>
+                {/* הצגת הודעה מהשרת */}
+                {responseMessage && <Text>{responseMessage}</Text>}
 
                 {showResult && (
                     <Text style={styles.resultText}>
@@ -154,70 +185,4 @@ function convertSign(sign) {
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20
-    },
-    centerAll: {
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    backButton: {
-        position: 'absolute',
-        top: 20,
-        left: 10
-    },
-    backButtonText: {
-        fontSize: 16,
-        color: 'blue'
-    },
-    question: {
-        fontSize: 20,
-        marginBottom: 20,
-        marginTop: 60,
-        textAlign: 'center',
-        flexWrap: 'wrap'
-    },
-    answerButton: {
-        padding: 8,
-        borderWidth: 1,
-        borderRadius: 10,
-        marginVertical: 5,
-        width: '80%',
-        alignItems: 'center'
-    },
-    selectedAnswer: {
-        backgroundColor: '#ddd'
-    },
-    answerText: {
-        fontSize: 18
-    },
-    checkButton: {
-        marginTop: 20,
-        backgroundColor: '#4CAF50',
-        padding: 15,
-        borderRadius: 10,
-        alignItems: 'center'
-    },
-    checkButtonText: {
-        color: 'white',
-        fontSize: 18
-    },
-    resultText: {
-        fontSize: 18,
-        marginTop: 10,
-        textAlign: 'center'
-    },
-    nextButton: {
-        marginTop: 20,
-        backgroundColor: '#2196F3',
-        padding: 15,
-        borderRadius: 10,
-        alignItems: 'center'
-    },
-    nextButtonText: {
-        color: 'white',
-        fontSize: 18
-    }
-});
+
