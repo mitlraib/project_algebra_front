@@ -38,23 +38,6 @@ export default function RandomQuestionPage() {
         }
     }
 
-    // async function handleCheckAnswer() {
-    //     if (selectedAnswer === null) return;
-    //     try {
-    //         const res = await axios.post('/api/exercises/answer', {
-    //             answer: question.answers[selectedAnswer]
-    //         });
-    //         setIsCorrect(res.data.isCorrect);
-    //         setShowResult(true);
-    //     } catch (err) {
-    //         console.log("Error checking answer:", err);
-    //         if (err.response && err.response.status === 401) {
-    //             Cookies.remove('userToken');
-    //             router.replace('/authentication/Login');
-    //         }
-    //     }
-    // }
-
     async function handleCheckAnswer() {
         if (selectedAnswer === null) return;
         try {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react'; // ייבוא useEffect
 import { View, Pressable, Text, Image, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import AppBar from '@mui/material/AppBar';
@@ -13,6 +13,14 @@ import Cookies from 'js-cookie';
 
 export default function Dashboard() {
     const router = useRouter();
+
+    useEffect(() => {
+        // בדיקה אם יש טוקן
+        const userToken = Cookies.get('userToken');
+        if (!userToken) {
+            router.replace('/authentication/Login');  // העברה לדף הכניסה אם אין טוקן
+        }
+    }, [router]);
 
     function handleStart() {
         // מעבר לשאלות רנדומליות
