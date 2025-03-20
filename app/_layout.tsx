@@ -1,43 +1,50 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Slot } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
+import { Slot, Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
-import 'react-native-reanimated';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import Cookies from 'js-cookie';
-
-SplashScreen.preventAutoHideAsync();
+import axios from 'axios';
+import { View, Text, ActivityIndicator } from 'react-native';
 
 export default function RootLayout() {
-    const colorScheme = useColorScheme();
-    const [loaded] = useFonts({
-        SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    });
-    const [user, setUser] = useState<string | null>(null);
-    const [checkingAuth, setCheckingAuth] = useState(true);
+    const [authChecked, setAuthChecked] = useState(false);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const token = Cookies.get('userToken');
-        setUser(token || null);
-        setCheckingAuth(false);
+        // נבדוק פעם אחת אם המשתמש מחובר
+        axios.get('/api/user')
+            .then(res => {
+                if (res.data && res.data.success) {
+                    setUser(res.data); // שומר את פרטי המשתמש
+                } else {
+                    Cookies.remove('userToken');
+                    setUser(null);
+                }
+            })
+            .catch(() => {
+                // לא מחובר או שגיאה
+                Cookies.remove('userToken');
+                setUser(null);
+            })
+            .finally(() => {
+                setAuthChecked(true);
+            });
     }, []);
 
-    useEffect(() => {
-        if (loaded) {
-            SplashScreen.hideAsync();
-        }
-    }, [loaded]);
-
-    if (checkingAuth || !loaded) {
-        return null;
+    if (!authChecked) {
+        // בזמן שהבדיקה מתבצעת
+        return (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <ActivityIndicator size="large" color="#000" />
+                <Text>טוען...</Text>
+            </View>
+        );
     }
 
+    // בשלב הזה, authChecked=true, ויש לנו user=null או user={...}.
     return (
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <Slot />  {/* 👈 במקום Stack, משתמשים ב-Slot כדי שהתוכן ייטען נכון */}
-            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+        <ThemeProvider value={DefaultTheme}>
+            {/* ה-Slot ירנדר את שאר המסכים */}
+            <Slot />
         </ThemeProvider>
     );
 }

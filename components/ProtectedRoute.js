@@ -1,28 +1,59 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Redirect } from 'expo-router';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
+/**
+ * קומפוננטה שעוטפת עמודים מוגנים
+ *
+ * @param {boolean} requireAuth – אם true, רק משתמש מחובר יכול לראות
+ * @param children – תוכן הקומפוננטה
+ */
 export default function ProtectedRoute({ children, requireAuth }) {
+    const [isInit, setIsInit] = useState(false);
     const [user, setUser] = useState(null);
-    const [checkingAuth, setCheckingAuth] = useState(true);
 
     useEffect(() => {
-        const token = Cookies.get('userToken');
-        setUser(token || null);
-        setCheckingAuth(false);
-    }, []);
+        // נבדוק /api/user רק אם ממש צריך (או אם requireAuth=true)
+        // או שאפשר תמיד לבדוק.
+        if (requireAuth) {
+            axios.get('/api/user')
+                .then(res => {
+                    if (res.data && res.data.success) {
+                        setUser(res.data);
+                    } else {
+                        Cookies.remove('userToken');
+                        setUser(null);
+                    }
+                })
+                .catch(() => {
+                    Cookies.remove('userToken');
+                    setUser(null);
+                })
+                .finally(() => {
+                    setIsInit(true);
+                });
+        } else {
+            // עמוד שלא דורש auth
+            setIsInit(true);
+        }
+    }, [requireAuth]);
 
-    if (checkingAuth) {
-        return null; // מחכה לוודא את הסטטוס של המשתמש
+    if (!isInit && requireAuth) {
+        // בזמן הטעינה
+        return null;
     }
 
+    // אם הדף דורש התחברות אבל אין user => להפנות ל-login
     if (requireAuth && !user) {
-        return <Redirect href="/authentication/Login" />; // אם צריך חיבור והמשתמש לא מחובר
+        return <Redirect href="/authentication/Login" />;
     }
 
+    // אם הדף לא דורש התחברות, אבל יש user => להפנות ל-dashboard
     if (!requireAuth && user) {
-        return <Redirect href="/(tabs)/Dashboard" />; // אם המשתמש מחובר והוא בעמוד התחברות
+        return <Redirect href="/(tabs)/Dashboard" />;
     }
 
+    // מציגים את הילדים כרגיל
     return children;
 }

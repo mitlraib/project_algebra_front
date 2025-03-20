@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Text, View, StyleSheet, Pressable } from 'react-native';
+import { Text, View, Pressable } from 'react-native';
 import axios from 'axios';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
 import styles from '../../styles/styles.js';
-
 
 export default function CoursePage() {
     const { id } = useLocalSearchParams();
@@ -15,6 +14,7 @@ export default function CoursePage() {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showResult, setShowResult] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
+    const [responseMessage, setResponseMessage] = useState('');
 
     useEffect(() => {
         if (id) {
@@ -29,9 +29,9 @@ export default function CoursePage() {
             setSelectedAnswer(null);
             setShowResult(false);
             setIsCorrect(false);
+            setResponseMessage('');
         } catch (err) {
             console.log("Error fetching question:", err);
-            // אם מקבלים 401 – ננתק ונעביר לדף התחברות
             if (err.response && err.response.status === 401) {
                 Cookies.remove('userToken');
                 router.replace('/authentication/Login');
@@ -39,19 +39,36 @@ export default function CoursePage() {
         }
     }
 
-
     async function handleCheckAnswer() {
-        if (selectedAnswer === null) return;
+        if (selectedAnswer === null) {
+            alert("יש לבחור תשובה תחילה.");
+            return;
+        }
+
         try {
-            const res = await axios.post('/api/exercises/answer', {
-                answer: question.answers[selectedAnswer]
-            });
+            const userAnswerValue = question.answers[selectedAnswer];
+            const res = await axios.post('/api/exercises/answer', { answer: userAnswerValue });
             setIsCorrect(res.data.isCorrect);
             setShowResult(true);
 
-            // הצגת הודעת העלאת רמה אם קיימת
-            if (res.data.levelUpMessage) {
-                alert(res.data.levelUpMessage); // הצגת הודעה בעזרת alert
+            if (res.data.isCorrect) {
+                if (res.data.levelUpMessage) {
+                    setResponseMessage(`תשובה נכונה! ${res.data.levelUpMessage}`);
+                } else {
+                    setResponseMessage(`תשובה נכונה! רמה נוכחית: ${res.data.currentLevel}`);
+                }
+            } else {
+                // תשובה שגויה
+                let correctDisplay;
+                if (typeof question.first === 'string' && question.first.includes('/')) {
+                    const c = res.data.correctAnswer || question.correctAnswer;
+                    const num = Math.floor(c / 1000);
+                    const den = c % 1000;
+                    correctDisplay = `${num}/${den}`;
+                } else {
+                    correctDisplay = question.correctAnswer;
+                }
+                setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
             }
         } catch (err) {
             console.log("Error checking answer:", err);
@@ -63,6 +80,10 @@ export default function CoursePage() {
     }
 
     function handleNextQuestion() {
+        if (!showResult) {
+            alert("יש לבדוק את התשובה לפני שעוברים לשאלה הבאה.");
+            return;
+        }
         if (id) {
             fetchNextQuestion(id);
         }
@@ -91,17 +112,6 @@ export default function CoursePage() {
         displayAnswers = question.answers;
     }
 
-    // גם לתשובה הנכונה
-    let correctDisplay = '';
-    if (typeof question.first === 'string' && question.first.includes('/')) {
-        const c = question.correctAnswer;
-        const num = Math.floor(c / 1000);
-        const den = c % 1000;
-        correctDisplay = `${num}/${den}`;
-    } else {
-        correctDisplay = question.correctAnswer;
-    }
-
     return (
         <ProtectedRoute requireAuth={true}>
             <View style={styles.container}>
@@ -125,12 +135,7 @@ export default function CoursePage() {
                         ]}
                         disabled={showResult}
                     >
-                        <Text style={styles.answerText}>
-                            {ans}
-                            {showResult && selectedAnswer === index ? (
-                                ans === correctDisplay ? ' ✔' : ' ✘'
-                            ) : ''}
-                        </Text>
+                        <Text style={styles.answerText}>{ans}</Text>
                     </Pressable>
                 ))}
 
@@ -138,16 +143,14 @@ export default function CoursePage() {
                     <Text style={styles.checkButtonText}>בדיקה</Text>
                 </Pressable>
 
-                {showResult && (
-                    <Text style={styles.resultText}>
-                        {isCorrect
-                            ? 'תשובה נכונה!'
-                            : `תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`
-                        }
-                    </Text>
-                )}
+                {responseMessage ? (
+                    <Text style={styles.resultText}>{responseMessage}</Text>
+                ) : null}
 
-                <Pressable onPress={handleNextQuestion} style={styles.nextButton}>
+                <Pressable
+                    onPress={handleNextQuestion}
+                    style={[styles.nextButton, (!showResult) && {opacity: 0.5}]}
+                >
                     <Text style={styles.nextButtonText}>שאלה הבאה</Text>
                 </Pressable>
             </View>
@@ -156,10 +159,11 @@ export default function CoursePage() {
 }
 
 function convertSign(sign) {
-    if (sign === 'fracAdd') return '+';
-    if (sign === 'fracSub') return '-';
-    if (sign === 'fracMul') return '×';
-    if (sign === 'fracDiv') return '÷';
-    return sign;
+    switch (sign) {
+        case 'fracAdd': return '+';
+        case 'fracSub': return '-';
+        case 'fracMul': return '×';
+        case 'fracDiv': return '÷';
+        default: return sign;
+    }
 }
-

@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Pressable } from 'react-native';
+import { Text, View, Pressable } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
-import { Alert } from 'react-native';
 import styles from '../../styles/styles.js';
-
 
 export default function RandomQuestionPage() {
     const router = useRouter();
@@ -14,9 +12,7 @@ export default function RandomQuestionPage() {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showResult, setShowResult] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
-
     const [responseMessage, setResponseMessage] = useState('');
-
 
     useEffect(() => {
         fetchRandomQuestion();
@@ -29,6 +25,7 @@ export default function RandomQuestionPage() {
             setSelectedAnswer(null);
             setShowResult(false);
             setIsCorrect(false);
+            setResponseMessage('');
         } catch (err) {
             console.log("Error fetching random question:", err);
             if (err.response && err.response.status === 401) {
@@ -39,17 +36,37 @@ export default function RandomQuestionPage() {
     }
 
     async function handleCheckAnswer() {
-        if (selectedAnswer === null) return;
-        try {
-            const res = await axios.post('/api/exercises/answer', {
-                answer: question.answers[selectedAnswer]
-            });
+        if (selectedAnswer === null) {
+            alert("יש לבחור תשובה תחילה.");
+            return;
+        }
 
-            console.log("Response from server:", res.data);  // חשוב לוודא שהשרת מחזיר את התוצאה
+        try {
+            const userAnswerValue = question.answers[selectedAnswer];
+            const res = await axios.post('/api/exercises/answer', { answer: userAnswerValue });
 
             setIsCorrect(res.data.isCorrect);
             setShowResult(true);
-            setResponseMessage(`תשובה נכונה! רמה חדשה: ${res.data.currentLevel}`);  // הצגת התוצאה
+
+            if (res.data.isCorrect) {
+                if (res.data.levelUpMessage) {
+                    setResponseMessage(`תשובה נכונה! ${res.data.levelUpMessage}`);
+                } else {
+                    setResponseMessage(`תשובה נכונה! רמה נוכחית: ${res.data.currentLevel}`);
+                }
+            } else {
+                // תשובה שגויה
+                let correctDisplay;
+                if (typeof question.first === 'string' && question.first.includes('/')) {
+                    const c = res.data.correctAnswer || question.correctAnswer;
+                    const num = Math.floor(c / 1000);
+                    const den = c % 1000;
+                    correctDisplay = `${num}/${den}`;
+                } else {
+                    correctDisplay = question.correctAnswer;
+                }
+                setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
+            }
 
         } catch (err) {
             console.log("Error checking answer:", err);
@@ -62,6 +79,10 @@ export default function RandomQuestionPage() {
     }
 
     function handleNext() {
+        if (!showResult) {
+            alert("יש לבדוק את התשובה לפני שעוברים לשאלה הבאה.");
+            return;
+        }
         fetchRandomQuestion();
     }
 
@@ -79,30 +100,22 @@ export default function RandomQuestionPage() {
         );
     }
 
-    let displayAnswers = [];
-    let correctDisplay = '';
+    // המרת תשובות להצגה (שברים או מספר רגיל)
+    let displayAnswers;
     if (typeof question.first === 'string' && question.first.includes('/')) {
-        // המרת תשובות של שברים
         displayAnswers = question.answers.map((encoded) => {
             const num = Math.floor(encoded / 1000);
             const den = encoded % 1000;
             return `${num}/${den}`;
         });
-        const c = question.correctAnswer;
-        const num = Math.floor(c / 1000);
-        const den = c % 1000;
-        correctDisplay = `${num}/${den}`;
     } else {
-        // רגיל
         displayAnswers = question.answers;
-        correctDisplay = question.correctAnswer;
     }
 
     return (
         <ProtectedRoute requireAuth={true}>
             <View style={[styles.container, styles.centerAll]}>
 
-                {/* שינוי קטן: אייקון חזרה - 🔙 */}
                 <Pressable onPress={handleGoBack} style={styles.backButton}>
                     <Text style={styles.backButtonText}>🔙 חזור לדף הבית</Text>
                 </Pressable>
@@ -123,34 +136,21 @@ export default function RandomQuestionPage() {
                         ]}
                         disabled={showResult}
                     >
-                        <Text style={styles.answerText}>
-                            {ans}
-                            {showResult && selectedAnswer === index
-                                ? ans === correctDisplay
-                                    ? ' ✔'
-                                    : ' ✘'
-                                : ''
-                            }
-                        </Text>
+                        <Text style={styles.answerText}>{ans}</Text>
                     </Pressable>
                 ))}
 
                 <Pressable onPress={handleCheckAnswer} style={styles.checkButton}>
                     <Text style={styles.checkButtonText}>בדיקה</Text>
                 </Pressable>
-                {/* הצגת הודעה מהשרת */}
-                {responseMessage && <Text>{responseMessage}</Text>}
 
-                {showResult && (
-                    <Text style={styles.resultText}>
-                        {isCorrect
-                            ? 'תשובה נכונה!'
-                            : `תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`
-                        }
-                    </Text>
-                )}
+                {/* תוצאת הבדיקה */}
+                {responseMessage ? (
+                    <Text style={styles.resultText}>{responseMessage}</Text>
+                ) : null}
 
-                <Pressable onPress={handleNext} style={styles.nextButton}>
+                {/* מעבר לשאלה הבאה */}
+                <Pressable onPress={handleNext} style={[styles.nextButton, (!showResult) && {opacity: 0.5}]}>
                     <Text style={styles.nextButtonText}>שאלה רנדומלית הבאה</Text>
                 </Pressable>
             </View>
@@ -167,5 +167,3 @@ function convertSign(sign) {
         default: return sign;
     }
 }
-
-
