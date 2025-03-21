@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TextInput, Image, Pressable, Button } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useRootNavigationState } from 'expo-router';
 import { Spacing } from '@/constants/Sizes';
 import styles from '../../styles/styles';
 import axios from "axios";
@@ -11,62 +11,66 @@ const Login = () => {
     const [mail, setMail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [hovered, setHovered] = useState(false); // מצב ריחוף
-    const router = useRouter();
-    const [errors, setErrors] = useState({
-        mail: '',
-        password: '',
-    });
+    const [hovered, setHovered] = useState(false);
+    const [errors, setErrors] = useState({ mail: '', password: '', form: '' });
 
-    // --------------- שינוי מסעיף #1 ---------------
-    // useEffect שבודק אם כבר קיים userToken (משתמש מחובר),
-    // אם כן - מפנה אוטומטית ל-Dashboard.
+    const router = useRouter();
+    // נבדוק האם ה־Navigation מוכן
+    const navigationState = useRootNavigationState();
+
+    // 1. אם כבר מחוברים, נפנה מיד ל־Dashboard
     useEffect(() => {
+        // אם ה־router לא מוכן עדיין, לא לעשות כלום
+        if (!navigationState?.key) return;
+
         const userToken = Cookies.get('userToken');
         if (userToken) {
             router.replace('/(tabs)/Dashboard');
         }
-    }, [router]);
-    // ---------------------------------------------
+    }, [navigationState?.key, router]);
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     };
 
     const moveToRegistration = () => {
-        router.navigate('/authentication/Register');
+        router.push('/authentication/Register');
     };
 
-    const moveToDashboard = () => {
-        router.navigate('/(tabs)/Dashboard');
-    };
-
+    // 2. לחיצה על "התחבר"
     const handleLogin = async () => {
-        if (mail && password) {
-            try {
-                const loginData = {
-                    mail,
-                    password,
-                };
+        // ננקה הודעת שגיאה קודמת (אם יש)
+        setErrors({ ...errors, form: '' });
 
-                const response = await axios.post('http://localhost:8080/api/login', loginData);
-                console.log("Response from server:", response.data);
+        // בדיקה בסיסית של שדות
+        if (!mail || !password) {
+            setErrors({ ...errors, form: 'אנא מלא אימייל וסיסמה' });
+            return;
+        }
 
-                if (response.data.success) {
-                    alert("ההתחברות הצליחה!");
-                    Cookies.set('userToken', response.data.token, { expires: 7 });
-                    setMail('');
-                    setPassword('');
-                    moveToDashboard();
-                } else {
-                    alert("שם המשתמש או הסיסמה שגויים");
-                    console.log("Error:", response.data.message);
-                }
-            } catch (error) {
-                console.error('Error during login:', error.response ? error.response.data : error.message);
+        try {
+            const loginData = { mail, password };
+            const response = await axios.post('http://localhost:8080/api/login', loginData);
+
+            if (response.data.success) {
+                alert("ההתחברות הצליחה!");
+                Cookies.set('userToken', response.data.token, { expires: 7 });
+                setMail('');
+                setPassword('');
+                // מעבר ל־Dashboard
+                router.replace('/(tabs)/Dashboard');
+            } else {
+                // אם הגיע לכאן בלי success, כנראה שהשרת החזיר status = 200 אבל success=false
+                // נשים הודעת שגיאה כוללת:
+                setErrors({ ...errors, form: response.data.message || 'תקלה לא ידועה' });
             }
-        } else {
-            alert("יש למלא את המייל והסיסמה");
+        } catch (error) {
+            // אם הסטטוס הוא 401 או 400, נקבל response.data עם message
+            if (error.response && error.response.data) {
+                setErrors({ ...errors, form: error.response.data.message });
+            } else {
+                setErrors({ ...errors, form: 'שגיאה כללית בשרת' });
+            }
         }
     };
 
@@ -105,10 +109,14 @@ const Login = () => {
                 <View style={styles.innerContainer}>
                     <Text style={styles.header}>כניסה לאיזור האישי:</Text>
 
-                    {/* Mail */}
+                    {errors.form ? (
+                        <Text style={styles.errorText}>{errors.form}</Text>
+                    ) : null}
+
+                    {/* אימייל */}
                     <TextInput
                         style={styles.input}
-                        placeholder={": אימייל "}
+                        placeholder="אימייל"
                         value={mail}
                         onChangeText={(text) => {
                             setMail(text);
@@ -118,7 +126,7 @@ const Login = () => {
                     />
                     {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
 
-                    {/* Password */}
+                    {/* סיסמה */}
                     <View style={styles.passwordContainer}>
                         <Pressable onPress={toggleShowPassword}>
                             <Image
@@ -129,7 +137,7 @@ const Login = () => {
 
                         <TextInput
                             style={styles.input}
-                            placeholder={": סיסמה "}
+                            placeholder="סיסמה"
                             onChangeText={(text) => {
                                 setPassword(text);
                                 validateField('password');
@@ -140,7 +148,7 @@ const Login = () => {
                     </View>
                     {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
 
-                    {/* Login Button */}
+                    {/* כפתור התחברות */}
                     <View style={styles.buttonContainer}>
                         <Button
                             title="התחבר"
@@ -148,7 +156,7 @@ const Login = () => {
                         />
                     </View>
 
-                    {/* Register Button */}
+                    {/* מעבר לעמוד הרשמה */}
                     <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
                         <Text style={styles.text}>לא רשומים עדיין לאפליקציה?</Text>
                     </View>

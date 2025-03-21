@@ -5,12 +5,11 @@ import axios from 'axios';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
 import styles from '../../styles/styles.js';
-
-// --- ספריית קונפטי ---
 import ConfettiCannon from 'react-native-confetti-cannon';
+import BedidesVisualization from '@/components/BedidesVisualization'; // 👈 ייבוא הקומפוננטה
 
 export default function CoursePage() {
-    const { id } = useLocalSearchParams();
+    const { id } = useLocalSearchParams();   // topicId
     const router = useRouter();
 
     const [question, setQuestion] = useState(null);
@@ -18,15 +17,32 @@ export default function CoursePage() {
     const [showResult, setShowResult] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
 
-    // --- משתני מצב עבור הפופאפ והקונפטי ---
+    // קונפטי ומודאל עלייה ברמה
     const [showLevelUpModal, setShowLevelUpModal] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
 
+    // סעיף 5: בדידים
+    const [myTopicLevel, setMyTopicLevel] = useState(1);
+    const [showSolution, setShowSolution] = useState(false);
+
     useEffect(() => {
         if (id) {
+            fetchTopicLevel(id);
             fetchNextQuestion(id);
         }
     }, [id]);
+
+    async function fetchTopicLevel(topicId) {
+        try {
+            const res = await axios.get('/api/user/topics-levels');
+            if (res.data.success) {
+                const found = res.data.topics.find(t => t.topicId == topicId);
+                if (found) setMyTopicLevel(found.level);
+            }
+        } catch (err) {
+            console.log("Error fetchTopicLevel:", err);
+        }
+    }
 
     async function fetchNextQuestion(topicId) {
         try {
@@ -35,10 +51,9 @@ export default function CoursePage() {
             setSelectedAnswer(null);
             setShowResult(false);
             setResponseMessage('');
-
-            // במקרה שבו סיימנו שאלה קודמת (והייתה קונפטי/מודאל), נאפס אותם
             setShowLevelUpModal(false);
             setShowConfetti(false);
+            setShowSolution(false);
         } catch (err) {
             console.log("Error fetching question:", err);
             if (err.response && err.response.status === 401) {
@@ -62,16 +77,13 @@ export default function CoursePage() {
 
             if (res.data.isCorrect) {
                 if (res.data.levelUpMessage) {
-                    // כאן אירוע "עליית רמה"
                     setResponseMessage(`תשובה נכונה! ${res.data.levelUpMessage}`);
-                    // הצגת הפופאפ והקונפטי
                     setShowLevelUpModal(true);
                     setShowConfetti(true);
                 } else {
                     setResponseMessage(`תשובה נכונה! רמה נוכחית: ${res.data.currentLevel}`);
                 }
             } else {
-                // תשובה שגויה
                 let correctDisplay;
                 if (typeof question.first === 'string' && question.first.includes('/')) {
                     const c = res.data.correctAnswer || question.correctAnswer;
@@ -83,9 +95,9 @@ export default function CoursePage() {
                 }
                 setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
             }
-
         } catch (err) {
             console.log("Error checking answer:", err);
+            setResponseMessage("שגיאה, אנא נסה שוב.");
             if (err.response && err.response.status === 401) {
                 Cookies.remove('userToken');
                 router.replace('/authentication/Login');
@@ -114,8 +126,8 @@ export default function CoursePage() {
         return <Text>טוען שאלה מהשרת...</Text>;
     }
 
-    // המרת תשובות (למקרה של שברים)
-    let displayAnswers = [];
+    // המרת תשובות
+    let displayAnswers;
     if (typeof question.first === 'string' && question.first.includes('/')) {
         displayAnswers = question.answers.map((encoded) => {
             const num = Math.floor(encoded / 1000);
@@ -125,6 +137,8 @@ export default function CoursePage() {
     } else {
         displayAnswers = question.answers;
     }
+
+    const showHelpButton = (id == 1 || id == 2) && (myTopicLevel <= 2);
 
     return (
         <ProtectedRoute requireAuth={true}>
@@ -168,7 +182,30 @@ export default function CoursePage() {
                     <Text style={styles.nextButtonText}>שאלה הבאה</Text>
                 </Pressable>
 
-                {/* קונפטי על המסך */}
+                {/* כפתור "איך פותרים?" */}
+                {showHelpButton && (
+                    <Pressable
+                        style={{ marginTop: 20, backgroundColor: '#EEE', padding: 10, borderRadius: 5 }}
+                        onPress={() => setShowSolution(!showSolution)}
+                    >
+                        <Text style={{ color: 'blue' }}>
+                            {showSolution ? 'הסתר פתרון בדידים' : 'איך פותרים? (בדידים)'}
+                        </Text>
+                    </Pressable>
+                )}
+
+                {/* הצגת הבדידים בפועל */}
+                {showSolution && (
+                    <View style={{ marginTop: 20 }}>
+                        <Text>המחשה בבדידים:</Text>
+                        <BedidesVisualization
+                            firstNum={Number(question.first)}
+                            secondNum={Number(question.second)}
+                            operation={id == 1 ? 'add' : 'sub'}
+                        />
+                    </View>
+                )}
+
                 {showConfetti && (
                     <ConfettiCannon
                         count={150}
@@ -178,12 +215,7 @@ export default function CoursePage() {
                     />
                 )}
 
-                {/* פופאפ (מודאל) שמופיע ברגע שעלינו רמה */}
-                <Modal
-                    visible={showLevelUpModal}
-                    transparent
-                    animationType="slide"
-                >
+                <Modal visible={showLevelUpModal} transparent animationType="slide">
                     <View style={modalStyles.modalOverlay}>
                         <View style={modalStyles.modalBox}>
                             <Text style={modalStyles.modalTitle}>כל הכבוד!</Text>
@@ -209,7 +241,6 @@ function convertSign(sign) {
     }
 }
 
-// סגנונות ל-modal
 const modalStyles = StyleSheet.create({
     modalOverlay: {
         flex: 1,

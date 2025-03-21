@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useRootNavigationState } from 'expo-router';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,14 +13,16 @@ import styles from '../../styles/styles';
 
 export default function Dashboard() {
     const router = useRouter();
+    const navigationState = useRootNavigationState();
 
     useEffect(() => {
-        // בדיקה אם יש טוקן
+        if (!navigationState?.key) return; // מוודאים שה־Router מוכן
         const userToken = Cookies.get('userToken');
         if (!userToken) {
+            // אם אין טוקן, מעבירים ללוגין
             router.replace('/authentication/Login');
         }
-    }, [router]);
+    }, [navigationState?.key, router]);
 
     function handleStart() {
         // מעבר לשאלות רנדומליות
@@ -66,13 +68,13 @@ export default function Dashboard() {
                 <View style={[styles.container, styles.centerArea]}>
                     <Text style={styles.appTitle}>ברוכים הבאים לMathJourney!</Text>
 
-                    {/* שינוי סגנון התמונה כדי שתתאים עצמה למסך */}
+                    {/* הגדרה כך שהתמונה לא "תידחף" מתחת ל־AppBar */}
                     <Image
                         source={require('../../assets/images/learning-math.jpg')}
                         style={{
                             width: '100%',
                             height: undefined,
-                            aspectRatio: 1.5, // אפשר לשנות 1.5/2 כדי לשלוט בגובה היחסי
+                            aspectRatio: 1.5,
                             resizeMode: 'contain',
                             marginVertical: 10,
                         }}
@@ -85,7 +87,6 @@ export default function Dashboard() {
                         {'\n'}
                         בהצלחה!
                     </Text>
-
                 </View>
             </View>
         </ProtectedRoute>

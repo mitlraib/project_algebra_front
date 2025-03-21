@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, Switch } from 'react-native';
+import { View, Text, TextInput, Pressable, Switch } from 'react-native';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -19,10 +19,9 @@ export default function MyProfile() {
     const [detailedSolutions, setDetailedSolutions] = useState(false);
     const [topicLevels, setTopicLevels] = useState([]);
 
-    // --------------- שינוי מסעיף #4 ---------------
+    // נוסיף גם תרגילים ושגיאות
     const [totalExercises, setTotalExercises] = useState(0);
     const [totalMistakes, setTotalMistakes] = useState(0);
-    // ---------------------------------------------
 
     useEffect(() => {
         fetchUserFromServer();
@@ -36,11 +35,8 @@ export default function MyProfile() {
                 setName(`${res.data.firstName} ${res.data.lastName}`);
                 setEmail(res.data.mail);
                 setLevel(res.data.level || 1);
-
-                // --------------- שינוי מסעיף #4 ---------------
                 setTotalExercises(res.data.totalExercises || 0);
                 setTotalMistakes(res.data.totalMistakes || 0);
-                // ---------------------------------------------
             }
         } catch (err) {
             console.log("Error fetching user info:", err);
@@ -67,7 +63,7 @@ export default function MyProfile() {
                 alert(`עודכן רמה ל-${newLevel} בנושא ID=${topicId}`);
                 fetchUserTopics();
             } else {
-                alert("לא ניתן לעדכן רמה (אולי היא גבוהה מדי)");
+                alert("לא ניתן לעדכן רמה");
             }
         } catch (err) {
             console.log("Error updateTopicLevel:", err);
@@ -97,11 +93,9 @@ export default function MyProfile() {
                     <>
                         <Text style={styles.label}>שלום {name}!</Text>
                         <Text style={styles.label}>אימייל: {email}</Text>
-                        <Text style={styles.label}>
-                            (רמת משתמש כללית ישנה: {level})
-                        </Text>
+                        <Text style={styles.label}>(רמת משתמש כללית ישנה: {level})</Text>
 
-                        {/* מציגים את המספרים החדשים */}
+                        {/* מציגים ערכי תרגילים ושגיאות */}
                         <Text style={[styles.label, { marginTop: 10 }]}>
                             סה"כ תרגילים שפתרתי: {totalExercises}
                         </Text>
@@ -120,7 +114,6 @@ export default function MyProfile() {
                                 <Text style={{ fontSize: 16, marginRight: 10 }}>
                                     {t.topicName} (#{t.topicId}): רמה {t.level}
                                 </Text>
-                                {/* כפתור הורדת רמה */}
                                 {t.level > 1 && (
                                     <Pressable
                                         onPress={() => updateTopicLevel(t.topicId, t.level - 1)}
