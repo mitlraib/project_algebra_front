@@ -5,7 +5,6 @@ import axios from 'axios';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import styles from '../../styles/styles';
 
-
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://localhost:8080';
 
@@ -20,6 +19,11 @@ export default function MyProfile() {
     const [detailedSolutions, setDetailedSolutions] = useState(false);
     const [topicLevels, setTopicLevels] = useState([]);
 
+    // --------------- שינוי מסעיף #4 ---------------
+    const [totalExercises, setTotalExercises] = useState(0);
+    const [totalMistakes, setTotalMistakes] = useState(0);
+    // ---------------------------------------------
+
     useEffect(() => {
         fetchUserFromServer();
         fetchUserTopics();
@@ -32,6 +36,11 @@ export default function MyProfile() {
                 setName(`${res.data.firstName} ${res.data.lastName}`);
                 setEmail(res.data.mail);
                 setLevel(res.data.level || 1);
+
+                // --------------- שינוי מסעיף #4 ---------------
+                setTotalExercises(res.data.totalExercises || 0);
+                setTotalMistakes(res.data.totalMistakes || 0);
+                // ---------------------------------------------
             }
         } catch (err) {
             console.log("Error fetching user info:", err);
@@ -92,6 +101,14 @@ export default function MyProfile() {
                             (רמת משתמש כללית ישנה: {level})
                         </Text>
 
+                        {/* מציגים את המספרים החדשים */}
+                        <Text style={[styles.label, { marginTop: 10 }]}>
+                            סה"כ תרגילים שפתרתי: {totalExercises}
+                        </Text>
+                        <Text style={styles.label}>
+                            סה"כ שגיאות שהיו לי: {totalMistakes}
+                        </Text>
+
                         <Text style={[styles.label, { marginTop: 10, fontWeight: 'bold' }]}>
                             רמת קושי בכל נושא:
                         </Text>
@@ -120,7 +137,6 @@ export default function MyProfile() {
                             style={styles.input}
                             value={language}
                             editable={false}
-                           // onChangeText={setLanguage}
                         />
 
                         <View style={styles.switchContainer}>

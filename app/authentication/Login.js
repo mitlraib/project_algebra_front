@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, TextInput, Image, Pressable, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Spacing } from '@/constants/Sizes';
 import styles from '../../styles/styles';
 import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
-// import { StyleSheet, StatusBar, Platform } from 'react-native';
-// import { Sizes } from '@/constants/Sizes';
 import Cookies from 'js-cookie';
-
 
 const Login = () => {
     const [mail, setMail] = useState('');
@@ -20,6 +17,17 @@ const Login = () => {
         mail: '',
         password: '',
     });
+
+    // --------------- שינוי מסעיף #1 ---------------
+    // useEffect שבודק אם כבר קיים userToken (משתמש מחובר),
+    // אם כן - מפנה אוטומטית ל-Dashboard.
+    useEffect(() => {
+        const userToken = Cookies.get('userToken');
+        if (userToken) {
+            router.replace('/(tabs)/Dashboard');
+        }
+    }, [router]);
+    // ---------------------------------------------
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -34,7 +42,7 @@ const Login = () => {
     };
 
     const handleLogin = async () => {
-        if (mail && password) { // אם המייל והסיסמא קיימים
+        if (mail && password) {
             try {
                 const loginData = {
                     mail,
@@ -42,7 +50,6 @@ const Login = () => {
                 };
 
                 const response = await axios.post('http://localhost:8080/api/login', loginData);
-
                 console.log("Response from server:", response.data);
 
                 if (response.data.success) {
@@ -51,8 +58,6 @@ const Login = () => {
                     setMail('');
                     setPassword('');
                     moveToDashboard();
-
-                    //router.push(''); // שינוי לדף הרלוונטי
                 } else {
                     alert("שם המשתמש או הסיסמה שגויים");
                     console.log("Error:", response.data.message);
@@ -64,6 +69,7 @@ const Login = () => {
             alert("יש למלא את המייל והסיסמה");
         }
     };
+
     const validateField = (fieldName) => {
         let valid = true;
         let newErrors = { ...errors };
@@ -93,85 +99,74 @@ const Login = () => {
         return valid;
     };
 
-
-    // const validateFields = () => {
-    //     return (
-    //         validateField('mail') &&
-    //         validateField('password')
-    //     );
-    // }
     return (
         <ProtectedRoute requireAuth={false}>
+            <View style={styles.container}>
+                <View style={styles.innerContainer}>
+                    <Text style={styles.header}>כניסה לאיזור האישי:</Text>
 
-        <View style={styles.container}>
-            <View style={styles.innerContainer}>
-                <Text style={styles.header}>כניסה לאיזור האישי:</Text>
-
-                {/* Mail */}
-                <TextInput
-                    style={styles.input}
-                    placeholder={": אימייל "}
-                    value={mail}
-                    onChangeText={(text)=>{
-                        setMail(text);
-                        validateField('mail');
-                    }}
-                    onBlur={() => validateField('mail')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
-                />
-                {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
-
-
-                {/* Password */}
-                <View style={styles.passwordContainer}>
-                    <Pressable onPress={toggleShowPassword}>
-                        <Image
-                            source={{ uri: 'https://as2.ftcdn.net/jpg/01/46/11/95/220_F_146119533_BAlUoUk3eo9eSXBnMuMdUDPvLdeLpWJr.jpg' }}
-                            style={styles.eyeIcon}
-                        />
-                    </Pressable>
-
+                    {/* Mail */}
                     <TextInput
                         style={styles.input}
-                        placeholder={": סיסמה "}
+                        placeholder={": אימייל "}
+                        value={mail}
                         onChangeText={(text) => {
-                            setPassword(text);
-                            validateField('password');
+                            setMail(text);
+                            validateField('mail');
                         }}
-                        onBlur={() => validateField('password')}
-                        secureTextEntry={!showPassword}
+                        onBlur={() => validateField('mail')}
                     />
-                </View>
-                {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
-                <View >
+                    {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
 
-                </View>
+                    {/* Password */}
+                    <View style={styles.passwordContainer}>
+                        <Pressable onPress={toggleShowPassword}>
+                            <Image
+                                source={{ uri: 'https://as2.ftcdn.net/jpg/01/46/11/95/220_F_146119533_BAlUoUk3eo9eSXBnMuMdUDPvLdeLpWJr.jpg' }}
+                                style={styles.eyeIcon}
+                            />
+                        </Pressable>
 
-                {/* Login Button */}
-                <View style={styles.buttonContainer}>
-                    <Button
-                        title="התחבר"
-                        onPress={handleLogin}
-                    />
-                </View>
-                {/* Register Button */}
-                <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                    <Text style={styles.text}>לא רשומים עדיין לאפליקציה?</Text>
-                </View>
-                <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                    <Pressable
-                        onPress={moveToRegistration}  // הוספת הניווט בלחיצה
-                        onMouseEnter={() => setHovered(true)}  // הגדרת מצב ריחוף
-                        onMouseLeave={() => setHovered(false)} // הגדרת מצב יציאה מריחוף
-                        style={[
-                            styles.button,
-                            hovered && styles.buttonActive,  // שינוי צבע בריחוף
-                        ]}
-                    >
-                        <Text style={styles.linkText}>הירשמו!</Text>
-                    </Pressable>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={": סיסמה "}
+                            onChangeText={(text) => {
+                                setPassword(text);
+                                validateField('password');
+                            }}
+                            onBlur={() => validateField('password')}
+                            secureTextEntry={!showPassword}
+                        />
+                    </View>
+                    {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+
+                    {/* Login Button */}
+                    <View style={styles.buttonContainer}>
+                        <Button
+                            title="התחבר"
+                            onPress={handleLogin}
+                        />
+                    </View>
+
+                    {/* Register Button */}
+                    <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                        <Text style={styles.text}>לא רשומים עדיין לאפליקציה?</Text>
+                    </View>
+                    <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                        <Pressable
+                            onPress={moveToRegistration}
+                            onMouseEnter={() => setHovered(true)}
+                            onMouseLeave={() => setHovered(false)}
+                            style={[
+                                styles.button,
+                                hovered && styles.buttonActive,
+                            ]}
+                        >
+                            <Text style={styles.linkText}>הירשמו!</Text>
+                        </Pressable>
+                    </View>
                 </View>
             </View>
-        </View>
         </ProtectedRoute>
     );
 };

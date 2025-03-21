@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Pressable } from 'react-native';
+import { Text, View, Pressable, Modal, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
 import styles from '../../styles/styles.js';
 
+// --- ספריית קונפטי ---
+import ConfettiCannon from 'react-native-confetti-cannon';
+
 export default function RandomQuestionPage() {
     const router = useRouter();
     const [question, setQuestion] = useState(null);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showResult, setShowResult] = useState(false);
-    const [isCorrect, setIsCorrect] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
+
+    // --- משתני מצב עבור הפופאפ והקונפטי ---
+    const [showLevelUpModal, setShowLevelUpModal] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(false);
 
     useEffect(() => {
         fetchRandomQuestion();
@@ -24,8 +30,9 @@ export default function RandomQuestionPage() {
             setQuestion(res.data);
             setSelectedAnswer(null);
             setShowResult(false);
-            setIsCorrect(false);
             setResponseMessage('');
+            setShowLevelUpModal(false);
+            setShowConfetti(false);
         } catch (err) {
             console.log("Error fetching random question:", err);
             if (err.response && err.response.status === 401) {
@@ -45,17 +52,18 @@ export default function RandomQuestionPage() {
             const userAnswerValue = question.answers[selectedAnswer];
             const res = await axios.post('/api/exercises/answer', { answer: userAnswerValue });
 
-            setIsCorrect(res.data.isCorrect);
             setShowResult(true);
 
             if (res.data.isCorrect) {
                 if (res.data.levelUpMessage) {
+                    // אירוע עליית רמה
                     setResponseMessage(`תשובה נכונה! ${res.data.levelUpMessage}`);
+                    setShowLevelUpModal(true);
+                    setShowConfetti(true);
                 } else {
                     setResponseMessage(`תשובה נכונה! רמה נוכחית: ${res.data.currentLevel}`);
                 }
             } else {
-                // תשובה שגויה
                 let correctDisplay;
                 if (typeof question.first === 'string' && question.first.includes('/')) {
                     const c = res.data.correctAnswer || question.correctAnswer;
@@ -100,7 +108,7 @@ export default function RandomQuestionPage() {
         );
     }
 
-    // המרת תשובות להצגה (שברים או מספר רגיל)
+    // המרת תשובות
     let displayAnswers;
     if (typeof question.first === 'string' && question.first.includes('/')) {
         displayAnswers = question.answers.map((encoded) => {
@@ -144,15 +152,40 @@ export default function RandomQuestionPage() {
                     <Text style={styles.checkButtonText}>בדיקה</Text>
                 </Pressable>
 
-                {/* תוצאת הבדיקה */}
                 {responseMessage ? (
                     <Text style={styles.resultText}>{responseMessage}</Text>
                 ) : null}
 
-                {/* מעבר לשאלה הבאה */}
-                <Pressable onPress={handleNext} style={[styles.nextButton, (!showResult) && {opacity: 0.5}]}>
+                <Pressable onPress={handleNext} style={[styles.nextButton, (!showResult) && { opacity: 0.5 }]}>
                     <Text style={styles.nextButtonText}>שאלה רנדומלית הבאה</Text>
                 </Pressable>
+
+                {/* קונפטי */}
+                {showConfetti && (
+                    <ConfettiCannon
+                        count={150}
+                        origin={{ x: 200, y: 0 }}
+                        fadeOut={true}
+                        autoStart={true}
+                    />
+                )}
+
+                {/* פופאפ עליית רמה */}
+                <Modal
+                    visible={showLevelUpModal}
+                    transparent
+                    animationType="slide"
+                >
+                    <View style={modalStyles.modalOverlay}>
+                        <View style={modalStyles.modalBox}>
+                            <Text style={modalStyles.modalTitle}>כל הכבוד!</Text>
+                            <Text style={modalStyles.modalText}>עלית רמה!</Text>
+                            <Pressable onPress={() => setShowLevelUpModal(false)} style={modalStyles.closeButton}>
+                                <Text style={modalStyles.closeButtonText}>סגור</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </Modal>
             </View>
         </ProtectedRoute>
     );
@@ -167,3 +200,38 @@ function convertSign(sign) {
         default: return sign;
     }
 }
+
+const modalStyles = StyleSheet.create({
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalBox: {
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    modalText: {
+        fontSize: 16,
+        marginBottom: 15,
+    },
+    closeButton: {
+        backgroundColor: '#2196F3',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 8,
+    },
+    closeButtonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+});

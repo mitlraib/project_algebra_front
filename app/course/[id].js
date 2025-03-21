@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Text, View, Pressable } from 'react-native';
+import { Text, View, Pressable, Modal, StyleSheet } from 'react-native';
 import axios from 'axios';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
 import styles from '../../styles/styles.js';
+
+// --- ספריית קונפטי ---
+import ConfettiCannon from 'react-native-confetti-cannon';
 
 export default function CoursePage() {
     const { id } = useLocalSearchParams();
@@ -13,8 +16,11 @@ export default function CoursePage() {
     const [question, setQuestion] = useState(null);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showResult, setShowResult] = useState(false);
-    const [isCorrect, setIsCorrect] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
+
+    // --- משתני מצב עבור הפופאפ והקונפטי ---
+    const [showLevelUpModal, setShowLevelUpModal] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -28,8 +34,11 @@ export default function CoursePage() {
             setQuestion(res.data);
             setSelectedAnswer(null);
             setShowResult(false);
-            setIsCorrect(false);
             setResponseMessage('');
+
+            // במקרה שבו סיימנו שאלה קודמת (והייתה קונפטי/מודאל), נאפס אותם
+            setShowLevelUpModal(false);
+            setShowConfetti(false);
         } catch (err) {
             console.log("Error fetching question:", err);
             if (err.response && err.response.status === 401) {
@@ -48,12 +57,16 @@ export default function CoursePage() {
         try {
             const userAnswerValue = question.answers[selectedAnswer];
             const res = await axios.post('/api/exercises/answer', { answer: userAnswerValue });
-            setIsCorrect(res.data.isCorrect);
+
             setShowResult(true);
 
             if (res.data.isCorrect) {
                 if (res.data.levelUpMessage) {
+                    // כאן אירוע "עליית רמה"
                     setResponseMessage(`תשובה נכונה! ${res.data.levelUpMessage}`);
+                    // הצגת הפופאפ והקונפטי
+                    setShowLevelUpModal(true);
+                    setShowConfetti(true);
                 } else {
                     setResponseMessage(`תשובה נכונה! רמה נוכחית: ${res.data.currentLevel}`);
                 }
@@ -70,6 +83,7 @@ export default function CoursePage() {
                 }
                 setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
             }
+
         } catch (err) {
             console.log("Error checking answer:", err);
             if (err.response && err.response.status === 401) {
@@ -149,10 +163,37 @@ export default function CoursePage() {
 
                 <Pressable
                     onPress={handleNextQuestion}
-                    style={[styles.nextButton, (!showResult) && {opacity: 0.5}]}
+                    style={[styles.nextButton, (!showResult) && { opacity: 0.5 }]}
                 >
                     <Text style={styles.nextButtonText}>שאלה הבאה</Text>
                 </Pressable>
+
+                {/* קונפטי על המסך */}
+                {showConfetti && (
+                    <ConfettiCannon
+                        count={150}
+                        origin={{ x: 200, y: 0 }}
+                        fadeOut={true}
+                        autoStart={true}
+                    />
+                )}
+
+                {/* פופאפ (מודאל) שמופיע ברגע שעלינו רמה */}
+                <Modal
+                    visible={showLevelUpModal}
+                    transparent
+                    animationType="slide"
+                >
+                    <View style={modalStyles.modalOverlay}>
+                        <View style={modalStyles.modalBox}>
+                            <Text style={modalStyles.modalTitle}>כל הכבוד!</Text>
+                            <Text style={modalStyles.modalText}>עלית רמה!</Text>
+                            <Pressable onPress={() => setShowLevelUpModal(false)} style={modalStyles.closeButton}>
+                                <Text style={modalStyles.closeButtonText}>סגור</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </Modal>
             </View>
         </ProtectedRoute>
     );
@@ -167,3 +208,39 @@ function convertSign(sign) {
         default: return sign;
     }
 }
+
+// סגנונות ל-modal
+const modalStyles = StyleSheet.create({
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalBox: {
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    modalText: {
+        fontSize: 16,
+        marginBottom: 15,
+    },
+    closeButton: {
+        backgroundColor: '#2196F3',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 8,
+    },
+    closeButtonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+});
