@@ -96,12 +96,12 @@ export default function MyProfile() {
                         <Text style={styles.label}>(רמת משתמש כללית ישנה: {level})</Text>
 
                         {/* מציגים ערכי תרגילים ושגיאות */}
-                        <Text style={[styles.label, { marginTop: 10 }]}>
-                            סה"כ תרגילים שפתרתי: {totalExercises}
-                        </Text>
-                        <Text style={styles.label}>
-                            סה"כ שגיאות שהיו לי: {totalMistakes}
-                        </Text>
+                        {/*<Text style={[styles.label, { marginTop: 10 }]}>*/}
+                        {/*    סה"כ תרגילים שפתרתי: {totalExercises}*/}
+                        {/*</Text>*/}
+                        {/*<Text style={styles.label}>*/}
+                        {/*    סה"כ שגיאות שהיו לי: {totalMistakes}*/}
+                        {/*</Text>*/}
 
                         <Text style={[styles.label, { marginTop: 10, fontWeight: 'bold' }]}>
                             רמת קושי בכל נושא:

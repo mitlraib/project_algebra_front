@@ -72,13 +72,15 @@ export default function Dashboard() {
                     <Image
                         source={require('../../assets/images/learning-math.jpg')}
                         style={{
-                            width: '100%',
-                            height: undefined,
+                            width: '80%',
+                            height: '90%',
                             aspectRatio: 1.5,
                             resizeMode: 'contain',
                             marginVertical: 10,
                         }}
                     />
+
+
 
                     <Text style={styles.appSubtitle}>
                         האתר שלנו נועד לעזור לך ללמוד חשבון בצורה חכמה ומהנה,
