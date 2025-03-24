@@ -15,6 +15,7 @@ export default function MyProfile() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [level, setLevel] = useState(1);
+    const [role, setRole] = useState();
     const [language, setLanguage] = useState('עברית');
     const [detailedSolutions, setDetailedSolutions] = useState(false);
     const [topicLevels, setTopicLevels] = useState([]);
@@ -35,6 +36,7 @@ export default function MyProfile() {
                 setName(`${res.data.firstName} ${res.data.lastName}`);
                 setEmail(res.data.mail);
                 setLevel(res.data.level || 1);
+                setRole(res.data.role ) ;
                 setTotalExercises(res.data.totalExercises || 0);
                 setTotalMistakes(res.data.totalMistakes || 0);
             }
@@ -93,6 +95,7 @@ export default function MyProfile() {
                     <>
                         <Text style={styles.label}>שלום {name}!</Text>
                         <Text style={styles.label}>אימייל: {email}</Text>
+                        <Text style={styles.label}>תפקיד: {role}</Text>
                         <Text style={styles.label}>(רמת משתמש כללית ישנה: {level})</Text>
 
                         {/* מציגים ערכי תרגילים ושגיאות */}

@@ -126,6 +126,7 @@ export const Register = () => {
                     setLastName('');
                     setMail('');
                     setPassword('');
+                    setPassword('');
                     setConfirmPassword('');
 
                     //router.push('/authentication/Login');
