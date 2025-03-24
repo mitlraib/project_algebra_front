@@ -50,6 +50,10 @@ export default function Dashboard() {
         router.push("course/randomQuestionPage");
     }
 
+    function moveStatistic() {
+        router.push('/Statistics');
+    }
+
     const handleLogout = () => {
         Cookies.remove('userToken');
         router.replace('/authentication/Login');
@@ -75,7 +79,7 @@ export default function Dashboard() {
                             >
                                 <Button color="inherit" onClick={handleStart}>התחל</Button>
                                 {user?.role === 'ADMIN' && (
-                                    <Button color="inherit">סטטיסטיקות</Button>
+                                    <Button color="inherit" onClick={moveStatistic}>סטטיסטיקות</Button>
                                 )}
                             </Box>
                             <ExitToAppIcon />
