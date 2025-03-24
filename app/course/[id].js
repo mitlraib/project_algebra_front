@@ -1,29 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Text, View, Pressable, Modal, StyleSheet } from 'react-native';
+import { Text, View, Pressable, Modal, StyleSheet, Animated, ScrollView } from 'react-native';
 import axios from 'axios';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
 import styles from '../../styles/styles.js';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import BedidesVisualization from '@/components/BedidesVisualization'; // 👈 ייבוא הקומפוננטה
+import BedidesVisualization from '@/components/BedidesVisualization';
 
 export default function CoursePage() {
-    const { id } = useLocalSearchParams();   // topicId
+    const { id } = useLocalSearchParams(); // topicId
     const router = useRouter();
 
     const [question, setQuestion] = useState(null);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showResult, setShowResult] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
-
-    // קונפטי ומודאל עלייה ברמה
     const [showLevelUpModal, setShowLevelUpModal] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
 
-    // סעיף 5: בדידים
+    // רמת המשתמש בנושא הנוכחי
     const [myTopicLevel, setMyTopicLevel] = useState(1);
+
+    // הצגת פתרון (בדידים או מאונך)
     const [showSolution, setShowSolution] = useState(false);
+    const fadeAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         if (id) {
@@ -31,6 +32,18 @@ export default function CoursePage() {
             fetchNextQuestion(id);
         }
     }, [id]);
+
+    useEffect(() => {
+        if (showSolution) {
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 700,
+                useNativeDriver: true,
+            }).start();
+        } else {
+            fadeAnim.setValue(0);
+        }
+    }, [showSolution]);
 
     async function fetchTopicLevel(topicId) {
         try {
@@ -86,6 +99,7 @@ export default function CoursePage() {
             } else {
                 let correctDisplay;
                 if (typeof question.first === 'string' && question.first.includes('/')) {
+                    // שברים
                     const c = res.data.correctAnswer || question.correctAnswer;
                     const num = Math.floor(c / 1000);
                     const den = c % 1000;
@@ -138,7 +152,76 @@ export default function CoursePage() {
         displayAnswers = question.answers;
     }
 
-    const showHelpButton = (id == 1 || id == 2) && (myTopicLevel <= 2);
+    // האם זה חיבור/חיסור – בשביל להחליט אם להציג "איך פותרים?"
+    const isAddOrSub = (id == 1 || id == 2);
+
+    // פונקציה להצגת סימן
+    function convertSign(sign) {
+        switch (sign) {
+            case 'fracAdd': return '+';
+            case 'fracSub': return '-';
+            case 'fracMul': return '×';
+            case 'fracDiv': return '÷';
+            case 'add':     return '+';
+            case 'sub':     return '-';
+            default:        return sign;
+        }
+    }
+
+    let shouldShowHelpButton = false;
+    // את יכולה להחליט אם בכל הרמות או רק ב <=2, וכו'...
+    if (isAddOrSub) {
+        shouldShowHelpButton = true; // כרגע אפעל לפי מה שאמרת
+    }
+
+    // helper
+    const isBedides = (myTopicLevel <= 2); // רמה 1–2 => בדידים, מעל => חישוב מאונך
+
+    function renderBedidesExplanation() {
+        const operationWord = (id == 1) ? 'נוסיף' : 'נחסיר';
+        return (
+            <ScrollView style={{ maxHeight: 300, marginTop: 20 }} >
+                <Animated.View style={[localStyles.rightSideWrapper, { opacity: fadeAnim }]}>
+                    <Text style={localStyles.bigText}>
+                        נניח שיש לנו {question.first} כדורים, {operationWord} {question.second},
+                    </Text>
+                    <BedidesVisualization
+                        firstNum={Number(question.first)}
+                        secondNum={Number(question.second)}
+                        operation={id == 1 ? 'add' : 'sub'}
+
+
+                        />
+                    <Text style={localStyles.bigText}>
+                        ונקבל {(id == 1) ? (Number(question.first) + Number(question.second)) : (Number(question.first) - Number(question.second))} כדורים.
+                    </Text>
+                </Animated.View>
+            </ScrollView>
+        );
+    }
+
+    function renderVerticalSolution() {
+        const sign = (id == 1) ? '+' : '-';
+        const firstNum = Number(question.first);
+        const secondNum = Number(question.second);
+        const resultNum = (id == 1) ? (firstNum + secondNum) : (firstNum - secondNum);
+
+        return (
+            <ScrollView style={{ maxHeight: 300, marginTop: 20 }}>
+                <Animated.View style={[localStyles.rightSideWrapper, { opacity: fadeAnim }]}>
+                    <Text style={localStyles.bigText}>פתרון במאונך :</Text>
+                    <Text style={[localStyles.bigText, { textAlign: 'right', marginTop: 10 }]}>
+                        {`
+     ${firstNum}
+${sign}    ${secondNum}
+------------
+     ${resultNum}
+`}
+                    </Text>
+                </Animated.View>
+            </ScrollView>
+        );
+    }
 
     return (
         <ProtectedRoute requireAuth={true}>
@@ -147,10 +230,12 @@ export default function CoursePage() {
                     <Text style={styles.backButtonText}>🔙 חזרה למסך הקורסים</Text>
                 </Pressable>
 
+                {/* שאלת התרגיל */}
                 <Text style={styles.question}>
                     {question.first} {convertSign(question.operationSign)} {question.second} = ?
                 </Text>
 
+                {/* תשובות */}
                 {displayAnswers.map((ans, index) => (
                     <Pressable
                         key={index}
@@ -167,7 +252,12 @@ export default function CoursePage() {
                     </Pressable>
                 ))}
 
-                <Pressable onPress={handleCheckAnswer} style={styles.checkButton}>
+                {/* כפתור בדיקה – מנע לחיצות נוספות אחרי בדיקה */}
+                <Pressable
+                    onPress={handleCheckAnswer}
+                    style={[styles.checkButton, showResult && { opacity: 0.5 }]}
+                    disabled={showResult} // כאן הנעילה
+                >
                     <Text style={styles.checkButtonText}>בדיקה</Text>
                 </Pressable>
 
@@ -183,27 +273,21 @@ export default function CoursePage() {
                 </Pressable>
 
                 {/* כפתור "איך פותרים?" */}
-                {showHelpButton && (
+                {shouldShowHelpButton && (
                     <Pressable
                         style={{ marginTop: 20, backgroundColor: '#EEE', padding: 10, borderRadius: 5 }}
                         onPress={() => setShowSolution(!showSolution)}
+                        disabled={!showResult} // רק אחרי בדיקה
                     >
-                        <Text style={{ color: 'blue' }}>
-                            {showSolution ? 'הסתר פתרון בדידים' : 'איך פותרים? (בדידים)'}
+                        <Text style={{ color: (!showResult ? 'gray' : 'blue') }}>
+                            {showSolution ? 'הסתר פתרון' : 'איך פותרים?'}
                         </Text>
                     </Pressable>
                 )}
 
-                {/* הצגת הבדידים בפועל */}
-                {showSolution && (
-                    <View style={{ marginTop: 20 }}>
-                        <Text>המחשה בבדידים:</Text>
-                        <BedidesVisualization
-                            firstNum={Number(question.first)}
-                            secondNum={Number(question.second)}
-                            operation={id == 1 ? 'add' : 'sub'}
-                        />
-                    </View>
+                {/* הצגת ההסבר: גלילה וכו' */}
+                {showSolution && showResult && (
+                    isBedides ? renderBedidesExplanation() : renderVerticalSolution()
                 )}
 
                 {showConfetti && (
@@ -231,12 +315,19 @@ export default function CoursePage() {
     );
 }
 
-function convertSign(sign) {
-    switch (sign) {
-        case 'fracAdd': return '+';
-        case 'fracSub': return '-';
-        case 'fracMul': return '×';
-        case 'fracDiv': return '÷';
-        default: return sign;
+const localStyles = StyleSheet.create({
+    rightSideWrapper: {
+        alignSelf: 'flex-end',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-end',
+        // רקע דהוי כדי להמחיש
+        backgroundColor: '#f9f9f9',
+        padding: 10,
+        marginRight: 10,
+        borderRadius: 6
+    },
+    bigText: {
+        fontSize: 20,
+        marginBottom: 10
     }
-}
+});

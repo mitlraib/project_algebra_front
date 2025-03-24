@@ -1,6 +1,5 @@
-// BedidesVisualization.js
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
 export default function BedidesVisualization({ firstNum, secondNum, operation }) {
     let resultNum = 0;
@@ -12,51 +11,51 @@ export default function BedidesVisualization({ firstNum, secondNum, operation })
 
     const renderRow = (count, color) => {
         return (
-            <View style={styles.rowRight}>
+            <View style={{ flexDirection: 'row-reverse', marginBottom: 5 }}>
+                {/* row-reverse כדי להתחיל מימין */}
                 {[...Array(count)].map((_, i) => (
-                    <View
-                        key={i}
-                        style={[
-                            styles.circle,
-                            { backgroundColor: color }
-                        ]}
-                    />
+                    <View key={i} style={{
+                        width: 25,
+                        height: 25,
+                        borderRadius: 12.5,
+                        backgroundColor: color,
+                        marginLeft: 5 // כי row-reverse
+                    }} />
                 ))}
             </View>
         );
     };
 
     return (
-        <View style={{ marginTop: 10 }}>
-            <Text style={styles.textRight}>
-                המחשה לביצוע {operation === 'add' ? 'חיבור' : 'חיסור'}:
-            </Text>
+        <ScrollView style={{ maxHeight: 250 }}>
+            <View style={styles.container}>
 
-            {renderRow(firstNum, '#FF6666')}
-            <Text style={[styles.textRight, { fontSize: 20, fontWeight: 'bold' }]}>
-                {operation === 'add' ? '+' : '-'}
-            </Text>
-            {renderRow(secondNum, '#66CCFF')}
-            <Text style={[styles.textRight, { fontSize: 20, fontWeight: 'bold' }]}>=</Text>
-            {renderRow(Math.max(0, resultNum), '#66FF66')}
-        </View>
+                {renderRow(firstNum, '#FF6666')}
+                <Text style={[styles.opSign, { alignSelf: 'flex-end' }]}>
+                    {operation === 'add' ? '+' : '-'}
+                </Text>
+                {renderRow(secondNum, '#66CCFF')}
+                <Text style={[styles.opSign, { alignSelf: 'flex-end' }]}>
+                    =
+                </Text>
+                {renderRow(Math.max(0, resultNum), '#66FF66')}
+            </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-    rowRight: {
-        flexDirection: 'row-reverse', // כדי שהמעגלים יופיעו "מימין לשמאל"
-        marginBottom: 5,
-        justifyContent: 'flex-start', // אפשר לגוון אם רוצים
+    container: {
+        alignItems: 'flex-end',
+        padding: 10
     },
-    circle: {
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        marginLeft: 5, // שימי לב שבמקום marginRight, כי עשינו row-reverse
+    title: {
+        fontSize: 18,
+        marginBottom: 10
     },
-    textRight: {
-        textAlign: 'right',
-        marginBottom: 5,
+    opSign: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginVertical: 5
     }
 });

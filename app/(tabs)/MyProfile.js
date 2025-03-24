@@ -21,7 +21,7 @@ export default function MyProfile() {
 
     const [totalExercises, setTotalExercises] = useState(0);
     const [totalMistakes, setTotalMistakes] = useState(0);
-    const [role, setRole] = useState('STUDENT'); // ברירת מחדל
+    const [role, setRole] = useState('STUDENT');
 
     useEffect(() => {
         fetchUserFromServer();
@@ -29,6 +29,7 @@ export default function MyProfile() {
     }, []);
 
     async function fetchUserFromServer() {
+        setIsLoading(true);
         try {
             const res = await axios.get('/api/user');
             if (res.data && res.data.success) {
@@ -37,9 +38,7 @@ export default function MyProfile() {
                 setLevel(res.data.level || 1);
                 setTotalExercises(res.data.totalExercises || 0);
                 setTotalMistakes(res.data.totalMistakes || 0);
-
-                // אם role מוחזר ב-API, אפשר להגדירו. כאן רק מדמה שבודק לפי המייל
-                if (res.data.mail === 'jane@mail.com') {
+                if (res.data.role === 'ADMIN') {
                     setRole('ADMIN');
                 } else {
                     setRole('STUDENT');
@@ -56,7 +55,7 @@ export default function MyProfile() {
         try {
             const res = await axios.get('/api/user/topics-levels');
             if (res.data.success) {
-                setTopicLevels(res.data.topics); // { topicId, level, topicName }
+                setTopicLevels(res.data.topics);
             }
         } catch (e) {
             console.log("Error fetchUserTopics:", e);
@@ -82,8 +81,17 @@ export default function MyProfile() {
     }
 
     function saveUserDataLocally() {
-        // כאן יכולנו לשלוח PUT לשרת, אם באמת היינו משנים הגדרות.
         alert("שינויים נשמרו (לוקלי בלבד)");
+    }
+
+    if (isLoading) {
+        return (
+            <ProtectedRoute requireAuth={true}>
+                <View style={styles.container}>
+                    <Text style={styles.loadingText}>טוען נתוני משתמש...</Text>
+                </View>
+            </ProtectedRoute>
+        );
     }
 
     return (
@@ -95,70 +103,63 @@ export default function MyProfile() {
 
                 <Text style={styles.title}>הפרופיל שלי</Text>
 
-                {isLoading ? (
-                    <Text style={styles.loadingText}>טוען נתוני משתמש...</Text>
+                {role === 'ADMIN' ? (
+                    <Text style={styles.label}>שלום המנהל {name}!</Text>
                 ) : (
-                    <>
-                        {role === 'ADMIN' ? (
-                            <Text style={styles.label}>שלום המנהל {name}!</Text>
-                        ) : (
-                            <Text style={styles.label}>שלום {name}!</Text>
-                        )}
-
-                        <Text style={styles.label}>אימייל: {email}</Text>
-                        <Text style={styles.label}>תפקיד: {role}</Text>
-                        <Text style={styles.label}>(רמת משתמש כללית ישנה: {level})</Text>
-
-                        <Text style={[styles.label, { marginTop: 10 }]}>
-                            סה"כ תרגילים שפתרתי: {totalExercises}
-                        </Text>
-                        <Text style={styles.label}>
-                            סה"כ שגיאות שהיו לי: {totalMistakes}
-                        </Text>
-
-                        <Text style={[styles.label, { marginTop: 10, fontWeight: 'bold' }]}>
-                            רמת קושי בכל נושא:
-                        </Text>
-                        {topicLevels.map(t => (
-                            <View
-                                key={t.topicId}
-                                style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}
-                            >
-                                <Text style={{ fontSize: 16, marginRight: 10 }}>
-                                    {t.topicName} (#{t.topicId}): רמה {t.level}
-                                </Text>
-                                {t.level > 1 && (
-                                    <Pressable
-                                        onPress={() => updateTopicLevel(t.topicId, t.level - 1)}
-                                        style={{ backgroundColor: '#ddd', padding: 5, borderRadius: 5 }}
-                                    >
-                                        <Text style={{ color: 'blue' }}>הורד רמה</Text>
-                                    </Pressable>
-                                )}
-                            </View>
-                        ))}
-
-                        <Text style={[styles.label, { marginTop: 10 }]}>שפת ממשק:</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={language}
-                            editable={false}
-                        />
-
-                        <View style={styles.switchContainer}>
-                            <Text style={styles.label}>הצגת פתרונות מודרכים:</Text>
-                            <Switch
-                                value={detailedSolutions}
-                                onValueChange={setDetailedSolutions}
-                            />
-                        </View>
-
-                        <Pressable onPress={saveUserDataLocally} style={styles.saveButton}>
-                            <Text style={styles.saveButtonText}>שמור שינויים</Text>
-                        </Pressable>
-                    </>
+                    <Text style={styles.label}>שלום {name}!</Text>
                 )}
+
+                <Text style={styles.label}>אימייל: {email}</Text>
+                <Text style={styles.label}>רמה כללית (Deprecated): {level}</Text>
+
+                <Text style={[styles.label, { marginTop: 10 }]}>
+                    סה"כ תרגילים שפתרתי: {totalExercises}
+                </Text>
+                <Text style={styles.label}>
+                    סה"כ שגיאות שהיו לי: {totalMistakes}
+                </Text>
+
+                <Text style={[styles.label, { marginTop: 10, fontWeight: 'bold' }]}>
+                    רמת קושי בכל נושא:
+                </Text>
+                {topicLevels.map(t => (
+                    <View
+                        key={t.topicId}
+                        style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}
+                    >
+                        <Text style={{ fontSize: 16, marginRight: 10 }}>
+                            {t.topicName} (#{t.topicId}): רמה {t.level}
+                        </Text>
+                        {t.level > 1 && (
+                            <Pressable
+                                onPress={() => updateTopicLevel(t.topicId, t.level - 1)}
+                                style={{ backgroundColor: '#ddd', padding: 5, borderRadius: 5 }}
+                            >
+                                <Text style={{ color: 'blue' }}>הורד רמה</Text>
+                            </Pressable>
+                        )}
+                    </View>
+                ))}
+
+                <Text style={[styles.label, { marginTop: 10 }]}>שפת ממשק:</Text>
+                <TextInput
+                    style={styles.input}
+                    value={language}
+                    editable={false}
+                />
+
+                <View style={styles.switchContainer}>
+                    <Text style={styles.label}>הצגת פתרונות מודרכים:</Text>
+                    <Switch
+                        value={detailedSolutions}
+                        onValueChange={setDetailedSolutions}
+                    />
+                </View>
+
+                <Pressable onPress={saveUserDataLocally} style={styles.saveButton}>
+                    <Text style={styles.saveButtonText}>שמור שינויים</Text>
+                </Pressable>
             </View>
         </ProtectedRoute>
     );
-};
+}
