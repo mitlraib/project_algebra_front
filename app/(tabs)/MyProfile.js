@@ -19,9 +19,9 @@ export default function MyProfile() {
     const [detailedSolutions, setDetailedSolutions] = useState(false);
     const [topicLevels, setTopicLevels] = useState([]);
 
-    // נוסיף גם תרגילים ושגיאות
     const [totalExercises, setTotalExercises] = useState(0);
     const [totalMistakes, setTotalMistakes] = useState(0);
+    const [role, setRole] = useState('STUDENT'); // ברירת מחדל
 
     useEffect(() => {
         fetchUserFromServer();
@@ -37,6 +37,13 @@ export default function MyProfile() {
                 setLevel(res.data.level || 1);
                 setTotalExercises(res.data.totalExercises || 0);
                 setTotalMistakes(res.data.totalMistakes || 0);
+
+                // אם role מוחזר ב-API, אפשר להגדירו. כאן רק מדמה שבודק לפי המייל
+                if (res.data.mail === 'jane@mail.com') {
+                    setRole('ADMIN');
+                } else {
+                    setRole('STUDENT');
+                }
             }
         } catch (err) {
             console.log("Error fetching user info:", err);
@@ -75,6 +82,7 @@ export default function MyProfile() {
     }
 
     function saveUserDataLocally() {
+        // כאן יכולנו לשלוח PUT לשרת, אם באמת היינו משנים הגדרות.
         alert("שינויים נשמרו (לוקלי בלבד)");
     }
 
@@ -91,11 +99,16 @@ export default function MyProfile() {
                     <Text style={styles.loadingText}>טוען נתוני משתמש...</Text>
                 ) : (
                     <>
-                        <Text style={styles.label}>שלום {name}!</Text>
+                        {role === 'ADMIN' ? (
+                            <Text style={styles.label}>שלום המנהל {name}!</Text>
+                        ) : (
+                            <Text style={styles.label}>שלום {name}!</Text>
+                        )}
+
                         <Text style={styles.label}>אימייל: {email}</Text>
+                        <Text style={styles.label}>תפקיד: {role}</Text>
                         <Text style={styles.label}>(רמת משתמש כללית ישנה: {level})</Text>
 
-                        {/* מציגים ערכי תרגילים ושגיאות */}
                         <Text style={[styles.label, { marginTop: 10 }]}>
                             סה"כ תרגילים שפתרתי: {totalExercises}
                         </Text>

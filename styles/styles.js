@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     imageStyle: {
         width: 500, // רוחב התמונה
         height: 500, // גובה התמונה
-      //  marginBottom: 10, // רווח מתחת לתמונה
+        //  marginBottom: 10, // רווח מתחת לתמונה
         resizeMode: 'contain', // לשמור על יחס הגובה לרוחב של התמונה
         borderRadius: 100, // קצוות מעוגלים
         shadowColor: '#000', // צבע הצל
@@ -236,6 +236,46 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalBox: {
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    modalText: {
+        fontSize: 16,
+        marginBottom: 15,
+    },
+    closeButton: {
+        backgroundColor: '#2196F3',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 8,
+    },
+    closeButtonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+    errorMessage: {
+        fontSize: 18,
+        color: 'red',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+
 });
 
 export default styles;

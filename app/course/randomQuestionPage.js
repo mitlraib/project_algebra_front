@@ -5,8 +5,6 @@ import { useRouter } from 'expo-router';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
 import styles from '../../styles/styles.js';
-
-// --- ספריית קונפטי ---
 import ConfettiCannon from 'react-native-confetti-cannon';
 
 export default function RandomQuestionPage() {
@@ -16,7 +14,6 @@ export default function RandomQuestionPage() {
     const [showResult, setShowResult] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
 
-    // --- משתני מצב עבור הפופאפ והקונפטי ---
     const [showLevelUpModal, setShowLevelUpModal] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
 
@@ -56,7 +53,6 @@ export default function RandomQuestionPage() {
 
             if (res.data.isCorrect) {
                 if (res.data.levelUpMessage) {
-                    // אירוע עליית רמה
                     setResponseMessage(`תשובה נכונה! ${res.data.levelUpMessage}`);
                     setShowLevelUpModal(true);
                     setShowConfetti(true);
@@ -108,7 +104,7 @@ export default function RandomQuestionPage() {
         );
     }
 
-    // המרת תשובות
+    // המרת התשובות לשבר:
     let displayAnswers;
     if (typeof question.first === 'string' && question.first.includes('/')) {
         displayAnswers = question.answers.map((encoded) => {
@@ -120,17 +116,45 @@ export default function RandomQuestionPage() {
         displayAnswers = question.answers;
     }
 
+    function convertSign(sign) {
+        switch (sign) {
+            case 'fracAdd': return '+';
+            case 'fracSub': return '-';
+            case 'fracMul': return '×';
+            case 'fracDiv': return '÷';
+            default: return sign;
+        }
+    }
+
+    function renderValue(value) {
+        if (typeof value === 'string' && value.includes('/')) {
+            const [num, den] = value.split('/');
+            return (
+                <View style={fractionStyles.fractionContainer}>
+                    <Text style={fractionStyles.fractionNumerator}>{num}</Text>
+                    <View style={fractionStyles.fractionLine} />
+                    <Text style={fractionStyles.fractionDenominator}>{den}</Text>
+                </View>
+            );
+        } else {
+            return <Text>{value}</Text>;
+        }
+    }
+
     return (
         <ProtectedRoute requireAuth={true}>
             <View style={[styles.container, styles.centerAll]}>
-
                 <Pressable onPress={handleGoBack} style={styles.backButton}>
                     <Text style={styles.backButtonText}>🔙 חזור לדף הבית</Text>
                 </Pressable>
 
-                <Text style={styles.question}>
-                    {question.first} {convertSign(question.operationSign)} {question.second} = ?
-                </Text>
+                {/* הצגת השאלה */}
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
+                    {renderValue(question.first)}
+                    <Text style={{ fontSize: 20, marginHorizontal: 5 }}>{convertSign(question.operationSign)}</Text>
+                    {renderValue(question.second)}
+                    <Text style={{ fontSize: 20, marginLeft: 5 }}>= ?</Text>
+                </View>
 
                 {displayAnswers.map((ans, index) => (
                     <Pressable
@@ -144,7 +168,9 @@ export default function RandomQuestionPage() {
                         ]}
                         disabled={showResult}
                     >
-                        <Text style={styles.answerText}>{ans}</Text>
+                        <View style={{ alignItems: 'center' }}>
+                            {renderValue(ans)}
+                        </View>
                     </Pressable>
                 ))}
 
@@ -160,7 +186,6 @@ export default function RandomQuestionPage() {
                     <Text style={styles.nextButtonText}>שאלה רנדומלית הבאה</Text>
                 </Pressable>
 
-                {/* קונפטי */}
                 {showConfetti && (
                     <ConfettiCannon
                         count={150}
@@ -170,12 +195,7 @@ export default function RandomQuestionPage() {
                     />
                 )}
 
-                {/* פופאפ עליית רמה */}
-                <Modal
-                    visible={showLevelUpModal}
-                    transparent
-                    animationType="slide"
-                >
+                <Modal visible={showLevelUpModal} transparent animationType="slide">
                     <View style={modalStyles.modalOverlay}>
                         <View style={modalStyles.modalBox}>
                             <Text style={modalStyles.modalTitle}>כל הכבוד!</Text>
@@ -191,15 +211,27 @@ export default function RandomQuestionPage() {
     );
 }
 
-function convertSign(sign) {
-    switch (sign) {
-        case 'fracAdd': return '+';
-        case 'fracSub': return '-';
-        case 'fracMul': return '×';
-        case 'fracDiv': return '÷';
-        default: return sign;
-    }
-}
+const fractionStyles = StyleSheet.create({
+    fractionContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 5
+    },
+    fractionNumerator: {
+        fontSize: 20,
+        textAlign: 'center',
+    },
+    fractionLine: {
+        width: 30,
+        height: 1,
+        backgroundColor: 'black',
+        marginVertical: 2
+    },
+    fractionDenominator: {
+        fontSize: 20,
+        textAlign: 'center',
+    },
+});
 
 const modalStyles = StyleSheet.create({
     modalOverlay: {

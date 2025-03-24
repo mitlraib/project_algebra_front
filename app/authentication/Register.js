@@ -126,6 +126,7 @@ export const Register = () => {
                     setLastName('');
                     setMail('');
                     setPassword('');
+                    setPassword('');
                     setConfirmPassword('');
 
                     //router.push('/authentication/Login');
@@ -141,114 +142,114 @@ export const Register = () => {
     return (
         <ProtectedRoute requireAuth={false}>
 
-        <View style={styles.container}>
-            <Text style={styles.header}>הרשמה</Text>
+            <View style={styles.container}>
+                <Text style={styles.header}>הרשמה</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder="שם פרטי"
-                value={firstName}
-                onChangeText={(text) => {
-                    setFirstName(text);
-                    validateField('firstName');
-                }}
-                onBlur={() => validateField('firstName')}
-            />
-            {errors.firstName ? <Text style={styles.errorText}>{errors.firstName}</Text> : null}
+                <TextInput
+                    style={styles.input}
+                    placeholder="שם פרטי"
+                    value={firstName}
+                    onChangeText={(text) => {
+                        setFirstName(text);
+                        validateField('firstName');
+                    }}
+                    onBlur={() => validateField('firstName')}
+                />
+                {errors.firstName ? <Text style={styles.errorText}>{errors.firstName}</Text> : null}
 
-            <TextInput
-                style={styles.input}
-                placeholder="שם משפחה"
-                value={lastName}
-                onChangeText={(text) => {
-                    setLastName(text);
-                    validateField('lastName');
-                }}
-                onBlur={() => validateField('lastName')}
-            />
-            {errors.lastName ? <Text style={styles.errorText}>{errors.lastName}</Text> : null}
+                <TextInput
+                    style={styles.input}
+                    placeholder="שם משפחה"
+                    value={lastName}
+                    onChangeText={(text) => {
+                        setLastName(text);
+                        validateField('lastName');
+                    }}
+                    onBlur={() => validateField('lastName')}
+                />
+                {errors.lastName ? <Text style={styles.errorText}>{errors.lastName}</Text> : null}
 
-            <TextInput
-                style={styles.input}
-                placeholder="מייל"
-                value={mail}
-                onChangeText={(text)=>{
-                    setMail(text);
-                    validateField('mail');
-                }}  // כאן לא נבדוק את השדה מיד
-                onBlur={() => validateField('mail')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
-                keyboardType="email-address"
-            />
-            {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
+                <TextInput
+                    style={styles.input}
+                    placeholder="מייל"
+                    value={mail}
+                    onChangeText={(text)=>{
+                        setMail(text);
+                        validateField('mail');
+                    }}  // כאן לא נבדוק את השדה מיד
+                    onBlur={() => validateField('mail')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
+                    keyboardType="email-address"
+                />
+                {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
 
-            <View style={styles.passwordContainer}>
-                <Pressable onPress={toggleShowPassword}>
-                    <Image
-                        source={{ uri: 'https://as2.ftcdn.net/jpg/01/46/11/95/220_F_146119533_BAlUoUk3eo9eSXBnMuMdUDPvLdeLpWJr.jpg' }}
-                        style={styles.eyeIcon}
+                <View style={styles.passwordContainer}>
+                    <Pressable onPress={toggleShowPassword}>
+                        <Image
+                            source={{ uri: 'https://as2.ftcdn.net/jpg/01/46/11/95/220_F_146119533_BAlUoUk3eo9eSXBnMuMdUDPvLdeLpWJr.jpg' }}
+                            style={styles.eyeIcon}
+                        />
+                    </Pressable>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="סיסמה"
+                        value={password}
+                        onChangeText={(text) => {
+                            setPassword(text);
+                            validateField('password');
+                        }}
+                        onBlur={() => validateField('password')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
+                        //onFocus={() => setTouched({ ...touched, password: true })}
+                        secureTextEntry={!showPassword}
                     />
-                </Pressable>
-                <TextInput
-                    style={styles.input}
-                    placeholder="סיסמה"
-                    value={password}
-                    onChangeText={(text) => {
-                        setPassword(text);
-                        validateField('password');
-                    }}
-                    onBlur={() => validateField('password')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
-                    //onFocus={() => setTouched({ ...touched, password: true })}
-                    secureTextEntry={!showPassword}
-                />
-            </View>
-            {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
-            <View >
-                <TextInput
-                    style={styles.input}
-                    placeholder="אימות סיסמה"
-                    value={confirmPassword}
-                    onChangeText={(text) => {
-                        setConfirmPassword(text);
-                        validateField('confirmPassword');
-                    }}
-                    onBlur={() => validateField('confirmPassword')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
-                    //onFocus={() => setTouched({ ...touched, confirmPassword: true })}
-                    secureTextEntry={!showPassword}
-                />
+                </View>
+                {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+                <View >
+                    <TextInput
+                        style={styles.input}
+                        placeholder="אימות סיסמה"
+                        value={confirmPassword}
+                        onChangeText={(text) => {
+                            setConfirmPassword(text);
+                            validateField('confirmPassword');
+                        }}
+                        onBlur={() => validateField('confirmPassword')}  // הבדיקה תתבצע רק כשהמשתמש עוזב את השדה
+                        //onFocus={() => setTouched({ ...touched, confirmPassword: true })}
+                        secureTextEntry={!showPassword}
+                    />
 
-            </View>
+                </View>
 
-            <Text style={[styles.errorText, errors.confirmPassword.includes('✅') && styles.successText]}>
-                {errors.confirmPassword}
+                <Text style={[styles.errorText, errors.confirmPassword.includes('✅') && styles.successText]}>
+                    {errors.confirmPassword}
 
-            </Text>
+                </Text>
 
-            <View style={styles.buttonContainer}>
-                <Button
-                    title="הרשם"
-                    onPress={()=>{
-                        handleRegistration();
-                    }}
-                />
-            </View>
+                <View style={styles.buttonContainer}>
+                    <Button
+                        title="הרשם"
+                        onPress={()=>{
+                            handleRegistration();
+                        }}
+                    />
+                </View>
 
-            <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                <Text style={styles.text}> כבר יש לך חשבון אצלנו? </Text>
+                <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                    <Text style={styles.text}> כבר יש לך חשבון אצלנו? </Text>
+                </View>
+                <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                    <Pressable
+                        onPress={moveToLoginPage}  // הוספת הניווט בלחיצה
+                        onMouseEnter={() => setHovered(true)}  // הגדרת מצב ריחוף
+                        onMouseLeave={() => setHovered(false)} // הגדרת מצב יציאה מריחוף
+                        style={[
+                            styles.button,
+                            hovered && styles.buttonActive,  // שינוי צבע בריחוף
+                        ]}
+                    >
+                        <Text style={styles.linkText}>התחבר</Text>
+                    </Pressable>
+                </View>
             </View>
-            <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                <Pressable
-                    onPress={moveToLoginPage}  // הוספת הניווט בלחיצה
-                    onMouseEnter={() => setHovered(true)}  // הגדרת מצב ריחוף
-                    onMouseLeave={() => setHovered(false)} // הגדרת מצב יציאה מריחוף
-                    style={[
-                        styles.button,
-                        hovered && styles.buttonActive,  // שינוי צבע בריחוף
-                    ]}
-                >
-                    <Text style={styles.linkText}>התחבר</Text>
-                </Pressable>
-            </View>
-        </View>
         </ProtectedRoute>
     );
 };

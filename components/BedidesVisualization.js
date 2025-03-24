@@ -1,5 +1,6 @@
+// BedidesVisualization.js
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 export default function BedidesVisualization({ firstNum, secondNum, operation }) {
     let resultNum = 0;
@@ -11,15 +12,15 @@ export default function BedidesVisualization({ firstNum, secondNum, operation })
 
     const renderRow = (count, color) => {
         return (
-            <View style={{ flexDirection: 'row', marginBottom: 5 }}>
+            <View style={styles.rowRight}>
                 {[...Array(count)].map((_, i) => (
-                    <View key={i} style={{
-                        width: 20,
-                        height: 20,
-                        borderRadius: 10,
-                        backgroundColor: color,
-                        marginRight: 5
-                    }} />
+                    <View
+                        key={i}
+                        style={[
+                            styles.circle,
+                            { backgroundColor: color }
+                        ]}
+                    />
                 ))}
             </View>
         );
@@ -27,14 +28,35 @@ export default function BedidesVisualization({ firstNum, secondNum, operation })
 
     return (
         <View style={{ marginTop: 10 }}>
-            <Text>המחשה לביצוע {operation === 'add' ? 'חיבור' : 'חיסור'}:</Text>
+            <Text style={styles.textRight}>
+                המחשה לביצוע {operation === 'add' ? 'חיבור' : 'חיסור'}:
+            </Text>
+
             {renderRow(firstNum, '#FF6666')}
-            <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>
+            <Text style={[styles.textRight, { fontSize: 20, fontWeight: 'bold' }]}>
                 {operation === 'add' ? '+' : '-'}
             </Text>
             {renderRow(secondNum, '#66CCFF')}
-            <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>=</Text>
+            <Text style={[styles.textRight, { fontSize: 20, fontWeight: 'bold' }]}>=</Text>
             {renderRow(Math.max(0, resultNum), '#66FF66')}
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    rowRight: {
+        flexDirection: 'row-reverse', // כדי שהמעגלים יופיעו "מימין לשמאל"
+        marginBottom: 5,
+        justifyContent: 'flex-start', // אפשר לגוון אם רוצים
+    },
+    circle: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        marginLeft: 5, // שימי לב שבמקום marginRight, כי עשינו row-reverse
+    },
+    textRight: {
+        textAlign: 'right',
+        marginBottom: 5,
+    }
+});

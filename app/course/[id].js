@@ -216,12 +216,12 @@ export default function CoursePage() {
                 )}
 
                 <Modal visible={showLevelUpModal} transparent animationType="slide">
-                    <View style={modalStyles.modalOverlay}>
-                        <View style={modalStyles.modalBox}>
-                            <Text style={modalStyles.modalTitle}>כל הכבוד!</Text>
-                            <Text style={modalStyles.modalText}>עלית רמה!</Text>
-                            <Pressable onPress={() => setShowLevelUpModal(false)} style={modalStyles.closeButton}>
-                                <Text style={modalStyles.closeButtonText}>סגור</Text>
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalBox}>
+                            <Text style={styles.modalTitle}>כל הכבוד!</Text>
+                            <Text style={styles.modalText}>עלית רמה!</Text>
+                            <Pressable onPress={() => setShowLevelUpModal(false)} style={styles.closeButton}>
+                                <Text style={styles.closeButtonText}>סגור</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -240,38 +240,3 @@ function convertSign(sign) {
         default: return sign;
     }
 }
-
-const modalStyles = StyleSheet.create({
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalBox: {
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
-        width: '80%',
-        alignItems: 'center',
-    },
-    modalTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    modalText: {
-        fontSize: 16,
-        marginBottom: 15,
-    },
-    closeButton: {
-        backgroundColor: '#2196F3',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 8,
-    },
-    closeButtonText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-});
