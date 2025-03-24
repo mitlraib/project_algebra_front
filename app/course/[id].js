@@ -18,11 +18,7 @@ export default function CoursePage() {
     const [responseMessage, setResponseMessage] = useState('');
     const [showLevelUpModal, setShowLevelUpModal] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
-
-    // רמת המשתמש בנושא הנוכחי
     const [myTopicLevel, setMyTopicLevel] = useState(1);
-
-    // הצגת פתרון (בדידים או מאונך)
     const [showSolution, setShowSolution] = useState(false);
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -85,7 +81,6 @@ export default function CoursePage() {
         try {
             const userAnswerValue = question.answers[selectedAnswer];
             const res = await axios.post('/api/exercises/answer', { answer: userAnswerValue });
-
             setShowResult(true);
 
             if (res.data.isCorrect) {
@@ -99,7 +94,6 @@ export default function CoursePage() {
             } else {
                 let correctDisplay;
                 if (typeof question.first === 'string' && question.first.includes('/')) {
-                    // שברים
                     const c = res.data.correctAnswer || question.correctAnswer;
                     const num = Math.floor(c / 1000);
                     const den = c % 1000;
@@ -133,49 +127,32 @@ export default function CoursePage() {
         router.push('/MyCourses');
     }
 
-    if (!id) {
-        return <Text>לא נבחר נושא</Text>;
-    }
-    if (!question) {
-        return <Text>טוען שאלה מהשרת...</Text>;
-    }
+    if (!id) return <Text>לא נבחר נושא</Text>;
+    if (!question) return <Text>טוען שאלה מהשרת...</Text>;
 
-    // המרת תשובות
-    let displayAnswers;
-    if (typeof question.first === 'string' && question.first.includes('/')) {
-        displayAnswers = question.answers.map((encoded) => {
+    const displayAnswers = (typeof question.first === 'string' && question.first.includes('/'))
+        ? question.answers.map((encoded) => {
             const num = Math.floor(encoded / 1000);
             const den = encoded % 1000;
             return `${num}/${den}`;
-        });
-    } else {
-        displayAnswers = question.answers;
-    }
+        })
+        : question.answers;
 
-    // האם זה חיבור/חיסור – בשביל להחליט אם להציג "איך פותרים?"
     const isAddOrSub = (id == 1 || id == 2);
+    const shouldShowHelpButton = isAddOrSub;
+    const isBedides = (myTopicLevel <= 2);
 
-    // פונקציה להצגת סימן
     function convertSign(sign) {
         switch (sign) {
             case 'fracAdd': return '+';
             case 'fracSub': return '-';
             case 'fracMul': return '×';
             case 'fracDiv': return '÷';
-            case 'add':     return '+';
-            case 'sub':     return '-';
-            default:        return sign;
+            case 'add': return '+';
+            case 'sub': return '-';
+            default: return sign;
         }
     }
-
-    let shouldShowHelpButton = false;
-    // את יכולה להחליט אם בכל הרמות או רק ב <=2, וכו'...
-    if (isAddOrSub) {
-        shouldShowHelpButton = true; // כרגע אפעל לפי מה שאמרת
-    }
-
-    // helper
-    const isBedides = (myTopicLevel <= 2); // רמה 1–2 => בדידים, מעל => חישוב מאונך
 
     function renderBedidesExplanation() {
         const operationWord = (id == 1) ? 'נוסיף' : 'נחסיר';
@@ -189,9 +166,7 @@ export default function CoursePage() {
                         firstNum={Number(question.first)}
                         secondNum={Number(question.second)}
                         operation={id == 1 ? 'add' : 'sub'}
-
-
-                        />
+                    />
                     <Text style={localStyles.bigText}>
                         ונקבל {(id == 1) ? (Number(question.first) + Number(question.second)) : (Number(question.first) - Number(question.second))} כדורים.
                     </Text>
@@ -216,7 +191,7 @@ export default function CoursePage() {
 ${sign}    ${secondNum}
 ------------
      ${resultNum}
-`}
+                        `}
                     </Text>
                 </Animated.View>
             </ScrollView>
@@ -230,12 +205,10 @@ ${sign}    ${secondNum}
                     <Text style={styles.backButtonText}>🔙 חזרה למסך הקורסים</Text>
                 </Pressable>
 
-                {/* שאלת התרגיל */}
                 <Text style={styles.question}>
                     {question.first} {convertSign(question.operationSign)} {question.second} = ?
                 </Text>
 
-                {/* תשובות */}
                 {displayAnswers.map((ans, index) => (
                     <Pressable
                         key={index}
@@ -252,18 +225,15 @@ ${sign}    ${secondNum}
                     </Pressable>
                 ))}
 
-                {/* כפתור בדיקה – מנע לחיצות נוספות אחרי בדיקה */}
                 <Pressable
                     onPress={handleCheckAnswer}
                     style={[styles.checkButton, showResult && { opacity: 0.5 }]}
-                    disabled={showResult} // כאן הנעילה
+                    disabled={showResult}
                 >
                     <Text style={styles.checkButtonText}>בדיקה</Text>
                 </Pressable>
 
-                {responseMessage ? (
-                    <Text style={styles.resultText}>{responseMessage}</Text>
-                ) : null}
+                {responseMessage ? <Text style={styles.resultText}>{responseMessage}</Text> : null}
 
                 <Pressable
                     onPress={handleNextQuestion}
@@ -272,12 +242,11 @@ ${sign}    ${secondNum}
                     <Text style={styles.nextButtonText}>שאלה הבאה</Text>
                 </Pressable>
 
-                {/* כפתור "איך פותרים?" */}
                 {shouldShowHelpButton && (
                     <Pressable
                         style={{ marginTop: 20, backgroundColor: '#EEE', padding: 10, borderRadius: 5 }}
                         onPress={() => setShowSolution(!showSolution)}
-                        disabled={!showResult} // רק אחרי בדיקה
+                        disabled={!showResult}
                     >
                         <Text style={{ color: (!showResult ? 'gray' : 'blue') }}>
                             {showSolution ? 'הסתר פתרון' : 'איך פותרים?'}
@@ -285,7 +254,6 @@ ${sign}    ${secondNum}
                     </Pressable>
                 )}
 
-                {/* הצגת ההסבר: גלילה וכו' */}
                 {showSolution && showResult && (
                     isBedides ? renderBedidesExplanation() : renderVerticalSolution()
                 )}
@@ -320,7 +288,6 @@ const localStyles = StyleSheet.create({
         alignSelf: 'flex-end',
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
-        // רקע דהוי כדי להמחיש
         backgroundColor: '#f9f9f9',
         padding: 10,
         marginRight: 10,

@@ -15,13 +15,12 @@ export default function MyProfile() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [level, setLevel] = useState(1);
+    const [role, setRole] = useState('STUDENT');
     const [language, setLanguage] = useState('עברית');
     const [detailedSolutions, setDetailedSolutions] = useState(false);
     const [topicLevels, setTopicLevels] = useState([]);
-
     const [totalExercises, setTotalExercises] = useState(0);
     const [totalMistakes, setTotalMistakes] = useState(0);
-    const [role, setRole] = useState('STUDENT');
 
     useEffect(() => {
         fetchUserFromServer();
@@ -36,13 +35,9 @@ export default function MyProfile() {
                 setName(`${res.data.firstName} ${res.data.lastName}`);
                 setEmail(res.data.mail);
                 setLevel(res.data.level || 1);
+                setRole(res.data.role === 'ADMIN' ? 'ADMIN' : 'STUDENT');
                 setTotalExercises(res.data.totalExercises || 0);
                 setTotalMistakes(res.data.totalMistakes || 0);
-                if (res.data.role === 'ADMIN') {
-                    setRole('ADMIN');
-                } else {
-                    setRole('STUDENT');
-                }
             }
         } catch (err) {
             console.log("Error fetching user info:", err);
@@ -103,13 +98,12 @@ export default function MyProfile() {
 
                 <Text style={styles.title}>הפרופיל שלי</Text>
 
-                {role === 'ADMIN' ? (
-                    <Text style={styles.label}>שלום המנהל {name}!</Text>
-                ) : (
-                    <Text style={styles.label}>שלום {name}!</Text>
-                )}
+                <Text style={styles.label}>
+                    {role === 'ADMIN' ? `שלום המנהל ${name}!` : `שלום ${name}!`}
+                </Text>
 
                 <Text style={styles.label}>אימייל: {email}</Text>
+                <Text style={styles.label}>תפקיד: {role}</Text>
                 <Text style={styles.label}>רמה כללית (Deprecated): {level}</Text>
 
                 <Text style={[styles.label, { marginTop: 10 }]}>

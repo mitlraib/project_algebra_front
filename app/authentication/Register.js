@@ -29,20 +29,12 @@ export const Register = () => {
 
         switch (fieldName) {
             case 'firstName':
-                if (!value) {
-                    newErrors.firstName = 'אנא מלא את השם הפרטי';
-                    valid = false;
-                } else {
-                    newErrors.firstName = '';
-                }
+                newErrors.firstName = value ? '' : 'אנא מלא את השם הפרטי';
+                valid = !!value;
                 break;
             case 'lastName':
-                if (!value) {
-                    newErrors.lastName = 'אנא מלא את שם המשפחה';
-                    valid = false;
-                } else {
-                    newErrors.lastName = '';
-                }
+                newErrors.lastName = value ? '' : 'אנא מלא את שם המשפחה';
+                valid = !!value;
                 break;
             case 'mail':
                 if (!value || !value.includes('@')) {
@@ -68,8 +60,6 @@ export const Register = () => {
                     newErrors.confirmPassword = ' אימות סיסמה תקין ✅';
                 }
                 break;
-            default:
-                break;
         }
 
         setErrors(newErrors);
@@ -77,7 +67,6 @@ export const Register = () => {
     };
 
     const handleFieldChange = (fieldName, newValue) => {
-        // עדכון state
         switch (fieldName) {
             case 'firstName':
                 setFirstName(newValue);
@@ -95,18 +84,17 @@ export const Register = () => {
                 setConfirmPassword(newValue);
                 break;
         }
-        // בדיקה מיידית
         validateField(fieldName, newValue);
     };
 
     const validateAllFields = () => {
-        // נוודא שהכל תקין
-        const f1 = validateField('firstName', firstName);
-        const f2 = validateField('lastName', lastName);
-        const f3 = validateField('mail', mail);
-        const f4 = validateField('password', password);
-        const f5 = validateField('confirmPassword', confirmPassword);
-        return (f1 && f2 && f3 && f4 && f5);
+        return (
+            validateField('firstName', firstName) &&
+            validateField('lastName', lastName) &&
+            validateField('mail', mail) &&
+            validateField('password', password) &&
+            validateField('confirmPassword', confirmPassword)
+        );
     };
 
     const toggleShowPassword = () => {
@@ -114,20 +102,14 @@ export const Register = () => {
     };
 
     const handleRegistration = async () => {
-        if (!validateAllFields()) {
-            return;
-        }
+        if (!validateAllFields()) return;
+
         try {
-            const userData = {
-                firstName,
-                lastName,
-                mail,
-                password
-            };
+            const userData = { firstName, lastName, mail, password };
             const response = await axios.post('http://localhost:8080/api/register', userData);
 
             if (response.data.success) {
-                Alert.alert("Success", "ההרשמה הצליחה!");
+                Alert.alert("הצלחה", "ההרשמה הצליחה!");
                 // איפוס
                 setFirstName('');
                 setLastName('');
@@ -138,15 +120,13 @@ export const Register = () => {
             } else {
                 Alert.alert("שגיאה", response.data.message || "ההרשמה נכשלה, נסה שוב");
             }
-
         } catch (error) {
-            // אם הסטטוס הוא 500 וההודעה מכילה "המייל כבר קיים"
-            if (error.response && error.response.data && error.response.data.message) {
+            if (error.response?.data?.message) {
                 Alert.alert("שגיאה בהרשמה", error.response.data.message);
             } else {
                 Alert.alert("שגיאה", "ההרשמה נכשלה. נסה שוב מאוחר יותר.");
             }
-            console.log("Error during registration:", error.response ? error.response.data : error.message);
+            console.error('Error during registration:', error.response?.data || error.message);
         }
     };
 
@@ -218,10 +198,11 @@ export const Register = () => {
                     <Button title="הרשם" onPress={handleRegistration} />
                 </View>
 
-                <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                <View style={{ flexDirection: "row", marginTop: Spacing.lg, justifyContent: 'center' }}>
                     <Text style={styles.text}>כבר יש לך חשבון אצלנו?</Text>
                 </View>
-                <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+
+                <View style={{ flexDirection: "row", marginTop: Spacing.lg, justifyContent: 'center' }}>
                     <Pressable
                         onPress={moveToLoginPage}
                         onMouseEnter={() => setHovered(true)}
