@@ -268,6 +268,14 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
     },
+    errorMessage: {
+        fontSize: 18,
+        color: 'red',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+
 });
 
 export default styles;
