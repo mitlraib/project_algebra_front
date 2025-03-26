@@ -13,7 +13,6 @@ export default function RandomQuestionPage() {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showResult, setShowResult] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
-
     const [showLevelUpModal, setShowLevelUpModal] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
 
@@ -94,35 +93,30 @@ export default function RandomQuestionPage() {
         router.push('/Dashboard');
     }
 
-    if (!question) {
-        return (
-            <ProtectedRoute requireAuth={true}>
-                <View style={[styles.container, styles.centerAll]}>
-                    <Text>טוען שאלה רנדומלית...</Text>
-                </View>
-            </ProtectedRoute>
-        );
-    }
-
-    // המרת התשובות לשבר:
-    let displayAnswers;
-    if (typeof question.first === 'string' && question.first.includes('/')) {
-        displayAnswers = question.answers.map((encoded) => {
-            const num = Math.floor(encoded / 1000);
-            const den = encoded % 1000;
-            return `${num}/${den}`;
-        });
-    } else {
-        displayAnswers = question.answers;
-    }
-
     function convertSign(sign) {
         switch (sign) {
-            case 'fracAdd': return '+';
-            case 'fracSub': return '-';
-            case 'fracMul': return '×';
-            case 'fracDiv': return '÷';
-            default: return sign;
+            case 'fracAdd':
+            case 'frac+':
+            case '+':
+            case 'add':
+                return '+';
+            case 'fracSub':
+            case 'frac-':
+            case '-':
+            case 'sub':
+                return '-';
+            case 'fracMul':
+            case 'frac*':
+            case '*':
+            case 'mul':
+                return '×';
+            case 'fracDiv':
+            case 'frac/':
+            case '/':
+            case 'div':
+                return '÷';
+            default:
+                return sign;
         }
     }
 
@@ -137,8 +131,29 @@ export default function RandomQuestionPage() {
                 </View>
             );
         } else {
-            return <Text>{value}</Text>;
+            return <Text style={{ fontSize: 20 }}>{value}</Text>;
         }
+    }
+
+    if (!question) {
+        return (
+            <ProtectedRoute requireAuth={true}>
+                <View style={[styles.container, styles.centerAll]}>
+                    <Text>טוען שאלה רנדומלית...</Text>
+                </View>
+            </ProtectedRoute>
+        );
+    }
+
+    let displayAnswers;
+    if (typeof question.first === 'string' && question.first.includes('/')) {
+        displayAnswers = question.answers.map((encoded) => {
+            const num = Math.floor(encoded / 1000);
+            const den = encoded % 1000;
+            return `${num}/${den}`;
+        });
+    } else {
+        displayAnswers = question.answers;
     }
 
     return (

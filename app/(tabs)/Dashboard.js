@@ -44,9 +44,7 @@ export default function Dashboard() {
                             </View>
                         </View>
                         <ProgressBar progress={fakeProgress.progress} color="#4F46E5" style={styles.progress} />
-
                         <Text style={styles.levelText}>רמה {fakeProgress.level}</Text>
-
                     </View>
 
                     {/* Continue Learning */}
@@ -64,7 +62,7 @@ export default function Dashboard() {
                             <Text style={styles.miniTitle}>אימון</Text>
                             <Text style={styles.miniSub}>חזקו את היכולות</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.miniCard} onPress={() => router.push('/Achievements')}>
+                        <TouchableOpacity style={styles.miniCard} onPress={() => router.push('/Achivments')}>
                             <Text style={styles.miniTitle}>הישגים</Text>
                             <Text style={styles.miniSub}>ראו את התגים שלכם</Text>
                         </TouchableOpacity>
@@ -155,7 +153,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 24,
         marginBottom: 24,
-
     },
     continueTitle: {
         color: '#fff',

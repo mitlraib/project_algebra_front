@@ -19,6 +19,16 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:8080";
 
+function Fraction({ numerator, denominator }) {
+    return (
+        <View style={{ alignItems: 'center', marginHorizontal: 4 }}>
+            <Text style={{ fontSize: 20 }}>{numerator}</Text>
+            <View style={{ height: 1, backgroundColor: 'black', width: 30, marginVertical: 2 }} />
+            <Text style={{ fontSize: 20 }}>{denominator}</Text>
+        </View>
+    );
+}
+
 export default function StyledCoursePage() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
@@ -136,12 +146,10 @@ export default function StyledCoursePage() {
 
     function convertSign(sign) {
         switch (sign) {
-            case "fracAdd": return "+";
-            case "fracSub": return "-";
-            case "fracMul": return "×";
-            case "fracDiv": return "÷";
-            case "add": return "+";
-            case "sub": return "-";
+            case "fracAdd": case "frac+": case "add": case "+": return "+";
+            case "fracSub": case "frac-": case "sub": case "-": return "-";
+            case "fracMul": case "frac*": case "mul": case "*": return "×";
+            case "fracDiv": case "frac/": case "div": case "/": return "÷";
             default: return sign;
         }
     }
@@ -191,18 +199,47 @@ ${sign}   ${second}
     return (
         <ProtectedRoute requireAuth={true}>
             <ScrollView contentContainerStyle={styles.container}>
-                <Text style={styles.title}>{question.first} {convertSign(question.operationSign)} {question.second} = ?</Text>
+                <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {isFraction && question.first.includes('/') ? (
+                            <Fraction numerator={question.first.split('/')[0]} denominator={question.first.split('/')[1]} />
+                        ) : (
+                            <Text style={styles.title}>{question.first}</Text>
+                        )}
 
-                {displayAnswers.map((ans, idx) => (
-                    <Pressable
-                        key={idx}
-                        style={[styles.answerButton, selectedAnswer === idx && styles.selectedAnswer]}
-                        onPress={() => !showResult && setSelectedAnswer(idx)}
-                        disabled={showResult}
-                    >
-                        <Text style={styles.answerText}>{ans}</Text>
-                    </Pressable>
-                ))}
+                        <Text style={{ fontSize: 20, marginHorizontal: 8 }}>{convertSign(question.operationSign)}</Text>
+
+                        {isFraction && question.second.includes('/') ? (
+                            <Fraction numerator={question.second.split('/')[0]} denominator={question.second.split('/')[1]} />
+                        ) : (
+                            <Text style={styles.title}>{question.second}</Text>
+                        )}
+
+                        <Text style={{ fontSize: 20, marginLeft: 8 }}>= ?</Text>
+                    </View>
+                </View>
+
+                {displayAnswers.map((ans, idx) => {
+                    const isAnsFraction = typeof ans === 'string' && ans.includes('/');
+                    const [num, den] = isAnsFraction ? ans.split('/') : [];
+
+                    return (
+                        <Pressable
+                            key={idx}
+                            style={[styles.answerButton, selectedAnswer === idx && styles.selectedAnswer]}
+                            onPress={() => !showResult && setSelectedAnswer(idx)}
+                            disabled={showResult}
+                        >
+                            <View style={{ alignItems: 'center' }}>
+                                {isAnsFraction ? (
+                                    <Fraction numerator={num} denominator={den} />
+                                ) : (
+                                    <Text style={styles.answerText}>{ans}</Text>
+                                )}
+                            </View>
+                        </Pressable>
+                    );
+                })}
 
                 <Pressable onPress={handleCheckAnswer} style={styles.primaryButton}>
                     <Text style={styles.primaryText}>בדיקה</Text>
@@ -215,11 +252,7 @@ ${sign}   ${second}
                 </Pressable>
 
                 {isAddOrSub && (
-                    <Pressable
-                        onPress={() => setShowSolution(!showSolution)}
-                        style={styles.helpButton}
-                        disabled={!showResult}
-                    >
+                    <Pressable onPress={() => setShowSolution(!showSolution)} style={styles.helpButton} disabled={!showResult}>
                         <Text style={{ color: !showResult ? 'gray' : 'blue' }}>{showSolution ? 'הסתר פתרון' : 'איך פותרים?'}</Text>
                     </Pressable>
                 )}
@@ -263,7 +296,7 @@ ${sign}   ${second}
 
 const styles = StyleSheet.create({
     container: { padding: 24, paddingBottom: 60 },
-    title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginBottom: 20 },
+    title: { fontSize: 24, fontWeight: "bold", textAlign: "center" },
     answerButton: {
         padding: 14,
         borderRadius: 8,
