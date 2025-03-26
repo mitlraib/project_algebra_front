@@ -1,25 +1,37 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Text, View, Pressable, Modal, StyleSheet, Animated, ScrollView } from 'react-native';
-import axios from 'axios';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import Cookies from 'js-cookie';
-import styles from '../../styles/styles.js';
-import ConfettiCannon from 'react-native-confetti-cannon';
-import BedidesVisualization from '@/components/BedidesVisualization';
+import React, { useState, useEffect, useRef } from "react";
+import {
+    View,
+    Text,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Modal,
+    Animated,
+    Vibration,
+} from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import ConfettiCannon from "react-native-confetti-cannon";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import BedidesVisualization from "@/components/BedidesVisualization";
+import Cookies from "js-cookie";
+import axios from "axios";
 
-export default function CoursePage() {
-    const { id } = useLocalSearchParams(); // topicId
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "http://localhost:8080";
+
+export default function StyledCoursePage() {
+    const { id } = useLocalSearchParams();
     const router = useRouter();
 
     const [question, setQuestion] = useState(null);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [showResult, setShowResult] = useState(false);
-    const [responseMessage, setResponseMessage] = useState('');
+    const [responseMessage, setResponseMessage] = useState("");
     const [showLevelUpModal, setShowLevelUpModal] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
     const [myTopicLevel, setMyTopicLevel] = useState(1);
     const [showSolution, setShowSolution] = useState(false);
+    const [history, setHistory] = useState([]);
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -43,9 +55,9 @@ export default function CoursePage() {
 
     async function fetchTopicLevel(topicId) {
         try {
-            const res = await axios.get('/api/user/topics-levels');
+            const res = await axios.get("/api/user/topics-levels");
             if (res.data.success) {
-                const found = res.data.topics.find(t => t.topicId == topicId);
+                const found = res.data.topics.find((t) => t.topicId == topicId);
                 if (found) setMyTopicLevel(found.level);
             }
         } catch (err) {
@@ -59,15 +71,14 @@ export default function CoursePage() {
             setQuestion(res.data);
             setSelectedAnswer(null);
             setShowResult(false);
-            setResponseMessage('');
+            setResponseMessage("");
             setShowLevelUpModal(false);
             setShowConfetti(false);
             setShowSolution(false);
         } catch (err) {
-            console.log("Error fetching question:", err);
-            if (err.response && err.response.status === 401) {
-                Cookies.remove('userToken');
-                router.replace('/authentication/Login');
+            if (err.response?.status === 401) {
+                Cookies.remove("userToken");
+                router.replace("/authentication/Login");
             }
         }
     }
@@ -80,177 +91,136 @@ export default function CoursePage() {
 
         try {
             const userAnswerValue = question.answers[selectedAnswer];
-            const res = await axios.post('/api/exercises/answer', { answer: userAnswerValue });
+            const res = await axios.post("/api/exercises/answer", { answer: userAnswerValue });
             setShowResult(true);
 
-            if (res.data.isCorrect) {
+            const correct = res.data.isCorrect;
+            const correctAnswer = res.data.correctAnswer || question.correctAnswer;
+            const isFraction = typeof question.first === "string" && question.first.includes("/");
+            const correctDisplay = isFraction
+                ? `${Math.floor(correctAnswer / 1000)}/${correctAnswer % 1000}`
+                : correctAnswer;
+
+            if (correct) {
+                setResponseMessage(`תשובה נכונה! רמה נוכחית: ${res.data.currentLevel}`);
+                setShowConfetti(true);
                 if (res.data.levelUpMessage) {
                     setResponseMessage(`תשובה נכונה! ${res.data.levelUpMessage}`);
                     setShowLevelUpModal(true);
-                    setShowConfetti(true);
-                } else {
-                    setResponseMessage(`תשובה נכונה! רמה נוכחית: ${res.data.currentLevel}`);
                 }
             } else {
-                let correctDisplay;
-                if (typeof question.first === 'string' && question.first.includes('/')) {
-                    const c = res.data.correctAnswer || question.correctAnswer;
-                    const num = Math.floor(c / 1000);
-                    const den = c % 1000;
-                    correctDisplay = `${num}/${den}`;
-                } else {
-                    correctDisplay = question.correctAnswer;
-                }
                 setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
+                Vibration.vibrate(200);
             }
+
+            setHistory((prev) => [
+                ...prev,
+                {
+                    question: `${question.first} ${convertSign(question.operationSign)} ${question.second}`,
+                    userAnswer: question.answers[selectedAnswer],
+                    correct,
+                },
+            ]);
         } catch (err) {
-            console.log("Error checking answer:", err);
-            setResponseMessage("שגיאה, אנא נסה שוב.");
-            if (err.response && err.response.status === 401) {
-                Cookies.remove('userToken');
-                router.replace('/authentication/Login');
-            }
+            setResponseMessage("שגיאה, נסה שוב.");
         }
     }
 
     function handleNextQuestion() {
         if (!showResult) {
-            alert("יש לבדוק את התשובה לפני שעוברים לשאלה הבאה.");
+            alert("בדוק את התשובה לפני מעבר");
             return;
         }
-        if (id) {
-            fetchNextQuestion(id);
-        }
+        if (id) fetchNextQuestion(id);
     }
-
-    function handleGoBack() {
-        router.push('/MyCourses');
-    }
-
-    if (!id) return <Text>לא נבחר נושא</Text>;
-    if (!question) return <Text>טוען שאלה מהשרת...</Text>;
-
-    const displayAnswers = (typeof question.first === 'string' && question.first.includes('/'))
-        ? question.answers.map((encoded) => {
-            const num = Math.floor(encoded / 1000);
-            const den = encoded % 1000;
-            return `${num}/${den}`;
-        })
-        : question.answers;
-
-    const isAddOrSub = (id == 1 || id == 2);
-    const shouldShowHelpButton = isAddOrSub;
-    const isBedides = (myTopicLevel <= 2);
 
     function convertSign(sign) {
         switch (sign) {
-            case 'fracAdd': return '+';
-            case 'fracSub': return '-';
-            case 'fracMul': return '×';
-            case 'fracDiv': return '÷';
-            case 'add': return '+';
-            case 'sub': return '-';
+            case "fracAdd": return "+";
+            case "fracSub": return "-";
+            case "fracMul": return "×";
+            case "fracDiv": return "÷";
+            case "add": return "+";
+            case "sub": return "-";
             default: return sign;
         }
     }
 
     function renderBedidesExplanation() {
-        const operationWord = (id == 1) ? 'נוסיף' : 'נחסיר';
+        const operationWord = id == 1 ? "נוסיף" : "נחסיר";
         return (
-            <ScrollView style={{ maxHeight: 300, marginTop: 20 }} >
-                <Animated.View style={[localStyles.rightSideWrapper, { opacity: fadeAnim }]}>
-                    <Text style={localStyles.bigText}>
-                        נניח שיש לנו {question.first} כדורים, {operationWord} {question.second},
-                    </Text>
-                    <BedidesVisualization
-                        firstNum={Number(question.first)}
-                        secondNum={Number(question.second)}
-                        operation={id == 1 ? 'add' : 'sub'}
-                    />
-                    <Text style={localStyles.bigText}>
-                        ונקבל {(id == 1) ? (Number(question.first) + Number(question.second)) : (Number(question.first) - Number(question.second))} כדורים.
-                    </Text>
-                </Animated.View>
-            </ScrollView>
+            <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
+                <Text style={styles.explanationText}>נניח שיש לנו {question.first} כדורים, {operationWord} {question.second}</Text>
+                <BedidesVisualization
+                    firstNum={Number(question.first)}
+                    secondNum={Number(question.second)}
+                    operation={id == 1 ? "add" : "sub"}
+                />
+                <Text style={styles.explanationText}>ונקבל {eval(`${question.first}${convertSign(question.operationSign)}${question.second}`)} כדורים.</Text>
+            </Animated.View>
         );
     }
 
     function renderVerticalSolution() {
-        const sign = (id == 1) ? '+' : '-';
-        const firstNum = Number(question.first);
-        const secondNum = Number(question.second);
-        const resultNum = (id == 1) ? (firstNum + secondNum) : (firstNum - secondNum);
-
+        const sign = convertSign(question.operationSign);
+        const first = Number(question.first);
+        const second = Number(question.second);
+        const result = eval(`${first}${sign}${second}`);
         return (
-            <ScrollView style={{ maxHeight: 300, marginTop: 20 }}>
-                <Animated.View style={[localStyles.rightSideWrapper, { opacity: fadeAnim }]}>
-                    <Text style={localStyles.bigText}>פתרון במאונך :</Text>
-                    <Text style={[localStyles.bigText, { textAlign: 'right', marginTop: 10 }]}>
-                        {`
-     ${firstNum}
-${sign}    ${secondNum}
-------------
-     ${resultNum}
-                        `}
-                    </Text>
-                </Animated.View>
-            </ScrollView>
+            <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
+                <Text style={styles.explanationText}>פתרון במאונך:</Text>
+                <Text style={[styles.explanationText, { textAlign: 'right', marginTop: 10 }]}>  {`
+    ${first}
+${sign}   ${second}
+---------
+    ${result}`}</Text>
+            </Animated.View>
         );
     }
 
+    if (!id || !question) return <Text style={styles.loading}>טוען...</Text>;
+
+    const isFraction = typeof question.first === "string" && question.first.includes("/");
+    const displayAnswers = isFraction
+        ? question.answers.map((encoded) => `${Math.floor(encoded / 1000)}/${encoded % 1000}`)
+        : question.answers;
+
+    const isAddOrSub = id == 1 || id == 2;
+    const isBedides = myTopicLevel <= 2;
+
     return (
         <ProtectedRoute requireAuth={true}>
-            <View style={styles.container}>
-                <Pressable onPress={handleGoBack} style={styles.backButton}>
-                    <Text style={styles.backButtonText}>🔙 חזרה למסך הקורסים</Text>
-                </Pressable>
+            <ScrollView contentContainerStyle={styles.container}>
+                <Text style={styles.title}>{question.first} {convertSign(question.operationSign)} {question.second} = ?</Text>
 
-                <Text style={styles.question}>
-                    {question.first} {convertSign(question.operationSign)} {question.second} = ?
-                </Text>
-
-                {displayAnswers.map((ans, index) => (
+                {displayAnswers.map((ans, idx) => (
                     <Pressable
-                        key={index}
-                        onPress={() => {
-                            if (!showResult) setSelectedAnswer(index);
-                        }}
-                        style={[
-                            styles.answerButton,
-                            selectedAnswer === index && styles.selectedAnswer
-                        ]}
+                        key={idx}
+                        style={[styles.answerButton, selectedAnswer === idx && styles.selectedAnswer]}
+                        onPress={() => !showResult && setSelectedAnswer(idx)}
                         disabled={showResult}
                     >
                         <Text style={styles.answerText}>{ans}</Text>
                     </Pressable>
                 ))}
 
-                <Pressable
-                    onPress={handleCheckAnswer}
-                    style={[styles.checkButton, showResult && { opacity: 0.5 }]}
-                    disabled={showResult}
-                >
-                    <Text style={styles.checkButtonText}>בדיקה</Text>
+                <Pressable onPress={handleCheckAnswer} style={styles.primaryButton}>
+                    <Text style={styles.primaryText}>בדיקה</Text>
                 </Pressable>
 
-                {responseMessage ? <Text style={styles.resultText}>{responseMessage}</Text> : null}
+                {responseMessage !== '' && <Text style={styles.feedback}>{responseMessage}</Text>}
 
-                <Pressable
-                    onPress={handleNextQuestion}
-                    style={[styles.nextButton, (!showResult) && { opacity: 0.5 }]}
-                >
-                    <Text style={styles.nextButtonText}>שאלה הבאה</Text>
+                <Pressable onPress={handleNextQuestion} style={styles.secondaryButton}>
+                    <Text style={styles.secondaryText}>שאלה הבאה</Text>
                 </Pressable>
 
-                {shouldShowHelpButton && (
+                {isAddOrSub && (
                     <Pressable
-                        style={{ marginTop: 20, backgroundColor: '#EEE', padding: 10, borderRadius: 5 }}
                         onPress={() => setShowSolution(!showSolution)}
+                        style={styles.helpButton}
                         disabled={!showResult}
                     >
-                        <Text style={{ color: (!showResult ? 'gray' : 'blue') }}>
-                            {showSolution ? 'הסתר פתרון' : 'איך פותרים?'}
-                        </Text>
+                        <Text style={{ color: !showResult ? 'gray' : 'blue' }}>{showSolution ? 'הסתר פתרון' : 'איך פותרים?'}</Text>
                     </Pressable>
                 )}
 
@@ -259,12 +229,7 @@ ${sign}    ${secondNum}
                 )}
 
                 {showConfetti && (
-                    <ConfettiCannon
-                        count={150}
-                        origin={{ x: 200, y: 0 }}
-                        fadeOut={true}
-                        autoStart={true}
-                    />
+                    <ConfettiCannon count={100} origin={{ x: 200, y: 0 }} fadeOut={true} />
                 )}
 
                 <Modal visible={showLevelUpModal} transparent animationType="slide">
@@ -278,23 +243,83 @@ ${sign}    ${secondNum}
                         </View>
                     </View>
                 </Modal>
-            </View>
+
+                <View style={{ marginTop: 30 }}>
+                    <Text style={styles.sectionTitle}>היסטוריית תשובות:</Text>
+                    {history.map((item, i) => (
+                        <Text key={i} style={{ color: item.correct ? 'green' : 'red' }}>
+                            {item.question} | ענית: {item.userAnswer} {item.correct ? '✓' : '✗'}
+                        </Text>
+                    ))}
+                </View>
+
+                <Pressable onPress={() => router.push('/MyCourses')} style={[styles.primaryButton, { marginTop: 40 }]}>
+                    <Text style={styles.primaryText}>סיום תרגול</Text>
+                </Pressable>
+            </ScrollView>
         </ProtectedRoute>
     );
 }
 
-const localStyles = StyleSheet.create({
-    rightSideWrapper: {
-        alignSelf: 'flex-end',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-end',
-        backgroundColor: '#f9f9f9',
-        padding: 10,
-        marginRight: 10,
-        borderRadius: 6
+const styles = StyleSheet.create({
+    container: { padding: 24, paddingBottom: 60 },
+    title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginBottom: 20 },
+    answerButton: {
+        padding: 14,
+        borderRadius: 8,
+        backgroundColor: "#f3f4f6",
+        marginBottom: 10,
     },
-    bigText: {
-        fontSize: 20,
-        marginBottom: 10
-    }
+    selectedAnswer: { backgroundColor: "#c7d2fe" },
+    answerText: { fontSize: 18, textAlign: "center" },
+    primaryButton: {
+        backgroundColor: "#4F46E5",
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+    },
+    primaryText: { color: "#fff", textAlign: "center", fontSize: 16, fontWeight: "bold" },
+    secondaryButton: {
+        backgroundColor: "#E5E7EB",
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 10,
+    },
+    secondaryText: { textAlign: "center", fontSize: 16 },
+    feedback: { textAlign: "center", fontSize: 16, marginTop: 10, fontWeight: "bold" },
+    helpButton: {
+        marginTop: 20,
+        alignItems: "center",
+    },
+    explanation: {
+        backgroundColor: "#f9fafb",
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+    },
+    explanationText: { fontSize: 16, marginBottom: 8 },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0,0,0,0.5)",
+    },
+    modalBox: {
+        backgroundColor: "white",
+        padding: 24,
+        borderRadius: 12,
+        width: "80%",
+        alignItems: "center",
+    },
+    modalTitle: { fontSize: 22, fontWeight: "bold", marginBottom: 8 },
+    modalText: { fontSize: 16, marginBottom: 20 },
+    closeButton: {
+        backgroundColor: "#4F46E5",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+    },
+    closeButtonText: { color: "white", fontWeight: "bold" },
+    sectionTitle: { fontSize: 18, fontWeight: "600", marginBottom: 10 },
+    loading: { textAlign: 'center', marginTop: 40, fontSize: 18 },
 });

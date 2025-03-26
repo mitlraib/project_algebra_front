@@ -4,7 +4,7 @@ import { Colors as colors } from '../constants/Colors';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+         justifyContent: 'center',
         padding: 20,
 
     },
@@ -275,6 +275,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
     },
+    subjectContainer: {
+        flex: 1,
+        padding: 20,}
 
 });
 
