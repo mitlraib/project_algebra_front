@@ -1,5 +1,13 @@
 import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    Dimensions,
+    Image,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { ProgressBar } from 'react-native-paper';
 import { FontAwesome, Feather } from '@expo/vector-icons';
@@ -31,7 +39,22 @@ export default function Dashboard() {
         <ProtectedRoute requireAuth={true}>
             <ScrollView contentContainerStyle={styles.scroll}>
                 <View style={styles.container}>
-                    <Text style={styles.title}>ברוכים הבאים! 👋</Text>
+                    {/* כותרת ותמונה */}
+                    <Text style={styles.mainTitle}>ברוכים הבאים לMathJourney!</Text>
+                    <Image
+                        source={require('../../assets/images/learning-math.jpg')}
+                        style={styles.imageStyle}
+                    />
+                    <Text style={styles.description}>
+                        האתר שלנו נועד לעזור לך ללמוד חשבון בצורה חכמה ומהנה,
+                        {'\n'}
+                        עם שאלות מותאמות אישית והתקדמות לפי היכולת שלך
+                        {'\n'}
+                        בהצלחה!
+                    </Text>
+
+                    {/* כותרות כלליות */}
+                    <Text style={styles.title}>👋 שלום!</Text>
                     <Text style={styles.subtitle}>מוכנים ללמוד מתמטיקה?</Text>
 
                     {/* Progress Card */}
@@ -92,8 +115,28 @@ const styles = StyleSheet.create({
         backgroundColor: '#F9FAFB',
         borderRadius: 16,
     },
+    mainTitle: {
+        fontSize: 26,
+        fontWeight: '700',
+        textAlign: 'center',
+        marginBottom: 16,
+        color: '#111827',
+    },
+    imageStyle: {
+        width: '100%',
+        height: 200,
+        borderRadius: 16,
+        marginBottom: 16,
+    },
+    description: {
+        textAlign: 'center',
+        fontSize: 16,
+        color: '#374151',
+        marginBottom: 24,
+        lineHeight: 24,
+    },
     title: {
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: '700',
         textAlign: 'center',
         marginBottom: 6,

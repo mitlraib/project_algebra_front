@@ -113,10 +113,11 @@ export default function StyledCoursePage() {
 
             if (correct) {
                 setResponseMessage(`תשובה נכונה! רמה נוכחית: ${res.data.currentLevel}`);
-                setShowConfetti(true);
                 if (res.data.levelUpMessage) {
                     setResponseMessage(`תשובה נכונה! ${res.data.levelUpMessage}`);
                     setShowLevelUpModal(true);
+                    setShowConfetti(true);
+
                 }
             } else {
                 setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
@@ -241,7 +242,7 @@ ${sign}   ${second}
                     );
                 })}
 
-                <Pressable onPress={handleCheckAnswer} style={styles.primaryButton}>
+                <Pressable onPress={handleCheckAnswer} style={styles.checkButton}>
                     <Text style={styles.primaryText}>בדיקה</Text>
                 </Pressable>
 
@@ -286,7 +287,7 @@ ${sign}   ${second}
                     ))}
                 </View>
 
-                <Pressable onPress={() => router.push('/MyCourses')} style={[styles.primaryButton, { marginTop: 40 }]}>
+                <Pressable onPress={() => router.push('/MyCourses')} style={[styles.finishButton, { marginTop: 40 }]}>
                     <Text style={styles.primaryText}>סיום תרגול</Text>
                 </Pressable>
             </ScrollView>
@@ -295,31 +296,63 @@ ${sign}   ${second}
 }
 
 const styles = StyleSheet.create({
-    container: { padding: 24, paddingBottom: 60 },
-    title: { fontSize: 24, fontWeight: "bold", textAlign: "center" },
+    container: {
+        padding: 24,
+        paddingBottom: 60
+    },
+
+    title: {
+        fontSize: 24,
+        textAlign: "center"
+    },
     answerButton: {
         padding: 14,
         borderRadius: 8,
         backgroundColor: "#f3f4f6",
         marginBottom: 10,
     },
-    selectedAnswer: { backgroundColor: "#c7d2fe" },
-    answerText: { fontSize: 18, textAlign: "center" },
-    primaryButton: {
+    selectedAnswer: {
+        backgroundColor: "#c7d2fe"
+    },
+    answerText: {
+        fontSize: 18,
+        textAlign: "center"
+    },
+    finishButton: {
         backgroundColor: "#4F46E5",
         padding: 14,
         borderRadius: 8,
         marginTop: 16,
     },
-    primaryText: { color: "#fff", textAlign: "center", fontSize: 16, fontWeight: "bold" },
+
+    checkButton: {
+        backgroundColor: "#10B981",
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+    },
+    primaryText: {
+        color: "#fff",
+        textAlign: "center",
+        fontSize: 16,
+        fontWeight: "bold"
+    },
     secondaryButton: {
         backgroundColor: "#E5E7EB",
         padding: 14,
         borderRadius: 8,
         marginTop: 10,
     },
-    secondaryText: { textAlign: "center", fontSize: 16 },
-    feedback: { textAlign: "center", fontSize: 16, marginTop: 10, fontWeight: "bold" },
+    secondaryText: {
+        textAlign: "center",
+        fontSize: 16
+    },
+    feedback: {
+        textAlign: "center",
+        fontSize: 16,
+        marginTop: 10,
+        fontWeight: "bold"
+    },
     helpButton: {
         marginTop: 20,
         alignItems: "center",
@@ -330,7 +363,10 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginTop: 16,
     },
-    explanationText: { fontSize: 16, marginBottom: 8 },
+    explanationText: {
+        fontSize: 16,
+        marginBottom: 8
+    },
     modalOverlay: {
         flex: 1,
         justifyContent: "center",
@@ -344,8 +380,15 @@ const styles = StyleSheet.create({
         width: "80%",
         alignItems: "center",
     },
-    modalTitle: { fontSize: 22, fontWeight: "bold", marginBottom: 8 },
-    modalText: { fontSize: 16, marginBottom: 20 },
+    modalTitle: {
+        fontSize: 22,
+        fontWeight: "bold",
+        marginBottom: 8
+    },
+    modalText: {
+        fontSize: 16,
+        marginBottom: 20
+    },
     closeButton: {
         backgroundColor: "#4F46E5",
         paddingVertical: 10,
