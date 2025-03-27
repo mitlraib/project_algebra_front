@@ -4,9 +4,10 @@ import {
     Text,
     ScrollView,
     StyleSheet,
-    Dimensions
+    Dimensions, Pressable
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import {router} from "expo-router";
 
 const BADGES = {
     addition_master: {
@@ -62,11 +63,17 @@ export default function AchievementsPage() {
             division: 5,
         });
     }, []);
+    function handleGoBack() {
+        router.push("/Dashboard");
+    }
 
     return (
         <ScrollView contentContainerStyle={styles.scroll}>
             <View style={styles.container}>
                 <View style={styles.header}>
+                    <Pressable onPress={handleGoBack} style={styles.backButton}>
+                        <Text style={styles.backButtonText}>⬅ חזרה לדאשבורד</Text>
+                    </Pressable>
                     <View style={styles.awardCircle}>
                         <FontAwesome name="trophy" size={32} color="#FBBF24" />
                     </View>
