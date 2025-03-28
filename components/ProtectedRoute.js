@@ -1,14 +1,10 @@
+//ProtectedRoute
+
 import React, { useEffect, useState } from 'react';
 import { Redirect } from 'expo-router';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
-/**
- * קומפוננטה שעוטפת עמודים מוגנים
- *
- * @param {boolean} requireAuth – אם true, רק משתמש מחובר יכול לראות
- * @param children – תוכן הקומפוננטה
- */
 export default function ProtectedRoute({ children, requireAuth }) {
     const [isInit, setIsInit] = useState(false);
     const [user, setUser] = useState(null);
@@ -57,3 +53,5 @@ export default function ProtectedRoute({ children, requireAuth }) {
     // מציגים את הילדים כרגיל
     return children;
 }
+
+//end of ProtectedRoute

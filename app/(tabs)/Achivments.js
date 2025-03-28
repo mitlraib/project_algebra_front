@@ -1,11 +1,7 @@
+//AchievementsPage
+
 import React, { useEffect, useState } from "react";
-import {
-    View,
-    Text,
-    ScrollView,
-    StyleSheet,
-    Dimensions, Pressable
-} from "react-native";
+import {View, Text, ScrollView, StyleSheet, Dimensions, Pressable} from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import {router} from "expo-router";
 
@@ -245,3 +241,6 @@ const styles = StyleSheet.create({
         textAlign: "right",
     },
 });
+
+
+//end of AchievementsPage

@@ -1,3 +1,5 @@
+//MyCourses
+
 import React from 'react';
 import { Text, View, FlatList, Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -53,3 +55,6 @@ export default function MyCourses() {
         </View>
     );
 };
+
+
+// end of MyCourses

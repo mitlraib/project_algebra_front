@@ -29,19 +29,16 @@ export default function RandomQuestionPage() {
             setShowLevelUpModal(false);
             setShowConfetti(false);
 
-            // שמירת הנתונים של השאלה בהתאם לסוג השאלה
             if (res.data.operationSign === "word") {
-                // אם השאלה היא מילולית
                 setQuestion({
-                    type: 'word', // הוספת סוג שאלה
+                    type: 'word',
                     questionText: res.data.questionText,
                     correctAnswer: res.data.correctAnswer,
                     answers: res.data.answers,
                 });
             } else {
-                // אם השאלה רגילה
                 setQuestion({
-                    type: 'regular', // הוספת סוג שאלה
+                    type: 'regular',
                     first: res.data.first,
                     second: res.data.second,
                     operationSign: res.data.operationSign,
@@ -136,8 +133,6 @@ export default function RandomQuestionPage() {
         }
     }
 
-
-    // פונקציה להציג את התשובה
     function renderValue(value) {
         if (typeof value === 'string' && value.includes('/')) {
             const [num, den] = value.split('/');
@@ -153,7 +148,6 @@ export default function RandomQuestionPage() {
         }
     }
 
-    // הצגת שאלה רגילה או מילולית
     if (!question) {
         return (
             <View style={[styles.container, styles.centerAll]}>
@@ -162,9 +156,15 @@ export default function RandomQuestionPage() {
         );
     }
 
+    // לוג לפיתוח בלבד
+    if (__DEV__ && question) {
+        console.log('הערך של question.type הוא:', question.type);
+        console.log('הערך של question הוא:', question.questionText);
+    }
+
+
     let displayAnswers;
     if (question.type === 'regular') {
-        // אם השאלה רגילה
         displayAnswers = question.answers.map((ans, index) => (
             <Pressable
                 key={index}
@@ -179,7 +179,6 @@ export default function RandomQuestionPage() {
             </Pressable>
         ));
     } else if (question.type === 'word') {
-        // אם השאלה מילולית
         displayAnswers = question.answers.map((ans, index) => (
             <Pressable
                 key={index}
@@ -202,11 +201,6 @@ export default function RandomQuestionPage() {
                     <Text style={styles.backButtonText}>🔙 חזור לדף הבית</Text>
                 </Pressable>
 
-                console.log('הערך של question.type הוא:', question.type);
-
-                console.log('הערך של question הוא:', question.questionText);
-
-
                 {/* הצגת השאלה */}
                 {question.type === 'word' ? (
                     <Text style={{ fontSize: 20, textAlign: 'center', marginBottom: 20 }}>
@@ -215,30 +209,13 @@ export default function RandomQuestionPage() {
                 ) : (
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
                         {renderValue(question.first)}
-                        <Text style={{ fontSize: 20, marginHorizontal: 5 }}>{question.operationSign}</Text>
+                        <Text style={{ fontSize: 20, marginHorizontal: 5 }}>{convertSign(question.operationSign)}</Text>
                         {renderValue(question.second)}
                         <Text style={{ fontSize: 20, marginLeft: 5 }}>= ?</Text>
                     </View>
                 )}
 
-
-                {displayAnswers.map((ans, index) => (
-                    <Pressable
-                        key={index}
-                        onPress={() => {
-                            if (!showResult) setSelectedAnswer(index);
-                        }}
-                        style={[
-                            styles.answerButton,
-                            selectedAnswer === index && styles.selectedAnswer
-                        ]}
-                        disabled={showResult}
-                    >
-                        <View style={{ alignItems: 'center' }}>
-                            {renderValue(ans)}
-                        </View>
-                    </Pressable>
-                ))}
+                {displayAnswers}
 
                 <Pressable onPress={handleCheckAnswer} style={styles.checkButton}>
                     <Text style={styles.checkButtonText}>בדיקה</Text>

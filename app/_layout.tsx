@@ -1,3 +1,5 @@
+// RootLayout
+
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Slot, Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -48,3 +50,6 @@ export default function RootLayout() {
         </ThemeProvider>
     );
 }
+
+
+//end of  RootLayout

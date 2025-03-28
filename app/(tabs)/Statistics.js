@@ -1,3 +1,5 @@
+//Statistics
+
 import React, { useEffect, useState } from 'react';
 import { Text, View, Pressable, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -64,3 +66,6 @@ export default function Statistics() {
         </View>
     );
 }
+
+
+//end of Statistics

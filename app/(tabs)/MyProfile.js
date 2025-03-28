@@ -1,3 +1,5 @@
+//MyProfile
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, Switch, ScrollView, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -254,3 +256,6 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
 });
+
+
+//end of MyProfile

@@ -1,3 +1,6 @@
+// Dashboard
+
+
 import React, { useEffect } from 'react';
 import {
     View,
@@ -242,3 +245,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
+
+
+// end of Dashboard

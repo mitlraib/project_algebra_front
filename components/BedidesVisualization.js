@@ -1,3 +1,5 @@
+//BedidesVisualization
+
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
@@ -59,3 +61,6 @@ const styles = StyleSheet.create({
         marginVertical: 5
     }
 });
+
+
+//end of BedidesVisualization
