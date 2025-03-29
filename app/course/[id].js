@@ -1,7 +1,14 @@
-// StyledCoursePage = [id]
-
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, Pressable, ScrollView, StyleSheet, Modal, Animated, Vibration } from "react-native";
+import {
+    View,
+    Text,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Modal,
+    Animated,
+    Vibration,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -110,6 +117,7 @@ export default function StyledCoursePage() {
                     setResponseMessage(`תשובה נכונה! ${res.data.levelUpMessage}`);
                     setShowLevelUpModal(true);
                     setShowConfetti(true);
+
                 }
             } else {
                 setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
@@ -147,10 +155,44 @@ export default function StyledCoursePage() {
         }
     }
 
-    const isFraction = typeof question?.first === "string" && question.first.includes("/");
+    function renderBedidesExplanation() {
+        const operationWord = id == 1 ? "נוסיף" : "נחסיר";
+        return (
+            <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
+                <Text style={styles.explanationText}>נניח שיש לנו {question.first} כדורים, {operationWord} {question.second}</Text>
+                <BedidesVisualization
+                    firstNum={Number(question.first)}
+                    secondNum={Number(question.second)}
+                    operation={id == 1 ? "add" : "sub"}
+                />
+                <Text style={styles.explanationText}>ונקבל {eval(`${question.first}${convertSign(question.operationSign)}${question.second}`)} כדורים.</Text>
+            </Animated.View>
+        );
+    }
+
+    function renderVerticalSolution() {
+        const sign = convertSign(question.operationSign);
+        const first = Number(question.first);
+        const second = Number(question.second);
+        const result = eval(`${first}${sign}${second}`);
+        return (
+            <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
+                <Text style={styles.explanationText}>פתרון במאונך:</Text>
+                <Text style={[styles.explanationText, { textAlign: 'right', marginTop: 10 }]}>  {`
+    ${first}
+${sign}   ${second}
+---------
+    ${result}`}</Text>
+            </Animated.View>
+        );
+    }
+
+    if (!id || !question) return <Text style={styles.loading}>טוען...</Text>;
+
+    const isFraction = typeof question.first === "string" && question.first.includes("/");
     const displayAnswers = isFraction
-        ? question?.answers.map((encoded) => `${Math.floor(encoded / 1000)}/${encoded % 1000}`)
-        : question?.answers;
+        ? question.answers.map((encoded) => `${Math.floor(encoded / 1000)}/${encoded % 1000}`)
+        : question.answers;
 
     const isAddOrSub = id == 1 || id == 2;
     const isBedides = myTopicLevel <= 2;
@@ -184,7 +226,7 @@ export default function StyledCoursePage() {
                     )}
                 </View>
 
-                {displayAnswers?.map((ans, idx) => {
+                {displayAnswers.map((ans, idx) => {
                     const isAnsFraction = typeof ans === 'string' && ans.includes('/');
                     const [num, den] = isAnsFraction ? ans.split('/') : [];
 
@@ -215,6 +257,16 @@ export default function StyledCoursePage() {
                 <Pressable onPress={handleNextQuestion} style={styles.secondaryButton}>
                     <Text style={styles.secondaryText}>שאלה הבאה</Text>
                 </Pressable>
+
+                {isAddOrSub && (
+                    <Pressable onPress={() => setShowSolution(!showSolution)} style={styles.helpButton} disabled={!showResult}>
+                        <Text style={{ color: !showResult ? 'gray' : 'blue' }}>{showSolution ? 'הסתר פתרון' : 'איך פותרים?'}</Text>
+                    </Pressable>
+                )}
+
+                {showSolution && showResult && (
+                    isBedides ? renderBedidesExplanation() : renderVerticalSolution()
+                )}
 
                 {showConfetti && (
                     <ConfettiCannon count={100} origin={{ x: 200, y: 0 }} fadeOut={true} />
@@ -250,23 +302,106 @@ export default function StyledCoursePage() {
 }
 
 const styles = StyleSheet.create({
-    container: { padding: 24, paddingBottom: 60 },
-    title: { fontSize: 24, textAlign: "center" },
-    answerButton: { padding: 14, borderRadius: 8, backgroundColor: "#f3f4f6", marginBottom: 10 },
-    selectedAnswer: { backgroundColor: "#c7d2fe" },
-    answerText: { fontSize: 18, textAlign: "center" },
-    finishButton: { backgroundColor: "#4F46E5", padding: 14, borderRadius: 8, marginTop: 16 },
-    checkButton: { backgroundColor: "#10B981", padding: 14, borderRadius: 8, marginTop: 16 },
-    primaryText: { color: "#fff", textAlign: "center", fontSize: 16, fontWeight: "bold" },
-    secondaryButton: { backgroundColor: "#E5E7EB", padding: 14, borderRadius: 8, marginTop: 10 },
-    secondaryText: { textAlign: "center", fontSize: 16 },
-    feedback: { textAlign: "center", fontSize: 16, marginTop: 10, fontWeight: "bold" },
-    modalOverlay: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" },
-    modalBox: { backgroundColor: "white", padding: 24, borderRadius: 12, width: "80%", alignItems: "center" },
-    modalTitle: { fontSize: 22, fontWeight: "bold", marginBottom: 8 },
-    modalText: { fontSize: 16, marginBottom: 20 },
-    closeButton: { backgroundColor: "#4F46E5", paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8 },
+    container: {
+        padding: 24,
+        paddingBottom: 60
+    },
+
+    title: {
+        fontSize: 24,
+        textAlign: "center"
+    },
+    answerButton: {
+        padding: 14,
+        borderRadius: 8,
+        backgroundColor: "#f3f4f6",
+        marginBottom: 10,
+    },
+    selectedAnswer: {
+        backgroundColor: "#c7d2fe"
+    },
+    answerText: {
+        fontSize: 18,
+        textAlign: "center"
+    },
+    finishButton: {
+        backgroundColor: "#4F46E5",
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+    },
+
+    checkButton: {
+        backgroundColor: "#10B981",
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+    },
+    primaryText: {
+        color: "#fff",
+        textAlign: "center",
+        fontSize: 16,
+        fontWeight: "bold"
+    },
+    secondaryButton: {
+        backgroundColor: "#E5E7EB",
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 10,
+    },
+    secondaryText: {
+        textAlign: "center",
+        fontSize: 16
+    },
+    feedback: {
+        textAlign: "center",
+        fontSize: 16,
+        marginTop: 10,
+        fontWeight: "bold"
+    },
+    helpButton: {
+        marginTop: 20,
+        alignItems: "center",
+    },
+    explanation: {
+        backgroundColor: "#f9fafb",
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+    },
+    explanationText: {
+        fontSize: 16,
+        marginBottom: 8
+    },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0,0,0,0.5)",
+    },
+    modalBox: {
+        backgroundColor: "white",
+        padding: 24,
+        borderRadius: 12,
+        width: "80%",
+        alignItems: "center",
+    },
+    modalTitle: {
+        fontSize: 22,
+        fontWeight: "bold",
+        marginBottom: 8
+    },
+    modalText: {
+        fontSize: 16,
+        marginBottom: 20
+    },
+    closeButton: {
+        backgroundColor: "#4F46E5",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+    },
     closeButtonText: { color: "white", fontWeight: "bold" },
     sectionTitle: { fontSize: 18, fontWeight: "600", marginBottom: 10 },
-    loading: { textAlign: 'center', marginTop: 40, fontSize: 18 }
+    loading: { textAlign: 'center', marginTop: 40, fontSize: 18 },
 });

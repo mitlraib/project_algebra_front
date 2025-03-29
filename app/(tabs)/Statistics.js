@@ -1,8 +1,8 @@
-//Statistics
-
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Text, View, Pressable, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
 import styles from '../../styles/styles';
 
 export default function Statistics() {
@@ -11,27 +11,34 @@ export default function Statistics() {
     const [loading, setLoading] = useState(true);
     const [showMessage, setShowMessage] = useState(false);
 
-    useEffect(() => {
-        fetch("/api/user", { credentials: "include" })
-            .then((res) => res.json())
-            .then((data) => {
-                if (!data.success || data.role !== "ADMIN") {
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true);
+            setShowMessage(false);
+            axios.get("/api/user", { withCredentials: true })
+                .then((response) => {
+                    const data = response.data;
+                    console.log("USER DATA:", data);
+
+                    if (!data.success || data.role?.toUpperCase() !== "ADMIN") {
+                        setShowMessage(true);
+                        setTimeout(() => {
+                            router.replace("/Dashboard");
+                        }, 1000);
+                    } else {
+                        setUserRole(data.role);
+                    }
+                })
+                .catch((error) => {
+                    console.log("ERROR:", error);
                     setShowMessage(true);
                     setTimeout(() => {
                         router.replace("/Dashboard");
-                    }, 1000);
-                } else {
-                    setUserRole(data.role);
-                }
-            })
-            .catch(() => {
-                setShowMessage(true);
-                setTimeout(() => {
-                    router.replace("/Dashboard");
-                }, 3000);
-            })
-            .finally(() => setLoading(false));
-    }, []);
+                    }, 3000);
+                })
+                .finally(() => setLoading(false));
+        }, [])
+    );
 
     function handleGoBack() {
         router.push("/Dashboard");
@@ -57,15 +64,9 @@ export default function Statistics() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>סטטיסטיקה</Text>
-
             <Pressable onPress={handleGoBack} style={styles.backButton}>
                 <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
             </Pressable>
-
-            {/* כאן אפשר להוסיף כרטיסים / גרפים / נתונים סטטיסטיים בהמשך */}
         </View>
     );
 }
-
-
-//end of Statistics
