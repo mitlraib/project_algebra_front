@@ -258,7 +258,7 @@ ${sign}   ${second}
                     <Text style={styles.secondaryText}>שאלה הבאה</Text>
                 </Pressable>
 
-                {isAddOrSub && (
+                {isAddOrSub && question.operationSign !== 'word' && (
                     <Pressable onPress={() => setShowSolution(!showSolution)} style={styles.helpButton} disabled={!showResult}>
                         <Text style={{ color: !showResult ? 'gray' : 'blue' }}>{showSolution ? 'הסתר פתרון' : 'איך פותרים?'}</Text>
                     </Pressable>
