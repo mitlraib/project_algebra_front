@@ -220,7 +220,7 @@ ${sign}   ${second}
             '+': [
                 `${name} קיבלה ${first} ${item}, ואז הוסיפו לה עוד ${second}. כמה ${item} יש לה עכשיו?`,
                 `${name} אספה ${first} ${item} ועוד ${second}. כמה יש לה בסך הכל?`,
-                `${name} קיבלה ${first} ${item} ונתנה לחבר ${second}. כמה ${item} נשארו לה?`,
+                `${name} קיבלה ${first} ${item} ואז קיבלה מחבר עוד ${second}. כמה ${item} יש לה עכשיו?`,
                 `${name} קיבלה ${first} ${item}, ועכשיו הוסיפו לה ${second} נוספים. כמה יש לה?`
             ],
             '-': [
@@ -228,9 +228,6 @@ ${sign}   ${second}
                 `${name} התחילה עם ${first} ${item} ונתנה לחבר ${second}. כמה נשארו לה?`,
                 `${name} קיבלה ${first} ${item}, אך איבדה ${second}. כמה ${item} נשארו לה?`,
                 `${name} התחילה עם ${first} ${item} ונתנה ${second} לאחרים. כמה נשארו לה?`,
-                // נוסחים נוספים לחיסור
-                `${first} ${op} ${second} שווה ל...?`,
-                `מה התוצאה של ${first} ${op} ${second}?`,
             ],
             '×': [
                 `${name} קיבלה ${first} שקיות עם ${second} ${item} בכל אחת. כמה ${item} יש לה בסך הכל?`,
@@ -264,7 +261,7 @@ ${sign}   ${second}
         // רמות בינוניות – אפשר לגוון
         const allOptions = [
             ...(verbalTemplates[sign] || []),
-            ...(genericTemplates[sign] || [])
+            ...genericTemplates
         ];
 
         // בחר נוסח רנדומלי מתוך האפשרויות
