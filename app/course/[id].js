@@ -78,7 +78,17 @@ export default function StyledCoursePage() {
     async function fetchNextQuestion(topicId) {
         try {
             const res = await axios.get(`/api/exercises/next?topicId=${topicId}`);
-            setQuestion(res.data);
+            const questionData = res.data;
+
+
+            questionData.text = generateQuestionText(
+                questionData.first,
+                questionData.second,
+                questionData.operationSign,
+                myTopicLevel
+            );
+
+            setQuestion(questionData); // <== רק אחרי שעדכנת
             setSelectedAnswer(null);
             setShowResult(false);
             setResponseMessage("");
@@ -197,26 +207,97 @@ ${sign}   ${second}
     const isAddOrSub = id == 1 || id == 2;
     const isBedides = myTopicLevel <= 2;
 
-    return (
+    function generateQuestionText(first, second, sign, topicLevel) {
+        const op = convertSign(sign);
+
+        const names = ["נועה", "מיטל", "תמר", "הדס", "נעמה"];
+        const items = ["תפוחים", "בננות", "עפרונות", "כדורים", "ספרים", "צעצועים"];
+        const name = names[Math.floor(Math.random() * names.length)];
+        const item = items[Math.floor(Math.random() * items.length)];
+
+        // ניסוחים מילוליים לפי פעולה
+        const verbalTemplates = {
+            '+': [
+                `${name} קיבלה ${first} ${item}, ואז הוסיפו לה עוד ${second}. כמה ${item} יש לה עכשיו?`,
+                `${name} אספה ${first} ${item} ועוד ${second}. כמה יש לה בסך הכל?`,
+                `${name} קיבלה ${first} ${item} ונתנה לחבר ${second}. כמה ${item} נשארו לה?`,
+                `${name} קיבלה ${first} ${item}, ועכשיו הוסיפו לה ${second} נוספים. כמה יש לה?`
+            ],
+            '-': [
+                `${name} קיבלה ${first} ${item}, אבל איבדה ${second}. כמה ${item} נשארו לה?`,
+                `${name} התחילה עם ${first} ${item} ונתנה לחבר ${second}. כמה נשארו לה?`,
+                `${name} קיבלה ${first} ${item}, אך איבדה ${second}. כמה ${item} נשארו לה?`,
+                `${name} התחילה עם ${first} ${item} ונתנה ${second} לאחרים. כמה נשארו לה?`,
+                // נוסחים נוספים לחיסור
+                `${first} ${op} ${second} שווה ל...?`,
+                `מה התוצאה של ${first} ${op} ${second}?`,
+            ],
+            '×': [
+                `${name} קיבלה ${first} שקיות עם ${second} ${item} בכל אחת. כמה ${item} יש לה בסך הכל?`,
+                `${name} ארזה ${first} קופסאות, ובכל קופסה יש ${second} ${item}. כמה פריטים יש לה?`,
+                `${name} קיבלה ${first} ${item}, והם היו בכל ${second} תיקים. כמה ${item} יש לה בסך הכל?`
+            ],
+            '÷': [
+                `${name} חילקה ${first} ${item} שווה בשווה ל-${second} ילדים. כמה קיבל כל ילד?`,
+                `${first} ${item} חולקו ל-${second} קבוצות שוות. כמה יש בכל קבוצה?`,
+                `${first} ${item} חולקו באופן שווה בין ${second} ילדים. כמה קיבל כל אחד?`,
+                // נוסחים נוספים לחלוקה
+                `${first} ${item} חולקו בין ${second} ילדים. כמה קיבל כל אחד?`,
+                `כמה ${item} יש לכל ילד אם חילקו ${first} ${item} ל-${second} ילדים?`
+            ],
+        };
+
+        // נוסחים כלליים / מתמטיים קלאסיים - הגיוון ייעשה כאן לפי סוג הפעולה
+        // ניסוחים כלליים / מתמטיים קלאסיים
+        const genericTemplates = [
+            `כמה זה ${second} ${op} ${first}?`,
+            `${second} ${op} ${first} שווה ל...?`,
+            `בוא נחשב: ${second} ${op} ${first}`,
+            `מה התוצאה של ${second} ${op} ${first}?`,
+        ];
+
+        // // לרמות נמוכות – להשתמש בניסוח פשוט
+        // if (topicLevel <= 2) {
+        //     return `${second} ${op} ${first} שווה ל...?`;
+        // }
+
+        // רמות בינוניות – אפשר לגוון
+        const allOptions = [
+            ...(verbalTemplates[sign] || []),
+            ...(genericTemplates[sign] || [])
+        ];
+
+        // בחר נוסח רנדומלי מתוך האפשרויות
+        return allOptions[Math.floor(Math.random() * allOptions.length)];
+    }
+        return (
         <ProtectedRoute requireAuth={true}>
             <ScrollView contentContainerStyle={styles.container}>
                 <View style={{ alignItems: 'center', marginBottom: 20 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        {isFraction && question.first.includes('/') ? (
-                            <Fraction numerator={question.first.split('/')[0]} denominator={question.first.split('/')[1]} />
+                        {isFraction && (question.first.includes('/') || question.second.includes('/')) ? (
+                            <>
+                                {question.first.includes('/') ? (
+                                    <Fraction numerator={question.first.split('/')[0]} denominator={question.first.split('/')[1]} />
+                                ) : (
+                                    <Text style={styles.title}>{question.first}</Text>
+                                )}
+
+                                <Text style={{ fontSize: 20, marginHorizontal: 8 }}>{convertSign(question.operationSign)}</Text>
+
+                                {question.second.includes('/') ? (
+                                    <Fraction numerator={question.second.split('/')[0]} denominator={question.second.split('/')[1]} />
+                                ) : (
+                                    <Text style={styles.title}>{question.second}</Text>
+                                )}
+
+                                <Text style={{ fontSize: 20, marginLeft: 8 }}>= ?</Text>
+                            </>
                         ) : (
-                            <Text style={styles.title}>{question.first}</Text>
+                            <Text style={styles.title}>
+                                {question.text}
+                            </Text>
                         )}
-
-                        <Text style={{ fontSize: 20, marginHorizontal: 8 }}>{convertSign(question.operationSign)}</Text>
-
-                        {isFraction && question.second.includes('/') ? (
-                            <Fraction numerator={question.second.split('/')[0]} denominator={question.second.split('/')[1]} />
-                        ) : (
-                            <Text style={styles.title}>{question.second}</Text>
-                        )}
-
-                        <Text style={{ fontSize: 20, marginLeft: 8 }}>= ?</Text>
                     </View>
                 </View>
 
