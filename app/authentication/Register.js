@@ -121,10 +121,17 @@ export const Register = () => {
                 Alert.alert("שגיאה", response.data.message || "ההרשמה נכשלה, נסה שוב");
             }
         } catch (error) {
-            if (error.response?.data?.message) {
-                Alert.alert("שגיאה בהרשמה", error.response.data.message);
+            if (error.response) {
+                //  טיפול מיוחד ל-500 - המייל כבר קיים
+                if (error.response.status === 500) {
+                    alert("למייל הזה כבר יש משתמש! ", error.response.data.message);
+                } else if (error.response.data?.message) {
+                    alert("שגיאה בהרשמה שלך", error.response.data.message);
+                } else {
+                    alert("שגיאה", "ההרשמה נכשלה. נסה שוב מאוחר יותר.");
+                }
             } else {
-                Alert.alert("שגיאה", "ההרשמה נכשלה. נסה שוב מאוחר יותר.");
+                alert("שגיאה", "ההרשמה נכשלה. נסה שוב מאוחר יותר.");
             }
             console.error('Error during registration:', error.response?.data || error.message);
         }
