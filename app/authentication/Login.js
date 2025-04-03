@@ -77,13 +77,13 @@ const Login = () => {
         }
     };
 
-    const validateField = (fieldName) => {
+    const validateField = (fieldName, value) => {
         let valid = true;
         let newErrors = { ...errors };
 
         switch (fieldName) {
             case 'mail':
-                if (!mail || !mail.includes('@')) {
+                if (!value || !value.includes('@')) {
                     newErrors.mail = 'כתובת המייל לא תקינה';
                     valid = false;
                 } else {
@@ -91,7 +91,7 @@ const Login = () => {
                 }
                 break;
             case 'password':
-                if (!password || password.length < 6) {
+                if (!value || value.length < 6) {
                     newErrors.password = 'הסיסמה חייבת להיות לפחות 6 תווים';
                     valid = false;
                 } else {
@@ -106,6 +106,7 @@ const Login = () => {
         return valid;
     };
 
+
     return (
         <ProtectedRoute requireAuth={false}>
             <View style={styles.container}>
@@ -116,16 +117,14 @@ const Login = () => {
                         <Text style={styles.errorText}>{errors.form}</Text>
                     ) : null}
 
-                    {/* אימייל */}
                     <TextInput
                         style={styles.input}
                         placeholder="אימייל"
                         value={mail}
                         onChangeText={(text) => {
                             setMail(text);
-                            validateField('mail');
+                            validateField('mail', text);  // בדיקה בזמן אמת
                         }}
-                        onBlur={() => validateField('mail')}
                     />
                     {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
 
@@ -141,17 +140,20 @@ const Login = () => {
                         <TextInput
                             style={styles.input}
                             placeholder="סיסמה"
+                            value={password}
                             onChangeText={(text) => {
                                 setPassword(text);
-                                validateField('password');
+                                validateField('password', text);  // בדיקה בזמן אמת
                             }}
-                            onBlur={() => validateField('password')}
                             secureTextEntry={!showPassword}
                         />
                     </View>
-                    {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
 
-                    {/* כפתור התחברות */}
+                    {errors.password ? (
+                            <Text style={styles.errorText}>{errors.password}</Text>
+                        ) : null}
+
+                        {/* כפתור התחברות */}
                     <View style={styles.buttonContainer}>
                         <Button
                             title="התחבר"

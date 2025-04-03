@@ -21,6 +21,7 @@ export default function Dashboard() {
     const router = useRouter();
 
     useEffect(() => {
+
         const token = Cookies.get('userToken');
         if (!token) {
             router.replace('/authentication/Login');
@@ -31,6 +32,7 @@ export default function Dashboard() {
         Cookies.remove('userToken');
         router.replace('/authentication/Login');
     };
+
 
     const fakeProgress = {
         stars: 12,
@@ -91,6 +93,10 @@ export default function Dashboard() {
                         <TouchableOpacity style={styles.miniCard} onPress={() => router.push('/Achivments')}>
                             <Text style={styles.miniTitle}>הישגים</Text>
                             <Text style={styles.miniSub}>ראו את התגים שלכם</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.miniCard} onPress={() => router.push('/Statistics')}>
+                            <Text style={styles.miniTitle}>סטטיסטיקה</Text>
+                            <Text style={styles.miniSub}>מעקב אחרי ההתקדמות</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -215,7 +221,7 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     miniCard: {
-        width: '48%',
+        width: '30%',
         backgroundColor: '#ECFDF5',
         padding: 20,
         borderRadius: 12,
