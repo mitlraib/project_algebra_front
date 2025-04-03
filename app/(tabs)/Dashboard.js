@@ -1,7 +1,7 @@
 // Dashboard
 
 
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View,
     Text,
@@ -16,9 +16,12 @@ import { ProgressBar } from 'react-native-paper';
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
+import axios from "axios";
 
 export default function Dashboard() {
     const router = useRouter();
+    const [isAdmin, setIsAdmin] = useState(false); // מצב אם המשתמש הוא מנהל
+    const [loading, setLoading] = useState(true); // מצב טעינה
 
     useEffect(() => {
 
@@ -26,7 +29,24 @@ export default function Dashboard() {
         if (!token) {
             router.replace('/authentication/Login');
         }
+        // אם יש token, נוודא שהמשתמש הוא מנהל
+        axios.get('/api/user', { withCredentials: true })
+            .then(response => {
+                const data = response.data;
+                if (data.success && data.role?.toUpperCase() === "ADMIN") {
+                    setIsAdmin(true);  // אם הוא מנהל, עדכון ה-state
+                } else {
+                    setIsAdmin(false); // אם לא מנהל, לא נציג את הכפתור
+                }
+            })
+            .catch(error => {
+                console.log("ERROR:", error);
+                setIsAdmin(false); // במקרה של שגיאה, לא נציג את הכפתור
+            })
+            .finally(() => setLoading(false)); // סיום טעינה
     }, [router]);
+
+
 
     const handleLogout = () => {
         Cookies.remove('userToken');
@@ -94,10 +114,13 @@ export default function Dashboard() {
                             <Text style={styles.miniTitle}>הישגים</Text>
                             <Text style={styles.miniSub}>ראו את התגים שלכם</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.miniCard} onPress={() => router.push('/Statistics')}>
-                            <Text style={styles.miniTitle}>סטטיסטיקה</Text>
-                            <Text style={styles.miniSub}>מעקב אחרי ההתקדמות</Text>
-                        </TouchableOpacity>
+                        {/* כפתור סטטיסטיקה, רק אם המשתמש הוא מנהל */}
+                        {isAdmin && (
+                            <TouchableOpacity style={styles.miniCard} onPress={() => router.push('/Statistics')}>
+                                <Text style={styles.miniTitle}>סטטיסטיקה</Text>
+                                <Text style={styles.miniSub}>מעקב אחרי ההתקדמות</Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
 
                     {/* Logout */}
