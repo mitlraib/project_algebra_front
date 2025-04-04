@@ -4,8 +4,13 @@ import axios from 'axios';
 import { useRouter } from 'expo-router';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
-import styles from '../../styles/styles.js';
 import ConfettiCannon from 'react-native-confetti-cannon';
+
+// אפשר לייבא את styles שלכם כאן, אם יש לכם קובץ נפרד
+// import styles from '../../styles/styles.js';
+
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "http://localhost:8080";
 
 export default function RandomQuestionPage() {
     const router = useRouter();
@@ -15,6 +20,7 @@ export default function RandomQuestionPage() {
     const [responseMessage, setResponseMessage] = useState('');
     const [showLevelUpModal, setShowLevelUpModal] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
+    const [isCheckDisabled, setIsCheckDisabled] = useState(false);  // מניעה לחיצות חוזרות
 
     useEffect(() => {
         fetchRandomQuestion();
@@ -23,31 +29,22 @@ export default function RandomQuestionPage() {
     async function fetchRandomQuestion() {
         try {
             const res = await axios.get('/api/exercises/next-random');
+            setQuestion({
+                // נשמור בדיוק את הנתונים שמגיעים
+                ...res.data
+            });
             setSelectedAnswer(null);
             setShowResult(false);
             setResponseMessage('');
             setShowLevelUpModal(false);
             setShowConfetti(false);
-
-            if (res.data.operationSign === "word") {
-                setQuestion({
-                    type: 'word',
-                    questionText: res.data.questionText,
-                    correctAnswer: res.data.correctAnswer,
-                    answers: res.data.answers,
-                });
-            } else {
-                setQuestion({
-                    type: 'regular',
-                    first: res.data.first,
-                    second: res.data.second,
-                    operationSign: res.data.operationSign,
-                    correctAnswer: res.data.correctAnswer,
-                    answers: res.data.answers,
-                });
-            }
+            setIsCheckDisabled(false); // מאפשרים בדיקה מחדש בשאלה הבאה
         } catch (err) {
             console.log("Error fetching random question:", err);
+            if (err.response && err.response.status === 401) {
+                Cookies.remove('userToken');
+                router.replace('/authentication/Login');
+            }
         }
     }
 
@@ -56,6 +53,11 @@ export default function RandomQuestionPage() {
             alert("יש לבחור תשובה תחילה.");
             return;
         }
+        if (isCheckDisabled) {
+            // כבר נעשתה בדיקה, לא נאפשר שוב
+            return;
+        }
+        setIsCheckDisabled(true);
 
         try {
             const userAnswerValue = question.answers[selectedAnswer];
@@ -72,18 +74,21 @@ export default function RandomQuestionPage() {
                     setResponseMessage(`תשובה נכונה! רמה נוכחית: ${res.data.currentLevel}`);
                 }
             } else {
-                let correctDisplay;
-                if (typeof question.first === 'string' && question.first.includes('/')) {
+                let correctDisplay = question.correctAnswer;
+
+                // בדיקה אם מדובר בשבר מקודד (num*1000 + den)
+                if (
+                    question.operationSign &&
+                    question.operationSign.includes("frac")
+                ) {
                     const c = res.data.correctAnswer || question.correctAnswer;
                     const num = Math.floor(c / 1000);
                     const den = c % 1000;
                     correctDisplay = `${num}/${den}`;
-                } else {
-                    correctDisplay = question.correctAnswer;
                 }
+
                 setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
             }
-
         } catch (err) {
             console.log("Error checking answer:", err);
             setResponseMessage("שגיאה, אנא נסה שוב.");
@@ -111,29 +116,44 @@ export default function RandomQuestionPage() {
             case 'fracAdd':
             case 'frac+':
             case '+':
-            case 'add':
                 return '+';
             case 'fracSub':
             case 'frac-':
             case '-':
-            case 'sub':
                 return '-';
             case 'fracMul':
             case 'frac*':
             case '*':
-            case 'mul':
                 return '×';
             case 'fracDiv':
             case 'frac/':
             case '/':
-            case 'div':
                 return '÷';
             default:
                 return sign;
         }
     }
 
+    // פונקציה להצגת ערך כטקסט או כשבר מפוענח
     function renderValue(value) {
+        // אם זה אובייקט שבר מקודד (למשל 3004 => 3/4)
+        if (
+            question.operationSign &&
+            question.operationSign.includes("frac") &&
+            typeof value === 'number'
+        ) {
+            const num = Math.floor(value / 1000);
+            const den = value % 1000;
+            return (
+                <View style={fractionStyles.fractionContainer}>
+                    <Text style={fractionStyles.fractionNumerator}>{num}</Text>
+                    <View style={fractionStyles.fractionLine} />
+                    <Text style={fractionStyles.fractionDenominator}>{den}</Text>
+                </View>
+            );
+        }
+
+        // אם זו מחרוזת עם '/', כנראה שבר (נניח "3/4")
         if (typeof value === 'string' && value.includes('/')) {
             const [num, den] = value.split('/');
             return (
@@ -143,90 +163,80 @@ export default function RandomQuestionPage() {
                     <Text style={fractionStyles.fractionDenominator}>{den}</Text>
                 </View>
             );
-        } else {
-            return <Text style={{ fontSize: 20 }}>{value}</Text>;
         }
+
+        // אחרת מציגים טקסט רגיל
+        return <Text style={{ fontSize: 20 }}>{value}</Text>;
     }
 
     if (!question) {
         return (
-            <View style={[styles.container, styles.centerAll]}>
-                <Text>טוען שאלה רנדומלית...</Text>
-            </View>
+            <ProtectedRoute requireAuth={true}>
+                <View style={[pageStyles.container, pageStyles.centerAll]}>
+                    <Text>טוען שאלה רנדומלית...</Text>
+                </View>
+            </ProtectedRoute>
         );
     }
 
-    // לוג לפיתוח בלבד
-    if (__DEV__ && question) {
-        console.log('הערך של question.type הוא:', question.type);
-        console.log('הערך של question הוא:', question.questionText);
-    }
-
-
-    let displayAnswers;
-    if (question.type === 'regular') {
-        displayAnswers = question.answers.map((ans, index) => (
-            <Pressable
-                key={index}
-                onPress={() => setSelectedAnswer(index)}
-                style={[
-                    styles.answerButton,
-                    selectedAnswer === index && styles.selectedAnswer
-                ]}
-                disabled={showResult}
-            >
-                {renderValue(ans)}
-            </Pressable>
-        ));
-    } else if (question.type === 'word') {
-        displayAnswers = question.answers.map((ans, index) => (
-            <Pressable
-                key={index}
-                onPress={() => setSelectedAnswer(index)}
-                style={[
-                    styles.answerButton,
-                    selectedAnswer === index && styles.selectedAnswer
-                ]}
-                disabled={showResult}
-            >
-                <Text>{ans}</Text>
-            </Pressable>
-        ));
-    }
+    // מכין את מערך התשובות להצגה
+    const displayAnswers = question.answers || [];
 
     return (
         <ProtectedRoute requireAuth={true}>
-            <View style={[styles.container, styles.centerAll]}>
-                <Pressable onPress={handleGoBack} style={styles.backButton}>
-                    <Text style={styles.backButtonText}>🔙 חזור לדף הבית</Text>
+            <View style={[pageStyles.container, pageStyles.centerAll]}>
+                <Pressable onPress={handleGoBack} style={pageStyles.backButton}>
+                    <Text style={pageStyles.backButtonText}>🔙 חזור לדף הבית</Text>
                 </Pressable>
 
                 {/* הצגת השאלה */}
-                {question.type === 'word' ? (
-                    <Text style={{ fontSize: 20, textAlign: 'center', marginBottom: 20 }}>
+                {question.operationSign === 'word' ? (
+                    <Text style={pageStyles.questionText}>
                         {question.questionText}
                     </Text>
                 ) : (
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
+                    <View style={pageStyles.questionRow}>
                         {renderValue(question.first)}
-                        <Text style={{ fontSize: 20, marginHorizontal: 5 }}>{convertSign(question.operationSign)}</Text>
+                        <Text style={pageStyles.signText}>{convertSign(question.operationSign)}</Text>
                         {renderValue(question.second)}
-                        <Text style={{ fontSize: 20, marginLeft: 5 }}>= ?</Text>
+                        <Text style={pageStyles.signText}>= ?</Text>
                     </View>
                 )}
 
-                {displayAnswers}
+                {/* תשובות */}
+                {displayAnswers.map((ans, index) => (
+                    <Pressable
+                        key={index}
+                        onPress={() => setSelectedAnswer(index)}
+                        style={[
+                            pageStyles.answerButton,
+                            selectedAnswer === index && pageStyles.selectedAnswer
+                        ]}
+                        disabled={showResult}
+                    >
+                        {renderValue(ans)}
+                    </Pressable>
+                ))}
 
-                <Pressable onPress={handleCheckAnswer} style={styles.checkButton}>
-                    <Text style={styles.checkButtonText}>בדיקה</Text>
+                {/* כפתור בדיקה */}
+                <Pressable
+                    onPress={handleCheckAnswer}
+                    style={[pageStyles.checkButton, isCheckDisabled && { opacity: 0.5 }]}
+                    disabled={isCheckDisabled}
+                >
+                    <Text style={pageStyles.checkButtonText}>בדיקה</Text>
                 </Pressable>
 
                 {responseMessage ? (
-                    <Text style={styles.resultText}>{responseMessage}</Text>
+                    <Text style={pageStyles.resultText}>{responseMessage}</Text>
                 ) : null}
 
-                <Pressable onPress={handleNext} style={[styles.nextButton, (!showResult) && { opacity: 0.5 }]}>
-                    <Text style={styles.nextButtonText}>שאלה רנדומלית הבאה</Text>
+                {/* כפתור לשאלה הבאה */}
+                <Pressable
+                    onPress={handleNext}
+                    style={[pageStyles.nextButton, (!showResult) && { opacity: 0.5 }]}
+                >
+                    <Text style={pageStyles.nextButtonText}>שאלה רנדומלית הבאה</Text>
                 </Pressable>
 
                 {showConfetti && (
@@ -243,7 +253,10 @@ export default function RandomQuestionPage() {
                         <View style={modalStyles.modalBox}>
                             <Text style={modalStyles.modalTitle}>כל הכבוד!</Text>
                             <Text style={modalStyles.modalText}>עלית רמה!</Text>
-                            <Pressable onPress={() => setShowLevelUpModal(false)} style={modalStyles.closeButton}>
+                            <Pressable
+                                onPress={() => setShowLevelUpModal(false)}
+                                style={modalStyles.closeButton}
+                            >
                                 <Text style={modalStyles.closeButtonText}>סגור</Text>
                             </Pressable>
                         </View>
@@ -254,6 +267,86 @@ export default function RandomQuestionPage() {
     );
 }
 
+// סגנונות לדף
+const pageStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 16,
+        backgroundColor: '#fff'
+    },
+    centerAll: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    backButton: {
+        alignSelf: 'flex-start',
+        marginBottom: 16,
+    },
+    backButtonText: {
+        color: '#007AFF',
+        fontSize: 16,
+    },
+    questionText: {
+        fontSize: 20,
+        textAlign: 'center',
+        marginBottom: 20
+    },
+    questionRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20
+    },
+    signText: {
+        fontSize: 20,
+        marginHorizontal: 5
+    },
+    answerButton: {
+        padding: 14,
+        borderRadius: 8,
+        backgroundColor: "#f3f4f6",
+        marginBottom: 10,
+        width: '100%',
+        alignItems: 'center'
+    },
+    selectedAnswer: {
+        backgroundColor: "#c7d2fe"
+    },
+    checkButton: {
+        backgroundColor: '#10B981',
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+        width: '100%',
+        alignItems: 'center'
+    },
+    checkButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    nextButton: {
+        backgroundColor: '#4F46E5',
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+        width: '100%',
+        alignItems: 'center'
+    },
+    nextButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    resultText: {
+        marginTop: 12,
+        fontSize: 16,
+        textAlign: 'center',
+        fontWeight: 'bold'
+    },
+});
+
+// סגנונות לשבר
 const fractionStyles = StyleSheet.create({
     fractionContainer: {
         alignItems: 'center',
@@ -276,6 +369,7 @@ const fractionStyles = StyleSheet.create({
     },
 });
 
+// סגנונות למודל
 const modalStyles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
