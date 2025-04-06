@@ -228,7 +228,21 @@ export default function RandomQuestionPage() {
                 </Pressable>
 
                 {responseMessage ? (
-                    <Text style={pageStyles.resultText}>{responseMessage}</Text>
+                    <Text
+                        style={{
+                            color:
+                                answerFeedbackColor === "green"
+                                    ? "green"
+                                    : answerFeedbackColor === "red"
+                                        ? "red"
+                                        : "black",
+                            fontSize: 18,
+                            fontWeight: "bold",
+                            marginTop: 10,
+                        }}
+                    >
+                        {responseMessage}
+                    </Text>
                 ) : null}
 
                 {/* כפתור לשאלה הבאה */}

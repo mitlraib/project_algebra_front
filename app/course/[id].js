@@ -43,6 +43,7 @@ export default function StyledCoursePage() {
     const [showSolution, setShowSolution] = useState(false);
     const [history, setHistory] = useState([]);
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const [answerFeedbackColor, setAnswerFeedbackColor] = useState(null);
 
     useEffect(() => {
         if (id) {
@@ -95,6 +96,7 @@ export default function StyledCoursePage() {
             setShowLevelUpModal(false);
             setShowConfetti(false);
             setShowSolution(false);
+            setAnswerFeedbackColor(null);
         } catch (err) {
             if (err.response?.status === 401) {
                 Cookies.remove("userToken");
@@ -122,17 +124,19 @@ export default function StyledCoursePage() {
                 : correctAnswer;
 
             if (correct) {
+                setAnswerFeedbackColor("green");
                 setResponseMessage(`תשובה נכונה! רמה נוכחית: ${res.data.currentLevel}`);
                 if (res.data.levelUpMessage) {
                     setResponseMessage(`תשובה נכונה! ${res.data.levelUpMessage}`);
                     setShowLevelUpModal(true);
                     setShowConfetti(true);
-
                 }
             } else {
-                setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
+                setAnswerFeedbackColor("red");
                 Vibration.vibrate(200);
+                setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
             }
+
 
             setHistory((prev) => [
                 ...prev,
@@ -267,6 +271,8 @@ ${sign}   ${second}
         // בחר נוסח רנדומלי מתוך האפשרויות
         return allOptions[Math.floor(Math.random() * allOptions.length)];
     }
+
+
     return (
         <ProtectedRoute requireAuth={true}>
             <ScrollView contentContainerStyle={styles.container}>
@@ -302,10 +308,25 @@ ${sign}   ${second}
                     const isAnsFraction = typeof ans === 'string' && ans.includes('/');
                     const [num, den] = isAnsFraction ? ans.split('/') : [];
 
+                    const isSelected = selectedAnswer === idx;
+                    const isCorrectAnswer = question.answers[idx] === question.correctAnswer;
+
+                    let answerStyle = styles.answerButton;
+
+                    if (showResult) {
+                        if (isSelected) {
+                            answerStyle = isCorrectAnswer ? styles.correctAnswer : styles.incorrectAnswer;
+                        } else if (isCorrectAnswer) {
+                            answerStyle = styles.correctAnswer;
+                        }
+                    } else if (isSelected) {
+                        answerStyle = styles.selectedAnswer;
+                    }
+
                     return (
                         <Pressable
                             key={idx}
-                            style={[styles.answerButton, selectedAnswer === idx && styles.selectedAnswer]}
+                            style={[answerStyle]}
                             onPress={() => !showResult && setSelectedAnswer(idx)}
                             disabled={showResult}
                         >
@@ -472,6 +493,22 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 8,
+    },
+    correctAnswer: {
+        backgroundColor: '#d4edda', // ירוק בהיר
+        borderColor: '#28a745',
+        borderWidth: 2,
+        borderRadius: 8,
+        padding: 16,
+        marginVertical: 6,
+    },
+    incorrectAnswer: {
+        backgroundColor: '#f8d7da', // אדום בהיר
+        borderColor: '#dc3545',
+        borderWidth: 2,
+        borderRadius: 8,
+        padding: 16,
+        marginVertical: 6,
     },
     closeButtonText: { color: "white", fontWeight: "bold" },
     sectionTitle: { fontSize: 18, fontWeight: "600", marginBottom: 10 },
