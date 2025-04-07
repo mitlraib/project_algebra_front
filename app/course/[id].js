@@ -44,6 +44,8 @@ export default function StyledCoursePage() {
     const [history, setHistory] = useState([]);
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const [answerFeedbackColor, setAnswerFeedbackColor] = useState(null);
+    const [isCheckDisabled, setIsCheckDisabled] = useState(false);
+
 
     useEffect(() => {
         if (id) {
@@ -80,6 +82,7 @@ export default function StyledCoursePage() {
         try {
             const res = await axios.get(`/api/exercises/next?topicId=${topicId}`);
             const questionData = res.data;
+            setIsCheckDisabled(false); // מאפשר בדיקה בשאלה חדשה
 
 
             questionData.text = generateQuestionText(
@@ -110,6 +113,11 @@ export default function StyledCoursePage() {
             alert("יש לבחור תשובה תחילה.");
             return;
         }
+        if (isCheckDisabled) {
+            return; // לא נאפשר בדיקה חוזרת
+        }
+        setIsCheckDisabled(true); // מונע לחיצה חוזרת
+
 
         try {
             const userAnswerValue = question.answers[selectedAnswer];
@@ -341,15 +349,21 @@ ${sign}   ${second}
                     );
                 })}
 
-                <Pressable onPress={handleCheckAnswer} style={styles.checkButton}>
+                <Pressable
+                    onPress={handleCheckAnswer}
+                    style={[styles.checkButton, isCheckDisabled && { opacity: 0.5 }]}
+                    disabled={isCheckDisabled}
+                >
                     <Text style={styles.primaryText}>בדיקה</Text>
                 </Pressable>
 
+
                 {responseMessage !== '' && <Text style={styles.feedback}>{responseMessage}</Text>}
 
-                <Pressable onPress={handleNextQuestion} style={styles.secondaryButton}>
-                    <Text style={styles.secondaryText}>שאלה הבאה</Text>
+                <Pressable onPress={handleNextQuestion} style={[styles.nextButton, !showResult && { opacity: 0.5 }]}>
+                    <Text style={styles.nextButtonText}>שאלה הבאה</Text>
                 </Pressable>
+
 
                 {isAddOrSub && (
                     <Pressable onPress={() => setShowSolution(!showSolution)} style={styles.helpButton} disabled={!showResult}>
@@ -510,6 +524,20 @@ const styles = StyleSheet.create({
         padding: 16,
         marginVertical: 6,
     },
+    nextButton: {
+        backgroundColor: '#A47DAB',
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+        width: '100%',
+        alignItems: 'center',
+    },
+    nextButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+
     closeButtonText: { color: "white", fontWeight: "bold" },
     sectionTitle: { fontSize: 18, fontWeight: "600", marginBottom: 10 },
     loading: { textAlign: 'center', marginTop: 40, fontSize: 18 },

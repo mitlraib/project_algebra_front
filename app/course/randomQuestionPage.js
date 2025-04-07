@@ -21,6 +21,7 @@ export default function RandomQuestionPage() {
     const [showLevelUpModal, setShowLevelUpModal] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
     const [isCheckDisabled, setIsCheckDisabled] = useState(false);  // מניעה לחיצות חוזרות
+    const [answerFeedbackColor, setAnswerFeedbackColor] = useState(null);
 
     useEffect(() => {
         fetchRandomQuestion();
@@ -72,6 +73,8 @@ export default function RandomQuestionPage() {
                     setShowConfetti(true);
                 } else {
                     setResponseMessage(`תשובה נכונה! רמה נוכחית: ${res.data.currentLevel}`);
+                    setAnswerFeedbackColor("green"); // אם נכון
+
                 }
             } else {
                 let correctDisplay = question.correctAnswer;
@@ -88,6 +91,8 @@ export default function RandomQuestionPage() {
                 }
 
                 setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
+                setAnswerFeedbackColor("red");   // אם שגוי
+
             }
         } catch (err) {
             console.log("Error checking answer:", err);
