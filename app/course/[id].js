@@ -19,6 +19,13 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:8080";
 
+function formatFraction(numerator, denominator) {
+    if (numerator === 0) return "0";
+    if (numerator === denominator) return "1";
+    return `${numerator}/${denominator}`;
+}
+
+
 function Fraction({ numerator, denominator }) {
     return (
         <View style={{ alignItems: 'center', marginHorizontal: 4 }}>
@@ -265,10 +272,7 @@ ${sign}   ${second}
             `מה התוצאה של ${second} ${op} ${first}?`,
         ];
 
-        // // לרמות נמוכות – להשתמש בניסוח פשוט
-        // if (topicLevel <= 2) {
-        //     return `${second} ${op} ${first} שווה ל...?`;
-        // }
+
 
         // רמות בינוניות – אפשר לגוון
         const allOptions = [
@@ -340,7 +344,12 @@ ${sign}   ${second}
                         >
                             <View style={{ alignItems: 'center' }}>
                                 {isAnsFraction ? (
-                                    <Fraction numerator={num} denominator={den} />
+                                    (formatFraction(Number(num), Number(den)) === "1" || formatFraction(Number(num), Number(den)) === "0") ? (
+                                        <Text style={styles.answerText}>{formatFraction(Number(num), Number(den))}</Text>
+                                    ) : (
+                                        <Fraction numerator={num} denominator={den} />
+                                    )
+
                                 ) : (
                                     <Text style={styles.answerText}>{ans}</Text>
                                 )}

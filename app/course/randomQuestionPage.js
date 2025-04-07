@@ -111,6 +111,11 @@ export default function RandomQuestionPage() {
         }
         fetchRandomQuestion();
     }
+    function formatFraction(numerator, denominator) {
+        if (numerator === 0) return "0";
+        if (numerator === denominator) return "1";
+        return `${numerator}/${denominator}`;
+    }
 
     function handleGoBack() {
         router.push('/Dashboard');
@@ -149,6 +154,11 @@ export default function RandomQuestionPage() {
         ) {
             const num = Math.floor(value / 1000);
             const den = value % 1000;
+            const formatted = formatFraction(num, den);
+
+            if (formatted === "1" || formatted === "0") {
+                return <Text style={{ fontSize: 20 }}>{formatted}</Text>;
+            }
             return (
                 <View style={fractionStyles.fractionContainer}>
                     <Text style={fractionStyles.fractionNumerator}>{num}</Text>
@@ -156,6 +166,7 @@ export default function RandomQuestionPage() {
                     <Text style={fractionStyles.fractionDenominator}>{den}</Text>
                 </View>
             );
+
         }
 
         // אם זו מחרוזת עם '/', כנראה שבר (נניח "3/4")

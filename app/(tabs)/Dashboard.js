@@ -48,10 +48,21 @@ export default function Dashboard() {
 
 
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        try {
+            // 1) קריאה לשרת כדי לנקות את הסשן
+            await axios.post('/api/logout');
+        } catch(e) {
+            console.log('Logout error:', e);
+            // לא חייבים לעצור אם נכשל
+        }
+        // 2) מחיקת קוקיות משלך (אם את צריכה)
         Cookies.remove('userToken');
+
+        // 3) הפנייה למסך login
         router.replace('/authentication/Login');
     };
+
 
 
     const fakeProgress = {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, Pressable, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
+import ProtectedRoute from '../../components/ProtectedRoute';
 
 export default function Statistics() {
     const router = useRouter();
@@ -43,6 +44,8 @@ export default function Statistics() {
 
     if (!overallStats) {
         return (
+            <ProtectedRoute requireAuth={true}>
+
             <View style={styles.container}>
                 <Text style={styles.title}>📊 סטטיסטיקה כללית</Text>
                 <Text>לא קיימים עדיין נתונים להצגה.</Text>
@@ -50,10 +53,14 @@ export default function Statistics() {
                     <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
                 </Pressable>
             </View>
-        );
+                </ProtectedRoute>
+
+                );
     }
 
     const renderTopicItem = ({ item }) => (
+        <ProtectedRoute requireAuth={true}>
+
         <View style={styles.topicCard}>
             <Text style={styles.topicText}>🧩 נושא #{item.topicId}</Text>
             <Text>ניסיונות בנושא : {item.totalAttempts}</Text>
@@ -65,10 +72,14 @@ export default function Statistics() {
                     : "אין נתונים"}
             </Text>
         </View>
-    );
+            </ProtectedRoute>
+
+            );
 
     return (
-        <View style={styles.container}>
+        <ProtectedRoute requireAuth={true}>
+
+    <View style={styles.container}>
             <Text style={styles.title}>📊 סטטיסטיקה כללית (כלל המשתמשים)</Text>
             <Text>סה"כ ניסיונות שבוצעו על ידי כלל המשתמשים: {overallStats.totalAttempts}</Text>
             <Text>סה"כ טעויות שבוצעו: {overallStats.totalMistakes}</Text>
@@ -108,7 +119,9 @@ export default function Statistics() {
                 <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
             </Pressable>
         </View>
-    );
+            </ProtectedRoute>
+
+            );
 }
 
 const styles = StyleSheet.create({

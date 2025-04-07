@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import {View, Text, ScrollView, StyleSheet, Dimensions, Pressable} from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import {router} from "expo-router";
+import ProtectedRoute from '../../components/ProtectedRoute';
+
 
 const BADGES = {
     addition_master: {
@@ -64,6 +66,8 @@ export default function AchievementsPage() {
     }
 
     return (
+        <ProtectedRoute requireAuth={true}>
+
         <ScrollView contentContainerStyle={styles.scroll}>
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -148,6 +152,7 @@ export default function AchievementsPage() {
                 })}
             </View>
         </ScrollView>
+            </ProtectedRoute>
     );
 }
 

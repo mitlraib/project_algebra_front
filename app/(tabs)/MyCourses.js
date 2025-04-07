@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { Card } from 'react-native-paper';
 import styles from '../../styles/styles';
 import { courses } from '../../constants/CoursesNames';
+import ProtectedRoute from '../../components/ProtectedRoute';
 
 export default function MyCourses() {
     const router = useRouter();
@@ -15,6 +16,8 @@ export default function MyCourses() {
     }
 
     return (
+        <ProtectedRoute requireAuth={true}>
+
         <View style={styles.container}>
             <Text style={styles.title}>הקורסים שלי</Text>
 
@@ -53,6 +56,8 @@ export default function MyCourses() {
                 )}
             />
         </View>
+        </ProtectedRoute>
+
     );
 };
 

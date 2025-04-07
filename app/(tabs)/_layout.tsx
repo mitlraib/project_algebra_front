@@ -9,8 +9,8 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import Cookies from "js-cookie";
-import axios from "axios";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 
 export default function TabLayout() {
@@ -47,8 +47,8 @@ export default function TabLayout() {
                 name="MyCourses"
                 options={{
                     title: 'הקורסים שלי',
-                    tabBarIcon: ({ color }) => (
-                        <IconSymbol size={28} name="book.fill" color={color} />
+                    tabBarIcon: ({color} ) => (
+                        <MaterialCommunityIcons name="book-open-page-variant-outline" size={28} color={color} />
                     ),
                 }}
             />
@@ -57,7 +57,7 @@ export default function TabLayout() {
                 options={{
                     title: 'הפרופיל שלי',
                     tabBarIcon: ({ color }) => (
-                        <IconSymbol size={28} name="person.fill" color={color} />
+                        <MaterialCommunityIcons name="account" size={28} color={color} />
                     ),
                 }}
             />
@@ -67,7 +67,7 @@ export default function TabLayout() {
                 options={{
                     title: 'הישגים',
                     tabBarIcon: ({ color }) => (
-                        <IconSymbol size={28} name="trophy.fill" color={color} />
+                        <MaterialCommunityIcons name="trophy-outline" size={28} color={color} />
                     ),
                 }}
             />
