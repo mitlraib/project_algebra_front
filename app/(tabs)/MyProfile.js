@@ -122,7 +122,7 @@ export default function MyProfile() {
                             {topicLevels.map((t) => (
                                 <View key={t.topicId} style={styles.topicRow}>
                                     <Text style={styles.topicText}>
-                                        {t.topicName} (#{t.topicId}): רמה {t.level}
+                                        {t.topicName} : רמה {t.level}
                                     </Text>
                                     {t.level > 1 && (
                                         <Pressable
