@@ -58,11 +58,22 @@ export default function Statistics() {
                 );
     }
 
+    const topicNames = {
+        1: "חיבור",
+        2: "חיסור",
+        3: "כפל",
+        4: "חילוק",
+        5: "חיבור שברים",
+        6: "חיסור שברים",
+        7: "כפל שברים",
+        8: "חילוק שברים"
+    };
+
     const renderTopicItem = ({ item }) => (
         <ProtectedRoute requireAuth={true}>
 
         <View style={styles.topicCard}>
-            <Text style={styles.topicText}>🧩 נושא #{item.topicId}</Text>
+            <Text style={styles.topicText}>🧩 נושא: {topicNames[item.topicId]}</Text>
             <Text>ניסיונות בנושא : {item.totalAttempts}</Text>
             <Text>טעויות בנושא : {item.totalMistakes}</Text>
             <Text>

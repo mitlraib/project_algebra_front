@@ -1,32 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {View, Text, ScrollView, StyleSheet, Dimensions, Pressable, Alert} from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import axios from "axios";
 
+
 const BADGES = {
     addition_master: {
         name: "מאסטר חיבור",
-        description: "פתרו 20 תרגילי חיבור",
+        description: "פתרו עוד 20 תרגילי חיבור כדי להשיג כוכב",
         color: "#3B82F6",
         icon: "plus",
     },
     subtraction_pro: {
         name: "פרו חיסור",
-        description: "פתרו 20 תרגילי חיסור",
+        description: "פתרו עוד 20 תרגילי חיסור כדי להשיג כוכב",
         color: "#EF4444",
         icon: "minus",
     },
     multiplication_wizard: {
         name: "קוסם כפל",
-        description: "פתרו 20 תרגילי כפל",
+        description: "פתרו 20 עוד תרגילי כפל כדי להשיג כוכב",
         color: "#10B981",
         icon: "times",
     },
     division_expert: {
         name: "מומחה חילוק",
-        description: "פתרו 20 תרגילי חילוק",
+        description: "פתרו עוד  תרגילי חילוק כדי להשיג כוכב",
         color: "#8B5CF6",
         icon: "divide",
     },
@@ -53,6 +54,15 @@ export default function AchievementsPage() {
     });
     const [userId, setUserId] = useState(null);
 
+    // משתנה עזר לזכור ערכים קודמים של כוכבים/גביעים/כתרים
+    const prevStarsRef = useRef({
+        totalStars: 0,
+        totalCandles: 0,
+        totalCrowns: 0,
+    });
+
+
+
     useEffect(() => {
         async function fetchUser() {
             try {
@@ -78,42 +88,31 @@ export default function AchievementsPage() {
                 setStats(data);
 
                 const earned = [];
-                // חישוב ההישגים על פי כל קטגוריה
                 if (data.addition >= 20) earned.push("addition_master");
                 if (data.subtraction >= 20) earned.push("subtraction_pro");
                 if (data.multiplication >= 20) earned.push("multiplication_wizard");
                 if (data.division >= 20) earned.push("division_expert");
-
-                // אם כל ההישגים הושגו, הוסף את תג האלוף
                 if (earned.length === 4) earned.push("math_champion");
-
                 setBadges(earned);
 
-                // חישוב סך ההתקדמות של הכוכבים לכל תחום
                 const totalStars = Math.floor(data.addition / 20) + Math.floor(data.subtraction / 20) + Math.floor(data.multiplication / 20) + Math.floor(data.division / 20);
-
-                // חישוב קביעים וכתרים
                 const totalCandles = Math.floor(totalStars / 100);
                 const totalCrowns = Math.floor(totalStars / 500);
 
+
+
+                // עדכון סטייט ועדכון רפרנס
                 setStars({
                     totalStars,
                     totalCandles,
                     totalCrowns,
                 });
 
-                // הוספת התראה כשמישהו משיג כוכב, גביע או כתר
-                if (totalStars > stars.totalStars) {
-                    Alert.alert("כל הכבוד!", `השגת ${totalStars} כוכבים!`);
-                }
-
-                if (totalCandles > stars.totalCandles) {
-                    Alert.alert("מצוין!", `השגת ${totalCandles} גביעים!`);
-                }
-
-                if (totalCrowns > stars.totalCrowns) {
-                    Alert.alert("מעולה!", `השגת ${totalCrowns} כתרים!`);
-                }
+                prevStarsRef.current = {
+                    totalStars,
+                    totalCandles,
+                    totalCrowns,
+                };
             } catch (err) {
                 console.error("Failed to fetch achievements:", err);
             }
@@ -145,7 +144,7 @@ export default function AchievementsPage() {
                                 <Text style={styles.starsText}>{stars.totalStars} כוכבים</Text>
                             </View>
                             <View style={styles.rewardItem}>
-                                <FontAwesome name="fire" size={18} color="#FB923C" />
+                                <FontAwesome name="trophy" size={18} color="#FB923C" />
                                 <Text style={styles.starsText}>{stars.totalCandles} גביעים</Text>
                             </View>
                             <View style={styles.rewardItem}>
@@ -325,7 +324,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     progressText: {
-        fontSize: 12,
+        fontSize: 11,
         color: "#444",
         width: 40,
         textAlign: "right",

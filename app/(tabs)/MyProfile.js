@@ -58,11 +58,22 @@ export default function MyProfile() {
         }
     }
 
+    const topicNames = {
+        1: "חיבור",
+        2: "חיסור",
+        3: "כפל",
+        4: "חילוק",
+        5: "חיבור שברים",
+        6: "חיסור שברים",
+        7: "כפל שברים",
+        8: "חילוק שברים"
+    };
+
     async function updateTopicLevel(topicId, newLevel) {
         try {
             const res = await axios.put('/api/user/topics-levels', { topicId, newLevel });
             if (res.data.success) {
-                alert(`עודכן רמה ל-${newLevel} בנושא ID=${topicId}`);
+                alert(`עודכן רמה ל-${newLevel} בנושא: ${topicNames[topicId]}`);
                 fetchUserTopics();
             } else {
                 alert('לא ניתן לעדכן רמה');

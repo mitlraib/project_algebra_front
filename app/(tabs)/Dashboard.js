@@ -1,6 +1,5 @@
 // Dashboard
 
-
 import React, {useEffect, useState} from 'react';
 import {
     View,
@@ -46,8 +45,6 @@ export default function Dashboard() {
             .finally(() => setLoading(false)); // סיום טעינה
     }, [router]);
 
-
-
     const handleLogout = async () => {
         try {
             // 1) קריאה לשרת כדי לנקות את הסשן
@@ -62,8 +59,6 @@ export default function Dashboard() {
         // 3) הפנייה למסך login
         router.replace('/authentication/Login');
     };
-
-
 
     const fakeProgress = {
         stars: 12,
@@ -285,6 +280,5 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
-
 
 // end of Dashboard
