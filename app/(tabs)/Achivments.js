@@ -5,6 +5,7 @@ import {View, Text, ScrollView, StyleSheet, Dimensions, Pressable} from "react-n
 import { FontAwesome } from "@expo/vector-icons";
 import {router} from "expo-router";
 import ProtectedRoute from '../../components/ProtectedRoute';
+import axios from 'axios';
 
 
 const BADGES = {
@@ -49,18 +50,46 @@ export default function AchievementsPage() {
         multiplication: 0,
         division: 0,
     });
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
-        // נתוני דמו (תשלבי ב-axios/שרת שלך בהמשך)
-        setBadges(["addition_master", "multiplication_wizard"]);
-        setStars(12);
-        setStats({
-            addition: 17,
-            subtraction: 12,
-            multiplication: 20,
-            division: 5,
-        });
+        async function fetchUserInfo() {
+            try {
+                const response = await axios.get("/api/user");
+                if (response.data.success) {
+                    setUserId(response.data.userId);  // נשמור את ה-userId מהשרת
+                }
+            } catch (err) {
+                console.error("Error fetching user info:", err);
+            }
+        }
+        fetchUserInfo();
     }, []);
+
+
+    useEffect(() => {
+        if (!userId) return; // אם ה-userId עדיין לא נטען, לא נבצע את הבקשה
+
+        async function fetchAchievements() {
+            const response = await axios.get(`http://localhost:8080/api/achievements/${userId}`);
+            const stats = response.data;
+
+            setStats(stats);
+
+            const earnedBadges = [];
+            if (stats.addition >= 20) earnedBadges.push("addition_master");
+            if (stats.subtraction >= 20) earnedBadges.push("subtraction_pro");
+            if (stats.multiplication >= 20) earnedBadges.push("multiplication_wizard");
+            if (stats.division >= 20) earnedBadges.push("division_expert");
+            if (earnedBadges.length === 4) earnedBadges.push("math_champion");
+
+            setBadges(earnedBadges);
+            setStars(earnedBadges.length * 3);
+        }
+
+        fetchAchievements();
+    }, [userId]); // הוספנו את userId כתלות להפעיל את ה-effect מחדש
+
     function handleGoBack() {
         router.push("/Dashboard");
     }
