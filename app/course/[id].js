@@ -434,7 +434,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     selectedAnswer: {
-        backgroundColor: "#c7d2fe"
+        backgroundColor: "#c7d2fe",
+        transform: [{ scale: 1 }], // מוודא שהכפתור לא משנה את גודלו
+        padding: 14, // שים לב שמילוי הכפתור נשאר קבוע
     },
     answerText: {
         fontSize: 18,
@@ -446,7 +448,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginTop: 16,
     },
-
     checkButton: {
         backgroundColor: "#10B981",
         padding: 14,

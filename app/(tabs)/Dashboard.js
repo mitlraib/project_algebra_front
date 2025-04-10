@@ -21,6 +21,11 @@ export default function Dashboard() {
     const router = useRouter();
     const [isAdmin, setIsAdmin] = useState(false); // מצב אם המשתמש הוא מנהל
     const [loading, setLoading] = useState(true); // מצב טעינה
+    const [progressData, setProgressData] = useState({
+        stars: 0,
+        level: 0,
+        progress: 0,
+    });
 
     useEffect(() => {
 
@@ -37,6 +42,14 @@ export default function Dashboard() {
                 } else {
                     setIsAdmin(false); // אם לא מנהל, לא נציג את הכפתור
                 }
+                const { level, totalExercises, totalMistakes } = response.data;
+                const correctAnswers = totalExercises - totalMistakes;
+                const progress = totalExercises > 0 ? correctAnswers / totalExercises : 0;
+                setProgressData({
+                    stars: correctAnswers,
+                    level,
+                    progress,
+                });
             })
             .catch(error => {
                 console.log("ERROR:", error);
@@ -44,6 +57,11 @@ export default function Dashboard() {
             })
             .finally(() => setLoading(false)); // סיום טעינה
     }, [router]);
+
+
+    if (loading) {
+        return <Text>טעינה...</Text>; // או קומפוננטת טעינה אם יש לך כזו
+    }
 
     const handleLogout = async () => {
         try {
@@ -90,16 +108,27 @@ export default function Dashboard() {
 
                     {/* Progress Card */}
                     <View style={styles.card}>
-                        <View style={styles.cardHeader}>
-                            <Text style={styles.cardTitle}>ההתקדמות שלך</Text>
-                            <View style={styles.stars}>
-                                <FontAwesome name="star" size={18} color="#FACC15" />
-                                <Text style={styles.starText}>{fakeProgress.stars}</Text>
-                            </View>
-                        </View>
-                        <ProgressBar progress={fakeProgress.progress} color="#4F46E5" style={styles.progress} />
-                        <Text style={styles.levelText}>רמה {fakeProgress.level}</Text>
+
+                        {/* הסבר על המשמעות של ההתקדמות */}
+                        <Text style={styles.progressDescription}>
+                            {progressData.progress < 0.3 ?
+                                "אתה בתחילת הדרך! המשך ללמוד כדי להשתפר." :
+                                progressData.progress < 0.6 ?
+                                    " אתה בדרך הנכונה." :
+                                    " כל הכבוד על ההתקדמות המרשימה!"}
+                        </Text>
+
+                        <Text style={styles.progressText}>
+                            <FontAwesome name="check-circle" size={18} color="#4F46E5" /> {/* סימן מגניב */}
+                            {` הצלחת ב-${(progressData.progress * 100).toFixed(0)}% מהשאלות`}
+                        </Text>
+
+                            {/* מד ההתקדמות */}
+                            <ProgressBar progress={progressData.progress} color="#4F46E5" style={styles.progress} />
+
+
                     </View>
+
 
                     {/* Continue Learning */}
                     <TouchableOpacity style={styles.continueCard} onPress={() => router.push('/MyCourses')}>
@@ -185,18 +214,8 @@ const styles = StyleSheet.create({
         marginBottom: 24,
         fontSize: 16,
     },
-    card: {
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 20,
-        marginBottom: 32,
-        shadowColor: '#000',
-        shadowOpacity: 0.05,
-        shadowRadius: 6,
-        elevation: 3,
-    },
     cardHeader: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'space-between',
         marginBottom: 12,
     },
@@ -217,7 +236,7 @@ const styles = StyleSheet.create({
         height: 10,
         borderRadius: 10,
         marginTop: 4,
-        marginBottom: 12,
+        marginBottom: 2,
     },
     levelText: {
         color: '#000',
@@ -279,6 +298,33 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: 16,
     },
+    progressText: {
+        color: '#000',
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 4,
+        marginBottom: 4,  // תוסיף מרווח בין הטקסטים כדי למנוע חפיפות
+        textAlign: 'center',
+    },
+    progressDescription: {
+        color: '#6B7280',
+        fontSize: 20,
+        textAlign: 'center',
+        marginTop: 4, // הוסף מרווח כדי למנוע חפיפות
+    },
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 20,
+        marginBottom: 30,
+        shadowColor: '#000',
+        shadowOpacity: 0.05,
+        shadowRadius: 6,
+        elevation: 3,
+        flexDirection: 'column',  // יש לוודא שהאלמנטים יהיו בסדר אנכי
+        justifyContent: 'flex-start', // מוודא שהאלמנטים ממוקמים מלמעלה
+        alignItems: 'center',  // ליישר את התוכן במרכז (אופציונלי)
+    }
 });
 
 // end of Dashboard
