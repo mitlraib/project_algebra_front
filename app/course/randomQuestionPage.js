@@ -6,8 +6,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
 import ConfettiCannon from 'react-native-confetti-cannon';
 
-// אפשר לייבא את styles שלכם כאן, אם יש לכם קובץ נפרד
-// import styles from '../../styles/styles.js';
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:8080";
@@ -77,18 +75,18 @@ export default function RandomQuestionPage() {
 
                 }
             } else {
-                let correctDisplay = question.correctAnswer;
+                let correctDisplay = res.data.correctAnswer;
 
-                // בדיקה אם מדובר בשבר מקודד (num*1000 + den)
-                if (
-                    question.operationSign &&
-                    question.operationSign.includes("frac")
-                ) {
-                    const c = res.data.correctAnswer || question.correctAnswer;
-                    const num = Math.floor(c / 1000);
-                    const den = c % 1000;
-                    correctDisplay = `${num}/${den}`;
+                if (typeof correctDisplay === 'number' && correctDisplay >= 1000) {
+                    const num = Math.floor(correctDisplay / 1000);
+                    const den = correctDisplay % 1000;
+                    if (num === den) {
+                        correctDisplay = "1";
+                    } else {
+                        correctDisplay = `${num}/${den}`;
+                    }
                 }
+
 
                 setResponseMessage(`תשובה שגויה! התשובה הנכונה היא ${correctDisplay}`);
                 setAnswerFeedbackColor("red");   // אם שגוי
@@ -146,19 +144,16 @@ export default function RandomQuestionPage() {
 
     // פונקציה להצגת ערך כטקסט או כשבר מפוענח
     function renderValue(value) {
-        // אם זה אובייקט שבר מקודד (למשל 3004 => 3/4)
-        if (
-            question.operationSign &&
-            question.operationSign.includes("frac") &&
-            typeof value === 'number'
-        ) {
+        // בדיקה אם הערך הוא מספר בקידוד שבר
+        if (typeof value === 'number' && value >= 1000) {
             const num = Math.floor(value / 1000);
             const den = value % 1000;
-            const formatted = formatFraction(num, den);
 
-            if (formatted === "1" || formatted === "0") {
-                return <Text style={{ fontSize: 20 }}>{formatted}</Text>;
+            if (num === den) {
+                // לדוגמה: 4004 -> 4/4 = 1
+                return <Text style={{ fontSize: 20 }}>1</Text>;
             }
+
             return (
                 <View style={fractionStyles.fractionContainer}>
                     <Text style={fractionStyles.fractionNumerator}>{num}</Text>
@@ -166,10 +161,9 @@ export default function RandomQuestionPage() {
                     <Text style={fractionStyles.fractionDenominator}>{den}</Text>
                 </View>
             );
-
         }
 
-        // אם זו מחרוזת עם '/', כנראה שבר (נניח "3/4")
+        // אם זו מחרוזת "3/4"
         if (typeof value === 'string' && value.includes('/')) {
             const [num, den] = value.split('/');
             return (
@@ -181,9 +175,10 @@ export default function RandomQuestionPage() {
             );
         }
 
-        // אחרת מציגים טקסט רגיל
+        // אחרת – מספר רגיל
         return <Text style={{ fontSize: 20 }}>{value}</Text>;
     }
+
 
     if (!question) {
         return (
