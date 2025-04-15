@@ -112,7 +112,7 @@ export default function Dashboard() {
     };
     return (
         <ProtectedRoute requireAuth={true}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.header}>
                     {/* לוגו מצד שמאל */}
                     <Text style={styles.logo}>
@@ -142,6 +142,22 @@ export default function Dashboard() {
                 <Animated.View style={[styles.floatingSymbol, styles.bottomLeft, { transform: [{ translateY: floatAnim }] }]}> <Text style={styles.floatingText}>➗</Text> </Animated.View>
 
                 <View style={styles.rowWrapper}>
+
+                    {isAdmin && (
+                        <View style={styles.statisticsBox}>
+                            <View style={styles.iconCircle}>
+                                <Feather name="pie-chart" size={24} color={Colors.accent} />
+                            </View>
+                            <Text style={styles.statisticsTitle}>סטטיסטיקה</Text>
+                            <Text style={styles.statisticsDescription}>סטטיסטיקה למנהלים בלבד !</Text>
+                            <TouchableOpacity style={styles.statisticsButton} onPress={() => router.push('/Statistics')}>
+                                <Text style={styles.statisticsButtonText}>סטטיסטיקה </Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    )}
+
+
                     {/* ריבוע בצד שמאל */}
                     <View style={styles.columnWrapper}>
 
@@ -164,7 +180,7 @@ export default function Dashboard() {
 
                     <View style={styles.achievementsBox}>
                         <View style={styles.iconCircle}>
-                            <Feather name="watch" size={24} color={Colors.accent} />
+                            <Feather name="award" size={24} color={Colors.accent} />
                         </View>
                         <Text style={styles.achievementsTitle}> הישגים</Text>
                         <Text style={styles.achievementsDescription}>כל ההישגים שצברת עד כה  </Text>
@@ -176,21 +192,11 @@ export default function Dashboard() {
                             <Text style={styles.achievementsButtonText}>הישגים</Text>
                         </TouchableOpacity>
                     </View>
-                        {isAdmin && (
-                            <View style={styles.statisticsBox}>
-                                <View style={styles.iconCircle}>
-                                    <Feather name="watch" size={24} color={Colors.accent} />
-                                </View>
-                                <Text style={styles.statisticsTitle}>סטטיסטיקה</Text>
-                                <Text style={styles.statisticsDescription}>סטטיסטיקה למנהלים בלבד !</Text>
-                                <TouchableOpacity style={styles.statisticsButton} onPress={() => router.push('/Statistics')}>
-                                    <Text style={styles.statisticsButtonText}>סטטיסטיקה </Text>
-                            </TouchableOpacity>
-                            </View>
 
-                        )}
 
                     </View>
+
+
 
                     {/* כל התוכן בתוך mainCard בצד ימין */}
                     <View style={styles.mainCard}>
@@ -266,7 +272,7 @@ export default function Dashboard() {
                         </View>
                     </View>
                 </View>
-            </ScrollView>
+            </View>
         </ProtectedRoute>
     );
 }
@@ -353,6 +359,7 @@ achievementsBox: {
         shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 5,
+        marginTop:160
     },
 
     statisticsTitle: {
@@ -442,15 +449,20 @@ achievementsBox: {
     },
 
     mainCard: {
-        width: width > 768 ? 700 : '90%',
+        width: width > 768 ? 709 : '96%',
         padding: 24,
         borderRadius: 20,
         backgroundColor: '#fff',
+        marginRight: 50,
+        height: '90%'
     },
     gradientTitleWrapper: {
         borderRadius: 20,
         padding: 10,
-        marginBottom: 10,
+        alignSelf:'center',
+        width:500,
+        height: 55
+
 
     },
     gradientTitle: {
@@ -536,12 +548,14 @@ achievementsBox: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 16,
+        marginTop: 16,
+
     },
 
     logo: {
-        fontSize: 20,
+        fontSize: 25,
         fontWeight: 'bold',
+        marginLeft: 10
     },
 
     logoutIconButton: {
@@ -576,7 +590,7 @@ achievementsBox: {
         marginBottom: 24,
     },
     pillButtonPurple: {
-        marginTop: 50,
+        marginTop: 30,
         backgroundColor: Colors.primary,
         paddingVertical: 14,
         borderRadius: 100,
@@ -628,7 +642,7 @@ achievementsBox: {
 
     imageStyle: {
         width: '100%',
-        height: 200,
+        height: 150,
         borderRadius: 16,
         marginBottom: 16,
     },

@@ -128,11 +128,12 @@ export default function AchievementsPage() {
     return (
         <ProtectedRoute requireAuth={true}>
             <ScrollView contentContainerStyle={styles.scroll}>
+                <Pressable onPress={handleGoBack} style={styles.backButton}>
+                    <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
+                </Pressable>
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <Pressable onPress={handleGoBack} style={styles.backButton}>
-                            <Text style={styles.backButtonText}>⬅ חזרה לדאשבורד</Text>
-                        </Pressable>
+
                         <View style={styles.awardCircle}>
                             <FontAwesome name="trophy" size={32} color="#FBBF24" />
                         </View>
@@ -245,11 +246,12 @@ const styles = StyleSheet.create({
     backButton: {
         alignSelf: "flex-start",
         marginBottom: 8,
+        marginLeft:10
     },
     backButtonText: {
         color: "#3B82F6",
         fontWeight: "600",
-        fontSize: 14,
+        fontSize: 20,
     },
     awardCircle: {
         backgroundColor: "#FEF3C7",
