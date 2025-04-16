@@ -32,6 +32,7 @@
     "expo-constants": "~17.0.4",
     "expo-font": "~13.0.3",
     "expo-haptics": "~14.0.1",
+    "expo-linear-gradient": "~14.0.2",
     "expo-linking": "~7.0.4",
     "expo-router": "~4.0.16",
     "expo-secure-store": "^14.0.1",
@@ -41,6 +42,7 @@
     "expo-system-ui": "~4.0.7",
     "expo-web-browser": "~14.0.2",
     "js-cookie": "^3.0.5",
+    "lucide-react": "^0.488.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.6",
@@ -53,8 +55,7 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "react-router-dom": "^7.1.5",
-    "expo-linear-gradient": "~14.0.2"
+    "react-router-dom": "^7.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

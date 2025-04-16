@@ -1,7 +1,7 @@
 //MyProfile
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Pressable, Switch, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Pressable, Switch, ScrollView, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -94,29 +94,87 @@ export default function MyProfile() {
     return (
         <ProtectedRoute requireAuth={true}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <Pressable onPress={handleGoToDashboard} style={styles.backButton}>
+                    <Text style={styles.backButtonText}>⬅ חזרה לעמוד הבית </Text>
+                </Pressable>
+
+                <View style={{flexDirection: "row-reverse", alignSelf:"flex-end"}}>
                 <View style={styles.profileContainer}>
-                    <Pressable onPress={handleGoToDashboard} style={styles.backButton}>
-                        <Text style={styles.backButtonText}>⬅ חזרה לדאשבורד</Text>
-                    </Pressable>
+
+                    <Text style={styles.profileSectionTitle}>פרופיל אישי </Text>
 
                     <View style={styles.avatarWrapper}>
-                        <View style={styles.avatar}>
-                            <Text style={styles.avatarText}>{name.charAt(0).toUpperCase()}</Text>
-                        </View>
+                        <Image
+                            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/149/149071.png' }} // כתובת ברירת מחדל
+                            style={styles.avatarImage}
+                        />
+
+
                         <Text style={styles.name}>{name}</Text>
-                        <Text style={styles.subText}>רמה {level}</Text>
+
+                        <View style={{flexDirection:"row-reverse"}}>
+                            <Text style={styles.subText}>
+                                {role} <Text style={{ fontSize: 20 }}>•</Text> רמה {level}
+                            </Text>
+
+                        </View>
+                        {isLoading ? (
+                            <Text style={styles.loadingText}>טוען נתוני משתמש...</Text>
+                        ) : (
+
+                            <View style={styles.profileLabels}>
+                                <FontAwesome name="envelope" size={14} color="#4F46E5" style={{ marginLeft: 8 }} />
+                                <Text style={styles.label}>{email}</Text>
+                            </View>
+                        )}
                     </View>
 
-                    {isLoading ? (
-                        <Text style={styles.loadingText}>טוען נתוני משתמש...</Text>
-                    ) : (
-                        <>
-                            <View style={styles.card}>
-                                <Text style={styles.label}>אימייל: {email}</Text>
-                                <Text style={styles.label}>תפקיד: {role}</Text>
-                                <Text style={styles.label}>סה"כ תרגילים: {totalExercises}</Text>
-                                <Text style={styles.label}>סה"כ שגיאות: {totalMistakes}</Text>
+                  <View>
+
+                      <View style={{flexDirection:"row-reverse"}}>
+                            <Text style={styles.sectionTitle}>שפת ממשק:</Text>
+                            <Text style={styles.input} > עברית </Text>
+                      </View>
+                            <View style={styles.switchContainer}>
+                                <Text style={styles.label}>הצגת פתרונות מודרכים:</Text>
+                                <Switch value={detailedSolutions} onValueChange={setDetailedSolutions} />
                             </View>
+
+                            <Pressable onPress={saveUserDataLocally} style={styles.saveButton}>
+                                <Text style={styles.saveButtonText}>שמור שינויים</Text>
+                            </Pressable>
+
+                        </View>
+                </View>
+                    <View>
+                        <View style={styles.statisticContainer}>
+                         <Text style={styles.sectionTitle}>סטטיסטיקה</Text>
+                            <View style={{flexDirection: "row-reverse"}}>
+                                <View style={styles.statisticSquere}>
+                                    <Text>   {level} </Text>
+                                    <Text>רמה כללית </Text>
+
+
+                                </View>
+
+
+                                <View style={styles.statisticSquere}>
+                                    <Text>   {totalExercises} </Text>
+                                    <Text>סה"כ תרגילים </Text>
+
+
+                                </View>
+
+                                <View style={styles.statisticSquere}>
+                                    <Text>   {totalMistakes} </Text>
+                                    <Text>סה"כ שגיאות </Text>
+
+
+                                </View>
+                            </View>
+
+                        </View>
+                        <View style={styles.levelsContainer}>
 
                             <Text style={styles.sectionTitle}>רמות בכל נושא:</Text>
                             {topicLevels.map((t) => (
@@ -134,20 +192,9 @@ export default function MyProfile() {
                                     )}
                                 </View>
                             ))}
+                        </View>
 
-                            <Text style={styles.sectionTitle}>שפת ממשק:</Text>
-                            <TextInput style={styles.input} value={language} editable={false} />
-
-                            <View style={styles.switchContainer}>
-                                <Text style={styles.label}>הצגת פתרונות מודרכים:</Text>
-                                <Switch value={detailedSolutions} onValueChange={setDetailedSolutions} />
-                            </View>
-
-                            <Pressable onPress={saveUserDataLocally} style={styles.saveButton}>
-                                <Text style={styles.saveButtonText}>שמור שינויים</Text>
-                            </Pressable>
-                        </>
-                    )}
+                    </View>
                 </View>
             </ScrollView>
         </ProtectedRoute>
@@ -164,11 +211,42 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         padding: 20,
         width: '90%',
-        maxWidth: 700,
-        alignSelf: 'center',
+        maxWidth: 600,
+        marginRight:20
+    },
+    statisticContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 20,
+        width: 900,
+        alignSelf: 'flex-end',
+        marginRight:20,
+        marginBottom:20
+    },
+
+    levelsContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 20,
+        width: 900,
+        alignSelf: 'flex-end',
+        marginRight:20
+    },
+
+    statisticSquere: {
+        backgroundColor: '#ADD8E6',
+        borderRadius: 12,
+        padding: 20,
+        width: 200,
+        textAlign:'center',
+        alignItems: 'center',
+        margin:50,
     },
     backButton: {
         marginBottom: 16,
+        alignSelf: 'flex-start',
+        marginLeft:15
+
     },
     backButtonText: {
         color: '#4F46E5',
@@ -178,13 +256,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 24,
     },
-    avatar: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        backgroundColor: '#6366F1',
-        justifyContent: 'center',
-        alignItems: 'center',
+    avatarImage: {
+        width: 140,
+        height: 150,
+        borderRadius: 100,
+        resizeMode: 'cover',
+        backgroundColor: '#ddd'
+
     },
     avatarText: {
         color: '#fff',
@@ -194,11 +272,12 @@ const styles = StyleSheet.create({
     name: {
         fontSize: 22,
         fontWeight: 'bold',
-        marginTop: 8,
+        marginTop:20
     },
     subText: {
         color: '#555',
-        marginBottom: 8,
+        marginBottom: 20,
+        fontSize:16
     },
     card: {
         backgroundColor: '#F3F4F6',
@@ -209,7 +288,15 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 16,
         marginBottom: 6,
+
     },
+    profileLabels: {
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        alignSelf:'flex-end',
+        margin: 10,
+    },
+
     input: {
         borderWidth: 1,
         borderColor: '#ddd',
@@ -219,7 +306,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     switchContainer: {
-        flexDirection: 'row',
+        flexDirection: 'row-reverse',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginVertical: 12,
@@ -237,10 +324,18 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     sectionTitle: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: '600',
         marginBottom: 10,
-        color: '#111',
+        color: '#4F46E5',
+    },
+
+    profileSectionTitle: {
+        fontSize: 20,
+        fontWeight: '600',
+        marginBottom: 50,
+        color: '#4F46E5',
+        textAlign:'center',
     },
     topicRow: {
         flexDirection: 'row',
