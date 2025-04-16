@@ -12,7 +12,7 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import BedidesVisualization from "@/components/BedidesVisualization";
+import SolutionVisualization from "@/components/SolutionVisualization";
 import Cookies from "js-cookie";
 import axios from "axios";
 
@@ -184,17 +184,97 @@ export default function StyledCoursePage() {
         }
     }
 
-    function renderBedidesExplanation() {
+    function renderVisualExplanation() {
+        // אם זה כפל (id==3)
+        if (id == 3) {
+            let first = Number(question.first);    // מספר ראשון
+            let second = Number(question.second);  // מספר שני
+
+            if (second < first) {
+                const tmp = first;
+                first = second;
+                second = tmp;
+            }
+
+            const result = first * second;
+
+            if (result < 20) {
+                return (
+                    <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
+                        <Text style={styles.explanationText}>
+                            נניח שיש לנו {second} קבוצות, בכל קבוצה {first} כדורים
+                        </Text>
+                        <SolutionVisualization
+                            firstNum={first}
+                            secondNum={second}
+                            operation="mul"
+                        />
+                        <Text style={styles.explanationText}>
+                            סה"כ {result} כדורים.
+                        </Text>
+                    </Animated.View>
+                );
+            }
+            // אם התוצאה >= 20, אפשר להראות פתרון אחר (טור אנכי וכו') או לא להראות בכלל
+            return (
+                <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
+                    <Text style={styles.explanationText}>
+                        התוצאה גדולה מדי להצגת עיגולים (לפחות 20).
+                    </Text>
+                </Animated.View>
+            );
+        }
+
+        // אם זה חילוק (id==4)
+        if (id == 4) {
+            const dividend = Number(question.first);   // המספר שמחלקים
+            const divisor = Number(question.second);   // למי מחלקים
+
+            const quotient = dividend / divisor;
+
+            if (dividend <= 20 && divisor > 0 && Number.isInteger(quotient)) {
+                return (
+                    <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
+                        <Text style={styles.explanationText}>
+                            נניח שיש לנו {dividend} כדורים, אנחנו רוצים לחלק אותם בין {divisor} ילדים
+                        </Text>
+                        <SolutionVisualization
+                            firstNum={dividend}
+                            secondNum={divisor}
+                            operation="div"
+                        />
+                        <Text style={styles.explanationText}>
+                            כל אחד יקבל {quotient} כדורים.
+                        </Text>
+                    </Animated.View>
+                );
+            }
+
+            return (
+                <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
+                    <Text style={styles.explanationText}>
+                        לא ניתן להמחיש את החילוק בעיגולים (או שהוא לא שלם / גדול מדי).
+                    </Text>
+                </Animated.View>
+            );
+        }
+
+
+        // אחרת זה חיבור/חיסור
         const operationWord = id == 1 ? "נוסיף" : "נחסיר";
         return (
             <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
-                <Text style={styles.explanationText}>נניח שיש לנו {question.first} כדורים, {operationWord} {question.second}</Text>
-                <BedidesVisualization
+                <Text style={styles.explanationText}>
+                    נניח שיש לנו {question.first} כדורים, {operationWord} {question.second}
+                </Text>
+                <SolutionVisualization
                     firstNum={Number(question.first)}
                     secondNum={Number(question.second)}
                     operation={id == 1 ? "add" : "sub"}
                 />
-                <Text style={styles.explanationText}>ונקבל {eval(`${question.first}${convertSign(question.operationSign)}${question.second}`)} כדורים.</Text>
+                <Text style={styles.explanationText}>
+                    ונקבל {eval(`${question.first}${convertSign(question.operationSign)}${question.second}`)} כדורים.
+                </Text>
             </Animated.View>
         );
     }
@@ -223,8 +303,22 @@ ${sign}   ${second}
         ? question.answers.map((encoded) => `${Math.floor(encoded / 1000)}/${encoded % 1000}`)
         : question.answers;
 
-    const isAddOrSub = id == 1 || id == 2;
-    const isBedides = myTopicLevel <= 2;
+
+    // המרת first ו-second למספרים (כדי שנוכל לבדוק תוצאה בכפל)
+    const firstNum = Number(question.first);
+    const secondNum = Number(question.second);
+
+// חישוב תוצאת הכפל (אם זה באמת כפל)
+    const multiplyResult = firstNum * secondNum;
+
+// נגדיר תנאי מורחב: הצג כפתור אם זה חיבור/חיסור (id=1/2) או אם זה כפל (id=3) עם תוצאה קטנה מ-20
+    const isAddOrSubOrSmallMulOrDiv =
+        (id == 1 || id == 2) // חיבור או חיסור
+        || (id == 3 && multiplyResult < 20) // כפל קטן
+        || (id == 4 && firstNum <= 20 && secondNum > 0 && Number.isInteger(firstNum / secondNum)); // חילוק פשוט
+
+
+    const isVisual = myTopicLevel <= 2;
 
     function generateQuestionText(first, second, sign, topicLevel) {
         const op = convertSign(sign);
@@ -374,14 +468,15 @@ ${sign}   ${second}
                 </Pressable>
 
 
-                {isAddOrSub && (
+                {isAddOrSubOrSmallMulOrDiv && (
                     <Pressable onPress={() => setShowSolution(!showSolution)} style={styles.helpButton} disabled={!showResult}>
                         <Text style={{ color: !showResult ? 'gray' : 'blue' }}>{showSolution ? 'הסתר פתרון' : 'איך פותרים?'}</Text>
                     </Pressable>
                 )}
 
+
                 {showSolution && showResult && (
-                    isBedides ? renderBedidesExplanation() : renderVerticalSolution()
+                    isVisual ? renderVisualExplanation() : renderVerticalSolution()
                 )}
 
                 {showConfetti && (

@@ -28,6 +28,17 @@ export default function RandomQuestionPage() {
     async function fetchRandomQuestion() {
         try {
             const res = await axios.get('/api/exercises/next-random');
+
+            const isFractionZero =
+                typeof res.data.correctAnswer === 'number' &&
+                res.data.correctAnswer === 0 &&
+                res.data.operationSign?.includes('frac');
+
+            if (isFractionZero) {
+                fetchRandomQuestion(); // נטען מחדש שאלה אחרת
+                return;
+            }
+
             setQuestion({
                 // נשמור בדיוק את הנתונים שמגיעים
                 ...res.data
