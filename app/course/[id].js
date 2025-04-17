@@ -52,6 +52,7 @@ export default function StyledCoursePage() {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const [answerFeedbackColor, setAnswerFeedbackColor] = useState(null);
     const [isCheckDisabled, setIsCheckDisabled] = useState(false);
+    const [detailedSolutions, setDetailedSolutions] = useState(true);
 
 
     useEffect(() => {
@@ -107,6 +108,7 @@ export default function StyledCoursePage() {
             setShowConfetti(false);
             setShowSolution(false);
             setAnswerFeedbackColor(null);
+
         } catch (err) {
             if (err.response?.status === 401) {
                 Cookies.remove("userToken");
@@ -114,6 +116,17 @@ export default function StyledCoursePage() {
             }
         }
     }
+
+
+    useEffect(() => {
+        axios.get("/api/user")
+            .then(r => {setDetailedSolutions(
+                r.data.hasOwnProperty("detailedSolutions") ? r.data.detailedSolutions   // ערך מהשרת
+                               : true );
+            });
+    }, []);
+
+
 
     async function handleCheckAnswer() {
         if (selectedAnswer === null) {
@@ -215,6 +228,7 @@ export default function StyledCoursePage() {
                     </Animated.View>
                 );
             }
+            console.log({detailedSolutions, id, isAddOrSubOrSmallMulOrDiv, },"הייי");
             // אם התוצאה >= 20, אפשר להראות פתרון אחר (טור אנכי וכו') או לא להראות בכלל
             return (
                 <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
@@ -468,7 +482,7 @@ ${sign}   ${second}
                 </Pressable>
 
 
-                {isAddOrSubOrSmallMulOrDiv && (
+                { detailedSolutions &&isAddOrSubOrSmallMulOrDiv && (
                     <Pressable onPress={() => setShowSolution(!showSolution)} style={styles.helpButton} disabled={!showResult}>
                         <Text style={{ color: !showResult ? 'gray' : 'blue' }}>{showSolution ? 'הסתר פתרון' : 'איך פותרים?'}</Text>
                     </Pressable>
