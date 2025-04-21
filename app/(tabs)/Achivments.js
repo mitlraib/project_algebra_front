@@ -1,46 +1,39 @@
 import React, { useEffect, useState, useRef } from "react";
-import {View, Text, ScrollView, StyleSheet, Dimensions, Pressable, Alert} from "react-native";
+import { View, Text, ScrollView, StyleSheet, Dimensions, Pressable } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import axios from "axios";
 
-
 const BADGES = {
     addition_master: {
         name: "מאסטר חיבור",
-        description: "פתרו עוד 20 תרגילי חיבור כדי להשיג כוכב",
         color: "#3B82F6",
         icon: "plus",
     },
     subtraction_pro: {
         name: "פרו חיסור",
-        description: "פתרו עוד 20 תרגילי חיסור כדי להשיג כוכב",
         color: "#EF4444",
         icon: "minus",
     },
     multiplication_wizard: {
         name: "קוסם כפל",
-        description: "פתרו 20 עוד תרגילי כפל כדי להשיג כוכב",
         color: "#10B981",
         icon: "times",
     },
     division_expert: {
         name: "מומחה חילוק",
-        description: "פתרו עוד  תרגילי חילוק כדי להשיג כוכב",
         color: "#8B5CF6",
+        icon: "percent",
+    },
+    complex_fractions: {
+        name: "שברים מורכבים",
+        color: "#A855F7",
         icon: "divide",
-    },
-    math_champion: {
-        name: "אלוף המתמטיקה",
-        description: "השיגו את כל התגים",
-        color: "#FBBF24",
-        icon: "trophy",
-    },
+    }
 };
 
 export default function AchievementsPage() {
-    const [badges, setBadges] = useState([]);
     const [stars, setStars] = useState({
         totalStars: 0,
         totalCandles: 0,
@@ -51,17 +44,18 @@ export default function AchievementsPage() {
         subtraction: 0,
         multiplication: 0,
         division: 0,
+        fractionAddition: 0,
+        fractionSubtraction: 0,
+        fractionMultiplication: 0,
+        fractionDivision: 0,
     });
     const [userId, setUserId] = useState(null);
 
-    // משתנה עזר לזכור ערכים קודמים של כוכבים/גביעים/כתרים
     const prevStarsRef = useRef({
         totalStars: 0,
         totalCandles: 0,
         totalCrowns: 0,
     });
-
-
 
     useEffect(() => {
         async function fetchUser() {
@@ -82,26 +76,30 @@ export default function AchievementsPage() {
 
         async function fetchAchievements() {
             try {
-                const res = await axios.get(`http://localhost:8080/api/achievements/${userId}`);
-                const data = res.data;
+                const res = await axios.get(`http://localhost:8080/api/achievements/${userId}`);                const data = res.data;
 
                 setStats(data);
 
-                const earned = [];
-                if (data.addition >= 20) earned.push("addition_master");
-                if (data.subtraction >= 20) earned.push("subtraction_pro");
-                if (data.multiplication >= 20) earned.push("multiplication_wizard");
-                if (data.division >= 20) earned.push("division_expert");
-                if (earned.length === 4) earned.push("math_champion");
-                setBadges(earned);
+                const safeMin = (...values) =>
+                    values.every(v => typeof v === "number" && !isNaN(v)) ? Math.min(...values) : 0;
 
-                const totalStars = Math.floor(data.addition / 20) + Math.floor(data.subtraction / 20) + Math.floor(data.multiplication / 20) + Math.floor(data.division / 20);
+                const totalStars =
+                    Math.floor(data.addition / 20) +
+                    Math.floor(data.subtraction / 20) +
+                    Math.floor(data.multiplication / 20) +
+                    Math.floor(data.division / 20) +
+                    Math.floor(
+                        safeMin(
+                            data.fractionAddition,
+                            data.fractionSubtraction,
+                            data.fractionMultiplication,
+                            data.fractionDivision
+                        ) / 20
+                    );
+
                 const totalCandles = Math.floor(totalStars / 100);
                 const totalCrowns = Math.floor(totalStars / 500);
 
-
-
-                // עדכון סטייט ועדכון רפרנס
                 setStars({
                     totalStars,
                     totalCandles,
@@ -133,7 +131,6 @@ export default function AchievementsPage() {
                 </Pressable>
                 <View style={styles.container}>
                     <View style={styles.header}>
-
                         <View style={styles.awardCircle}>
                             <FontAwesome name="trophy" size={32} color="#FBBF24" />
                         </View>
@@ -156,7 +153,9 @@ export default function AchievementsPage() {
                     </View>
 
                     {Object.entries(BADGES).map(([key, badge]) => {
-                        const isUnlocked = badges.includes(key);
+                        const safeMin = (...values) =>
+                            values.every(v => typeof v === "number" && !isNaN(v)) ? Math.min(...values) : 0;
+
                         const count =
                             key === "addition_master"
                                 ? stats.addition
@@ -166,43 +165,29 @@ export default function AchievementsPage() {
                                         ? stats.multiplication
                                         : key === "division_expert"
                                             ? stats.division
-                                            : badges.length === 5
-                                                ? 20
+                                            : key === "complex_fractions"
+                                                ? safeMin(
+                                                    stats.fractionAddition,
+                                                    stats.fractionSubtraction,
+                                                    stats.fractionMultiplication,
+                                                    stats.fractionDivision
+                                                )
                                                 : 0;
 
-
-                        // מחשבים את הסף הבא כעלייה של 20 שאלות
                         const nextThreshold = Math.floor(count / 20) * 20 + 20;
-                        const maxCount = nextThreshold;  // הסף הבא הוא המקסימום
-                        const progress = Math.min((count / maxCount) * 100, 100);  // חישוב ההתקדמות
-
-                        const stars = Math.floor(count / 20);  // כל 20 שאלות שוות כוכב אחד
+                        const maxCount = nextThreshold;
+                        const progress = Math.min((count / maxCount) * 100, 100);
 
                         return (
-                            <View
-                                key={key}
-                                style={[
-                                    styles.badgeCard,
-                                    { borderColor: isUnlocked ? "#10B981" : "#E5E7EB" },
-                                ]}
-                            >
+                            <View key={key} style={[styles.badgeCard, { borderColor: "#E5E7EB" }]}>
                                 <View style={styles.badgeHeader}>
-                                    <View
-                                        style={[
-                                            styles.badgeIconCircle,
-                                            { backgroundColor: badge.color },
-                                        ]}
-                                    >
+                                    <View style={[styles.badgeIconCircle, { backgroundColor: badge.color }]}>
                                         <FontAwesome name={badge.icon} size={20} color="white" />
                                     </View>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={styles.badgeTitle}>
-                                            {badge.name}{" "}
-                                            {!isUnlocked && (
-                                                <FontAwesome name="lock" size={14} color="#9CA3AF" />
-                                            )}
-                                        </Text>
-                                        <Text style={styles.badgeDesc}>{badge.description}</Text>
+                                        <Text style={styles.badgeTitle}>{badge.name}</Text>
+                                        <Text style={styles.badgeDesc}>
+                                            את בדרך הנכונה! רק עוד {20 - (count % 20 || 20)} תרגילים לכוכב הבא 🌟 </Text>
                                     </View>
                                 </View>
                                 <View style={styles.progressRow}>
@@ -212,12 +197,14 @@ export default function AchievementsPage() {
                                                 styles.progressFill,
                                                 {
                                                     backgroundColor: badge.color,
-                                                    width: `${progress}%`,
-                                                },
-                                            ]}
+                                                    width: `${progress}%`                                            },
+                                                ]}
                                         />
                                     </View>
-                                    <Text style={styles.progressText}>{count}/{maxCount}</Text>                                </View>
+                                    <Text style={styles.progressText}>
+                                        {count}/{maxCount}
+                                    </Text>
+                                </View>
                             </View>
                         );
                     })}
@@ -227,8 +214,7 @@ export default function AchievementsPage() {
     );
 }
 
-const { width } = Dimensions.get("window");
-
+const {  width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
     scroll: {
@@ -246,7 +232,7 @@ const styles = StyleSheet.create({
     backButton: {
         alignSelf: "flex-start",
         marginBottom: 8,
-        marginLeft:10
+        marginLeft: 10,
     },
     backButtonText: {
         color: "#3B82F6",
@@ -301,8 +287,6 @@ const styles = StyleSheet.create({
     badgeTitle: {
         fontWeight: "bold",
         fontSize: 16,
-        flexDirection: "row",
-        alignItems: "center",
     },
     badgeDesc: {
         color: "gray",
