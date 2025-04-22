@@ -148,7 +148,7 @@ export default function Dashboard() {
                             <View style={styles.iconCircle}>
                                 <Feather name="pie-chart" size={24} color={Colors.accent} />
                             </View>
-                            <Text style={styles.statisticsTitle}>סטטיסטיקה</Text>
+                            <Text style={styles.title}>סטטיסטיקה</Text>
                             <Text style={styles.statisticsDescription}>סטטיסטיקה למנהלים בלבד !</Text>
                             <TouchableOpacity style={styles.statisticsButton} onPress={() => router.push('/Statistics')}>
                                 <Text style={styles.statisticsButtonText}>סטטיסטיקה </Text>
@@ -166,7 +166,7 @@ export default function Dashboard() {
                         <View style={styles.iconCircle}>
                             <Feather name="watch" size={24} color={Colors.accent} />
                         </View>
-                        <Text style={styles.marathonTitle}>אימון מרתון</Text>
+                        <Text style={styles.title}>אימון מרתון</Text>
                         <Text style={styles.marathonDescription}>אימון מהיר על כל החומר שלמדת עד כה</Text>
 
                         <TouchableOpacity
@@ -182,7 +182,7 @@ export default function Dashboard() {
                         <View style={styles.iconCircle}>
                             <Feather name="award" size={24} color={Colors.accent} />
                         </View>
-                        <Text style={styles.achievementsTitle}> הישגים</Text>
+                        <Text style={styles.title}> הישגים</Text>
                         <Text style={styles.achievementsDescription}>כל ההישגים שצברת עד כה  </Text>
 
                         <TouchableOpacity
@@ -224,31 +224,45 @@ export default function Dashboard() {
                         <View style={styles.cardContainer}>
                             <View style={styles.card}>
                                 <View style={{flexDirection:'row-reverse', justifyContent:'center'}}>
-                                <Text style={styles.cardHeader}>ההתקדמות שלך:  </Text>
-                                <Text style={styles.progressDescription}>
+                                <Text style={styles.title}>
                                     {progressData.progress < 0.3
                                         ? "אתה בתחילת הדרך! המשך ללמוד כדי להשתפר."
                                         : progressData.progress < 0.6
                                             ? " אתה בדרך הנכונה."
-                                            : " כל הכבוד על ההתקדמות המרשימה!"}
+                                            : " כל הכבוד !"}
                                 </Text>
                                 </View>
-                                <Text style={styles.progressText}>
-                                    <FontAwesome name="check-circle" size={18} color="#4F46E5" />{' '}
-                                    {` הצלחת ב-${(progressData.progress * 100).toFixed(0)}% מהשאלות`}
-                                </Text>
+                                <View style={styles.progressWrapper}>
+                                    <Text style={styles.progressText}>
+                                        <FontAwesome name="check-circle" size={18} color="#4F46E5" />{' '}
+                                        הצלחת ב-{(progressData.progress * 100).toFixed(0)}% מהשאלות שפתרת
+                                    </Text>
 
-                                <ProgressBar
-                                    progress={progressData.progress}
-                                    color={
-                                        progressData.progress >= 0.8
-                                            ? Colors.success
-                                            : progressData.progress >= 0.5
-                                                ? Colors.primary
-                                                : Colors.danger
-                                    }
-                                    style={styles.progress}
-                                />
+                                    <View style={styles.progressBarContainer}>
+                                        <ProgressBar
+                                            progress={progressData.progress}
+                                            color={
+                                                progressData.progress >= 0.8
+                                                    ? Colors.success
+                                                    : progressData.progress >= 0.5
+                                                        ? Colors.primary
+                                                        : Colors.danger
+                                            }
+                                            style={styles.progress}
+                                        />
+                                        <Text
+                                            style={[
+                                                styles.percentageLabel,
+                                                {
+                                                    left: `${(progressData.progress * 100).toFixed(0)}%`,
+                                                    transform: [{ translateX: -15 }],
+                                                },
+                                            ]}
+                                        >
+                                            {(progressData.progress * 100).toFixed(0)}%
+                                        </Text>
+                                    </View>
+                                </View>
                             </View>
 
                             <Text style={styles.cardPercentage}>
@@ -317,13 +331,6 @@ achievementsBox: {
     },
 
 
-    achievementsTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#111',
-        marginBottom: 4,
-        textAlign: 'center',
-    },
 
     achievementsDescription: {
         fontSize: 14,
@@ -362,13 +369,7 @@ achievementsBox: {
         marginTop:160
     },
 
-    statisticsTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#111',
-        marginBottom: 4,
-        textAlign: 'center',
-    },
+
 
     statisticsDescription: {
         fontSize: 14,
@@ -417,13 +418,14 @@ achievementsBox: {
         marginBottom: 12,
     },
 
-    marathonTitle: {
+    title: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#111',
         marginBottom: 4,
         textAlign: 'center',
     },
+
 
     marathonDescription: {
         fontSize: 14,
@@ -668,13 +670,32 @@ achievementsBox: {
         marginBottom: 4,
         textAlign: 'center',
     },
-
-    progressDescription: {
-        color: '#6B7280',
-        fontSize: 20,
-        textAlign: 'center',
-        marginTop: 4,
+    progressWrapper: {
+        marginTop: 30,
+        marginBottom: 16,
     },
+
+    progressBarContainer: {
+        position: 'relative',
+        height: 25,
+        justifyContent: 'center',
+    },
+
+    percentageLabel: {
+        position: 'absolute',
+        top: -22,
+        fontSize: 14,
+        fontWeight: 'bold',
+        backgroundColor: '#fff',
+        color: '#000',
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        elevation: 2,
+    },
+
 
 
 });

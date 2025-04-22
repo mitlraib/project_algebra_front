@@ -28,8 +28,8 @@ const BADGES = {
     },
     complex_fractions: {
         name: "שברים מורכבים",
-        color: "#A855F7",
-        icon: "divide",
+        color: "#F59E0B",
+        icon: "puzzle-piece",
     }
 };
 
@@ -80,36 +80,41 @@ export default function AchievementsPage() {
 
                 setStats(data);
 
-                const safeMin = (...values) =>
-                    values.every(v => typeof v === "number" && !isNaN(v)) ? Math.min(...values) : 0;
 
                 const totalStars =
                     Math.floor(data.addition / 20) +
                     Math.floor(data.subtraction / 20) +
                     Math.floor(data.multiplication / 20) +
                     Math.floor(data.division / 20) +
-                    Math.floor(
-                        safeMin(
-                            data.fractionAddition,
-                            data.fractionSubtraction,
-                            data.fractionMultiplication,
-                            data.fractionDivision
-                        ) / 20
-                    );
+                    Math.floor(data.fractionAddition / 20) +
+                    Math.floor(data.fractionSubtraction / 20) +
+                    Math.floor(data.fractionMultiplication / 20) +
+                    Math.floor(data.fractionDivision / 20);
 
-                const totalCandles = Math.floor(totalStars / 100);
-                const totalCrowns = Math.floor(totalStars / 500);
+
+                const minStarsPerTopic = Math.min(
+                    Math.floor(data.addition / 20),
+                    Math.floor(data.subtraction / 20),
+                    Math.floor(data.multiplication / 20),
+                    Math.floor(data.division / 20),
+                    Math.floor((
+                        data.fractionAddition +
+                        data.fractionSubtraction +
+                        data.fractionMultiplication +
+                        data.fractionDivision
+                    ) / 20)
+                );
+
+                const totalCandles = minStarsPerTopic;
 
                 setStars({
                     totalStars,
                     totalCandles,
-                    totalCrowns,
                 });
 
                 prevStarsRef.current = {
                     totalStars,
                     totalCandles,
-                    totalCrowns,
                 };
             } catch (err) {
                 console.error("Failed to fetch achievements:", err);
@@ -136,20 +141,17 @@ export default function AchievementsPage() {
                         </View>
                         <Text style={styles.title}>ההישגים שלך</Text>
 
-                        <View style={[styles.starsRow, { gap: 16 }]}>
+                        <View style={[styles.starsRow, { gap: 24 }]}>
                             <View style={styles.rewardItem}>
-                                <FontAwesome name="star" size={18} color="#FACC15" />
-                                <Text style={styles.starsText}>{stars.totalStars} כוכבים</Text>
+                                <FontAwesome name="star" size={30} color="#FACC15" />
+                                <Text style={styles.starsTextBig}>{stars.totalStars} כוכבים</Text>
                             </View>
                             <View style={styles.rewardItem}>
-                                <FontAwesome name="trophy" size={18} color="#FB923C" />
-                                <Text style={styles.starsText}>{stars.totalCandles} גביעים</Text>
-                            </View>
-                            <View style={styles.rewardItem}>
-                                <FontAwesome name="crown" size={18} color="#FBBF24" />
-                                <Text style={styles.starsText}>{stars.totalCrowns} כתרים</Text>
+                                <FontAwesome name="trophy" size={30} color="#FB923C" />
+                                <Text style={styles.starsTextBig}>{stars.totalCandles} גביעים</Text>
                             </View>
                         </View>
+
                     </View>
 
                     {Object.entries(BADGES).map(([key, badge]) => {
@@ -157,21 +159,19 @@ export default function AchievementsPage() {
                             values.every(v => typeof v === "number" && !isNaN(v)) ? Math.min(...values) : 0;
 
                         const count =
-                            key === "addition_master"
-                                ? stats.addition
-                                : key === "subtraction_pro"
-                                    ? stats.subtraction
-                                    : key === "multiplication_wizard"
-                                        ? stats.multiplication
-                                        : key === "division_expert"
-                                            ? stats.division
-                                            : key === "complex_fractions"
-                                                ? safeMin(
-                                                    stats.fractionAddition,
-                                                    stats.fractionSubtraction,
-                                                    stats.fractionMultiplication,
-                                                    stats.fractionDivision
-                                                )
+                            key === "complex_fractions"
+                                ? stats.fractionAddition +
+                                stats.fractionSubtraction +
+                                stats.fractionMultiplication +
+                                stats.fractionDivision
+                                : key === "addition_master"
+                                    ? stats.addition
+                                    : key === "subtraction_pro"
+                                        ? stats.subtraction
+                                        : key === "multiplication_wizard"
+                                            ? stats.multiplication
+                                            : key === "division_expert"
+                                                ? stats.division
                                                 : 0;
 
                         const nextThreshold = Math.floor(count / 20) * 20 + 20;
@@ -179,8 +179,7 @@ export default function AchievementsPage() {
                         const progress = Math.min((count / maxCount) * 100, 100);
 
                         return (
-                            <View key={key} style={[styles.badgeCard, { borderColor: "#E5E7EB" }]}>
-                                <View style={styles.badgeHeader}>
+                            <View key={key} style={[styles.badgeCard, { borderColor: badge.color }]}>                                <View style={styles.badgeHeader}>
                                     <View style={[styles.badgeIconCircle, { backgroundColor: badge.color }]}>
                                         <FontAwesome name={badge.icon} size={20} color="white" />
                                     </View>
@@ -208,6 +207,15 @@ export default function AchievementsPage() {
                             </View>
                         );
                     })}
+                    {stars.totalCandles > 0 && (
+                        <View style={styles.mathChampionBox}>
+                            <Text style={styles.mathChampionText}>
+                                🤯 וואו! את אלופת המתמטיקה עם {stars.totalCandles} גביע/ים{stars.totalCandles > 1 ? "ים" : ""} 🎉{"\n"}
+                                קיבלת גביע על כל סיבוב שבו הצלחת להשיג כוכב בכל נושא – כולל השברים הסוררים!{"\n"}
+                                ממש אולימפיאדת חשבון פה! 🏅
+                            </Text>
+                        </View>
+                    )}
                 </View>
             </ScrollView>
         </ProtectedRoute>
@@ -266,10 +274,15 @@ const styles = StyleSheet.create({
     },
     badgeCard: {
         borderWidth: 2,
-        borderRadius: 12,
+        borderRadius: 16,
         padding: 16,
-        marginBottom: 20,
+        marginBottom: 16,
         backgroundColor: "white",
+        shadowColor: "#000",
+        shadowOpacity: 0.08,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 4, // לאנדרואיד
     },
     badgeHeader: {
         flexDirection: "row",
@@ -315,4 +328,38 @@ const styles = StyleSheet.create({
         width: 40,
         textAlign: "right",
     },
+    starsTextBig: {
+        fontWeight: "bold",
+        fontSize: 20,
+        color: "#111827",
+        marginLeft: 8,
+    },
+    centeredText: {
+        textAlign: "center",
+        fontSize: 18,
+        fontWeight: "600",
+        color: "#3B82F6",
+        marginVertical: 16,
+        lineHeight: 26,
+    },
+    mathChampionBox: {
+        marginTop: 0,
+        backgroundColor: "#FEF3C7", // רקע זהוב בהיר
+        padding: 16,
+        borderRadius: 16,
+        marginVertical: 20,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 4, // לאנדרואיד
+    },
+
+    mathChampionText: {
+        textAlign: "center",
+        fontSize: 18,
+        fontWeight: "700",
+        color: "#B45309", // חום-זהוב כהה
+        lineHeight: 28,
+    }
 });
