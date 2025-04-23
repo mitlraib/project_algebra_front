@@ -137,36 +137,36 @@ export default function MyProfile() {
 
     return (
         <ProtectedRoute requireAuth={true}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <Pressable onPress={handleGoToDashboard} style={styles.backButton}>
-                    <Text style={styles.backButtonText}>⬅ חזרה לעמוד הבית </Text>
+            <ScrollView contentContainerStyle={myProfileStyles.scrollContainer}>
+                <Pressable onPress={handleGoToDashboard} style={myProfileStyles.backButton}>
+                    <Text style={myProfileStyles.backButtonText}>⬅ חזרה לעמוד הבית </Text>
                 </Pressable>
 
                 <View style={{flexDirection: "row-reverse", alignSelf:"flex-end"}}>
-                <View style={styles.profileContainer}>
+                <View style={myProfileStyles.profileContainer}>
 
-                    <Text style={styles.profileSectionTitle}>פרופיל אישי </Text>
+                    <Text style={myProfileStyles.profileSectionTitle}>פרופיל אישי </Text>
 
-                    <View style={styles.avatarWrapper}>
+                    <View style={myProfileStyles.avatarWrapper}>
                         <FontAwesome name="user" size={100} color="#6366F1" />
                     </View>
                     <View style={{alignSelf:"center"}}>
-                        <Text style={styles.name}>{name}</Text>
+                        <Text style={myProfileStyles.name}>{name}</Text>
 
                         <View style={{flexDirection:"row-reverse"}}>
-                            <Text style={styles.subText}>
+                            <Text style={myProfileStyles.subText}>
                                 {role} <Text style={{ fontSize: 20 }}>•</Text> רמה {level}
                             </Text>
                         </View>
 
                         </View>
                         {isLoading ? (
-                            <Text style={styles.loadingText}>טוען נתוני משתמש...</Text>
+                            <Text style={myProfileStyles.loadingText}>טוען נתוני משתמש...</Text>
                         ) : (
 
-                            <View style={styles.profileLabels}>
+                            <View style={myProfileStyles.profileLabels}>
                                 <FontAwesome name="envelope" size={14} color="#4F46E5" style={{ marginLeft: 8, marginTop:5, marginBottom:30 }} />
-                                <Text style={styles.label}>{email}</Text>
+                                <Text style={myProfileStyles.label}>{email}</Text>
                             </View>
                         )}
 
@@ -176,30 +176,30 @@ export default function MyProfile() {
                       <View style={{flexDirection:"row-reverse"}} >
                             <Text style={{fontSize:16, padding:5}}>שפת ממשק:</Text>
                           <FontAwesome name="language" size={25} color="#6366F1" style={{paddingRight:10}}/>
-                          <Text style={styles.input} > עברית </Text>
+                          <Text style={myProfileStyles.input} > עברית </Text>
                       </View>
                       </Pressable>
 
-                      <View style={styles.switchContainer}>
-                                <Text style={styles.label}>הצגת פתרונות מודרכים:</Text>
+                      <View style={myProfileStyles.switchContainer}>
+                                <Text style={myProfileStyles.label}>הצגת פתרונות מודרכים:</Text>
                           <Switch value={detailedSolutions}
                                   onValueChange={setDetailedSolutions} />                            </View>
 
-                            <Pressable onPress={saveChanges} style={styles.saveButton}>
-                                <Text style={styles.saveButtonText}>שמור שינויים</Text>
+                            <Pressable onPress={saveChanges} style={myProfileStyles.saveButton}>
+                                <Text style={myProfileStyles.saveButtonText}>שמור שינויים</Text>
                             </Pressable>
 
                         </View>
                 </View>
                     <View>
-                        <View style={styles.statisticContainer}>
-                         <Text style={styles.sectionTitle}> סטטיסטיקה אישית</Text>
+                        <View style={myProfileStyles.statisticContainer}>
+                         <Text style={myProfileStyles.sectionTitle}> סטטיסטיקה אישית</Text>
                             <View style={{flexDirection: "row-reverse"}}>
                                 <LinearGradient
                                     colors={['#bfd4eb', '#e3e7f4']} // כהה → בהיר כמו בתמונה שלך
-                                    style={styles.statisticSquere}
+                                    style={myProfileStyles.statisticSquere}
                                 >
-                                    <View style={styles.iconBox}>
+                                    <View style={myProfileStyles.iconBox}>
 
                                     <FontAwesome name="user" size={25} color="#6366F1" />
                             </View>
@@ -211,9 +211,9 @@ export default function MyProfile() {
 
                                 <LinearGradient
                                     colors={['#bfd4eb', '#e3e7f4']} // כהה → בהיר כמו בתמונה שלך
-                                    style={styles.statisticSquere}
+                                    style={myProfileStyles.statisticSquere}
                                 >
-                                    <View style={styles.iconBox}>
+                                    <View style={myProfileStyles.iconBox}>
 
                                     <Feather name="book-open" size={25} color="#6366F1" />
                                     </View>
@@ -226,9 +226,9 @@ export default function MyProfile() {
 
                                 <LinearGradient
                                     colors={['#bfd4eb', '#e3e7f4']} // כהה → בהיר כמו בתמונה שלך
-                                    style={styles.statisticSquere}
+                                    style={myProfileStyles.statisticSquere}
                                 >
-                                    <View style={styles.iconBox}>
+                                    <View style={myProfileStyles.iconBox}>
                                     <FontAwesome name="info-circle" size={25} color="#6366F1" />
                                     </View>
 
@@ -239,25 +239,25 @@ export default function MyProfile() {
                             </View>
 
                         </View>
-                        <View style={styles.levelsContainer}>
+                        <View style={myProfileStyles.levelsContainer}>
 
-                            <Text style={styles.sectionTitle}>רמות בכל נושא:</Text>
+                            <Text style={myProfileStyles.sectionTitle}>רמות בכל נושא:</Text>
                             {topicLevels.map((t) => (
-                                <View key={t.topicId} style={styles.topicRow}>
+                                <View key={t.topicId} style={myProfileStyles.topicRow}>
                                     <TopicProgressBar
                                         key={t.topicId}
                                         topicName={t.topicName}
                                         level={t.level}
                                     />
-                                    <Text style={styles.topicText}>
+                                    <Text style={myProfileStyles.topicText}>
                                         {t.topicName} : רמה {t.level}
                                     </Text>
                                     {t.level > 1 && (
                                         <Pressable
                                             onPress={() => updateTopicLevel(t.topicId, t.level - 1)}
-                                            style={styles.lowerButton}
+                                            style={myProfileStyles.lowerButton}
                                         >
-                                            <Text style={styles.lowerButtonText}>הורד רמה</Text>
+                                            <Text style={myProfileStyles.lowerButtonText}>הורד רמה</Text>
                                         </Pressable>
                                     )}
                                 </View>
@@ -271,180 +271,6 @@ export default function MyProfile() {
     );
 }
 
-const styles = StyleSheet.create({
-    scrollContainer: {
-        paddingVertical: 24,
-    },
-    profileContainer: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        padding: 20,
-        width: '90%',
-        maxWidth: 600,
-        marginRight:20
-    },
-    statisticContainer: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        padding: 20,
-        width: 900,
-        alignSelf: 'flex-end',
-        marginRight:20,
-        marginBottom:20
-    },
-
-    levelsContainer: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        padding: 20,
-        width: 900,
-        alignSelf: 'flex-end',
-        marginRight:20
-    },
-
-
-    statisticSquere: {
-        backgroundColor: '#8F9CB3',
-        borderRadius: 12,
-        padding: 20,
-        width: 200,
-        textAlign:'center',
-        alignItems: 'center',
-        margin:50,
-    },
-    backButton: {
-        marginBottom: 16,
-        alignSelf: 'flex-start',
-        marginLeft:15
-
-    },
-    backButtonText: {
-        color: '#4F46E5',
-        fontWeight: '600',
-    },
-    avatarWrapper: {
-        backgroundColor: '#e3e7f4', // תואם לרקע שבתמונה שלך
-        borderRadius: 100,
-        padding: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: 10,
-        width: 170,
-        height: 170,
-        alignSelf:"center"
-    },
-    avatarImage: {
-        width: 140,
-        height: 150,
-        borderRadius: 100,
-        resizeMode: 'cover',
-        backgroundColor: '#ddd'
-
-    },
-    avatarText: {
-        color: '#fff',
-        fontSize: 32,
-        fontWeight: 'bold',
-    },
-    name: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginTop:20
-    },
-    subText: {
-        color: '#555',
-        marginBottom: 20,
-        fontSize:16
-    },
-    card: {
-        backgroundColor: '#F3F4F6',
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 20,
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 6,
-
-    },
-    profileLabels: {
-        flexDirection: 'row-reverse',
-        textAlign:"right",
-        margin: 10,
-    },
-
-    input: {
-        fontSize: 18,
-        paddingTop:2
-    },
-    switchContainer: {
-        flexDirection: 'row-reverse',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginVertical: 12,
-    },
-    saveButton: {
-        backgroundColor: '#4F46E5',
-        padding: 14,
-        borderRadius: 8,
-        alignItems: 'center',
-        marginTop: 16,
-    },
-    saveButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    sectionTitle: {
-        fontSize: 20,
-        fontWeight: '600',
-        marginBottom: 10,
-        color: '#4F46E5',
-    },
-
-    profileSectionTitle: {
-        fontSize: 20,
-        fontWeight: '600',
-        marginBottom: 50,
-        color: '#4F46E5',
-        textAlign:'center',
-    },
-    topicRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
-        justifyContent: 'space-between',
-    },
-    topicText: {
-        fontSize: 16,
-        flex: 1,
-    },
-    lowerButton: {
-        backgroundColor: '#E5E7EB',
-        padding: 6,
-        borderRadius: 6,
-        marginLeft: 10,
-    },
-    lowerButtonText: {
-        color: '#2563EB',
-        fontWeight: '500',
-    },
-    loadingText: {
-        textAlign: 'center',
-        marginTop: 20,
-    },
-    iconBox: {
-        backgroundColor: '#e3e7f4', // תואם לרקע שבתמונה שלך
-        borderRadius: 60,
-        padding: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: 10,
-        width: 50,
-        height: 50,
-    }
-
-});
 
 
 //end of MyProfile

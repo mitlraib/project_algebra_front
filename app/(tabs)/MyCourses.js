@@ -5,17 +5,13 @@ import ProtectedRoute from '../../components/ProtectedRoute';
 import { courses } from '../../constants/CoursesNames';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import {myCoursesStyles} from '../../styles/styles'
 
 const width = Dimensions.get('window').width;
 
 const Colors = {
     primary: '#8b5cf6',
     accent: '#fb923c',
-    background: '#f8f6ff',
-    light: '#ede9fe',
-    text: '#111827',
-    cardBg: '#ffffff',
-    shadow: '#000',
 };
 
 const topicIcons = {
@@ -38,40 +34,41 @@ export default function MyCourses() {
 
     return (
         <ProtectedRoute requireAuth={true}>
-            <ScrollView contentContainerStyle={styles.container}>
-                <Text style={styles.title}>הקורסים שלי</Text>
+            <Pressable onPress={handleGoBack} style={myCoursesStyles.backButton}>
+                <Text style={myCoursesStyles.backButtonText}>🔙 חזרה למסך הראשי</Text>
+            </Pressable>
+            <ScrollView contentContainerStyle={myCoursesStyles.container}>
+                <Text style={myCoursesStyles.title}>הקורסים שלי</Text>
 
-                <Pressable onPress={handleGoBack} style={styles.backButton}>
-                    <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
-                </Pressable>
+
 
                 {courses.map((course) => (
-                    <View key={course.id} style={styles.courseBox}>
+                    <View key={course.id} style={myCoursesStyles.courseBox}>
                         <LinearGradient
                             colors={[Colors.primary, Colors.accent]}
                             start={{ x: 1, y: 0 }}
                             end={{ x: 0, y: 0 }}
-                            style={styles.courseHeader}
+                            style={myCoursesStyles.courseHeader}
                         >
-                            <Text style={styles.courseTitle}>{course.title}</Text>
+                            <Text style={myCoursesStyles.courseTitle}>{course.title}</Text>
                         </LinearGradient>
 
-                        <View style={styles.topicGrid}>
+                        <View style={myCoursesStyles.topicGrid}>
                             {course.topics.map((topic, i) => (
                                 <Pressable
                                     key={topic.id}
                                     onPress={() => router.push(`/course/${topic.id}`)}
-                                    style={[styles.topicCardWrapper, { marginTop: i % 2 === 0 ? 0 : 12 }]}
+                                    style={[myCoursesStyles.topicCardWrapper, { marginTop: i % 2 === 0 ? 0 : 12 }]}
                                 >
                                     <LinearGradient
                                         colors={['#ede9fe', '#c4b5fd']}
-                                        style={styles.topicCard}
+                                        style={myCoursesStyles.topicCard}
                                     >
                                         <Feather
                                             name={topicIcons[topic.name] || "book"}
                                             size={30}
                                             color={Colors.primary}
-                                        />                                        <Text style={styles.topicText}>{topic.name}</Text>
+                                        />                                        <Text style={myCoursesStyles.topicText}>{topic.name}</Text>
                                     </LinearGradient>
                                 </Pressable>
                             ))}
@@ -83,75 +80,3 @@ export default function MyCourses() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        padding: 24,
-        backgroundColor: Colors.background,
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: Colors.primary,
-        marginBottom: 16,
-    },
-    backButton: {
-        alignSelf: 'flex-start',
-        marginBottom: 24,
-    },
-    backButtonText: {
-        fontSize: 16,
-        color: Colors.accent,
-        fontWeight: '600',
-    },
-    courseBox: {
-        width: width * 0.9,
-        marginBottom: 32,
-        backgroundColor: Colors.cardBg,
-        borderRadius: 20,
-        shadowColor: Colors.shadow,
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 4,
-        overflow: 'hidden',
-    },
-    courseHeader: {
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        backgroundColor: Colors.primary,
-    },
-    courseTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#fff',
-        textAlign: 'center',
-    },
-    topicGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-        padding: 16,
-    },
-    topicCardWrapper: {
-        width: 100,
-        marginBottom: 20,
-    },
-    topicCard: {
-        height: 100,
-        borderRadius: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 12,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 3,
-    },
-    topicText: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: Colors.primary,
-        textAlign: 'center',
-        marginTop: 6,
-    },
-});

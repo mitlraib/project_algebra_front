@@ -7,13 +7,11 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import {dashboardStyles} from '../../styles/styles'
 
 const Colors = {
     primary: '#8b5cf6',
     accent: '#fb923c',
-    background: '#f8f6ff',
-    light: '#ede9fe',
-    secondary: '#7c3aed',
     success: '#fb923c',
     danger: '#EF4444',
 };
@@ -112,10 +110,10 @@ export default function Dashboard() {
     };
     return (
         <ProtectedRoute requireAuth={true}>
-            <View contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.header}>
+            <View contentContainerStyle={dashboardStyles.scrollContainer}>
+                <View style={dashboardStyles.header}>
                     {/* לוגו מצד שמאל */}
-                    <Text style={styles.logo}>
+                    <Text style={dashboardStyles.logo}>
                         <Text style={{ color: Colors.primary }}>Math</Text>
                         <Text style={{ color: Colors.accent }}>Journey</Text>
                     </Text>
@@ -123,9 +121,9 @@ export default function Dashboard() {
 
 
                     {/* כפתור התנתקות מצד ימין */}
-                    <TouchableOpacity onPress={handleLogout} style={styles.logoutIconButton}>
+                    <TouchableOpacity onPress={handleLogout} style={dashboardStyles.logoutIconButton}>
                         <Feather name="log-out" size={18} color={Colors.primary} />
-                        <Text style={styles.logoutLabel}>התנתקות</Text>
+                        <Text style={dashboardStyles.logoutLabel}>התנתקות</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -134,24 +132,24 @@ export default function Dashboard() {
                     colors={[Colors.primary, Colors.accent]}
                     start={{ x: 1, y: 0 }}
                     end={{ x: 0, y: 0 }}
-                    style={styles.gradientTitleWrapper}
+                    style={dashboardStyles.gradientTitleWrapper}
                 >
-                    <Text style={styles.gradientTitle}>ברוכים הבאים ל MathJourney!</Text>
+                    <Text style={dashboardStyles.gradientTitle}>ברוכים הבאים ל MathJourney!</Text>
                 </LinearGradient>
-                <Animated.View style={[styles.floatingSymbol, { transform: [{ translateY: floatAnim }] }]}> <Text style={styles.floatingText}>➕</Text> </Animated.View>
-                <Animated.View style={[styles.floatingSymbol, styles.bottomLeft, { transform: [{ translateY: floatAnim }] }]}> <Text style={styles.floatingText}>➗</Text> </Animated.View>
+                <Animated.View style={[dashboardStyles.floatingSymbol, { transform: [{ translateY: floatAnim }] }]}> <Text style={dashboardStyles.floatingText}>➕</Text> </Animated.View>
+                <Animated.View style={[dashboardStyles.floatingSymbol, dashboardStyles.bottomLeft, { transform: [{ translateY: floatAnim }] }]}> <Text style={dashboardStyles.floatingText}>➗</Text> </Animated.View>
 
-                <View style={styles.rowWrapper}>
+                <View style={dashboardStyles.rowWrapper}>
 
                     {isAdmin && (
-                        <View style={styles.statisticsBox}>
-                            <View style={styles.iconCircle}>
+                        <View style={dashboardStyles.statisticsBox}>
+                            <View style={dashboardStyles.iconCircle}>
                                 <Feather name="pie-chart" size={24} color={Colors.accent} />
                             </View>
-                            <Text style={styles.title}>סטטיסטיקה</Text>
-                            <Text style={styles.statisticsDescription}>סטטיסטיקה למנהלים בלבד !</Text>
-                            <TouchableOpacity style={styles.statisticsButton} onPress={() => router.push('/Statistics')}>
-                                <Text style={styles.statisticsButtonText}>סטטיסטיקה </Text>
+                            <Text style={dashboardStyles.title}>סטטיסטיקה</Text>
+                            <Text style={dashboardStyles.statisticsDescription}>סטטיסטיקה למנהלים בלבד !</Text>
+                            <TouchableOpacity style={dashboardStyles.statisticsButton} onPress={() => router.push('/Statistics')}>
+                                <Text style={dashboardStyles.statisticsButtonText}>סטטיסטיקה </Text>
                             </TouchableOpacity>
                         </View>
 
@@ -159,37 +157,37 @@ export default function Dashboard() {
 
 
                     {/* ריבוע בצד שמאל */}
-                    <View style={styles.columnWrapper}>
+                    <View style={dashboardStyles.columnWrapper}>
 
 
-                    <View style={styles.marathonBox}>
-                        <View style={styles.iconCircle}>
+                    <View style={dashboardStyles.marathonBox}>
+                        <View style={dashboardStyles.iconCircle}>
                             <Feather name="watch" size={24} color={Colors.accent} />
                         </View>
-                        <Text style={styles.title}>אימון מרתון</Text>
-                        <Text style={styles.marathonDescription}>אימון מהיר על כל החומר שלמדת עד כה</Text>
+                        <Text style={dashboardStyles.title}>אימון מרתון</Text>
+                        <Text style={dashboardStyles.marathonDescription}>אימון מהיר על כל החומר שלמדת עד כה</Text>
 
                         <TouchableOpacity
-                            style={styles.marathonButton}
+                            style={dashboardStyles.marathonButton}
                             onPress={() => router.push('/course/randomQuestionPage')}
                         >
-                            <Text style={styles.marathonButtonText}>אימון</Text>
+                            <Text style={dashboardStyles.marathonButtonText}>אימון</Text>
                         </TouchableOpacity>
 
                     </View>
 
-                    <View style={styles.achievementsBox}>
-                        <View style={styles.iconCircle}>
+                    <View style={dashboardStyles.achievementsBox}>
+                        <View style={dashboardStyles.iconCircle}>
                             <Feather name="award" size={24} color={Colors.accent} />
                         </View>
-                        <Text style={styles.title}> הישגים</Text>
-                        <Text style={styles.achievementsDescription}>כל ההישגים שצברת עד כה  </Text>
+                        <Text style={dashboardStyles.title}> הישגים</Text>
+                        <Text style={dashboardStyles.achievementsDescription}>כל ההישגים שצברת עד כה  </Text>
 
                         <TouchableOpacity
-                            style={styles.achievementsButton}
+                            style={dashboardStyles.achievementsButton}
                             onPress={() => router.push('/Achivments')}
                         >
-                            <Text style={styles.achievementsButtonText}>הישגים</Text>
+                            <Text style={dashboardStyles.achievementsButtonText}>הישגים</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -199,46 +197,46 @@ export default function Dashboard() {
 
 
                     {/* כל התוכן בתוך mainCard בצד ימין */}
-                    <View style={styles.mainCard}>
+                    <View style={dashboardStyles.mainCard}>
 
 
-                        <Text style={styles.title}>
+                        <Text style={dashboardStyles.title}>
                             האתר שלנו נועד לעזור לך ללמוד חשבון בצורה חכמה ומהנה, עם שאלות מותאמות אישית והתקדמות לפי היכולת שלך.
                         </Text>
 
                         <Image
                             source={require('../../assets/images/learning-math.jpg')}
-                            style={styles.imageStyle}
+                            style={dashboardStyles.imageStyle}
                         />
                         <View style={{flexDirection: 'row-reverse', justifyContent: 'space-between'}}>
-                        <Text style={styles.greetingText}>שלום! </Text>
+                        <Text style={dashboardStyles.greetingText}>שלום! </Text>
 
-                        <View style={styles.emojiWrapper}>
-                            <Animated.View style={[styles.emojiCircle, { transform: [{ scale: pulseAnim }] }]}>
-                                <Text style={styles.emoji}>👋</Text>
+                        <View style={dashboardStyles.emojiWrapper}>
+                            <Animated.View style={[dashboardStyles.emojiCircle, { transform: [{ scale: pulseAnim }] }]}>
+                                <Text style={dashboardStyles.emoji}>👋</Text>
                             </Animated.View>
                         </View>
 
-                        <Text style={styles.secondGreetingText}> מוכנים ללמוד חשבון?</Text>
+                        <Text style={dashboardStyles.secondGreetingText}> מוכנים ללמוד חשבון?</Text>
                         </View>
-                        <View style={styles.cardContainer}>
-                            <View style={styles.card}>
+                        <View style={dashboardStyles.cardContainer}>
+                            <View style={dashboardStyles.card}>
                                 <View style={{flexDirection:'row-reverse', justifyContent:'center'}}>
-                                <Text style={styles.title}>
+                                <Text style={dashboardStyles.title}>
                                     {progressData.progress < 0.3
-                                        ? "אתה בתחילת הדרך! המשך ללמוד כדי להשתפר."
+                                        ? "אתה בתחילת הדרך! המשך ללמוד כדי להשתפר..."
                                         : progressData.progress < 0.6
-                                            ? " אתה בדרך הנכונה."
+                                            ? " אתה בדרך הנכונה!"
                                             : " כל הכבוד !"}
                                 </Text>
                                 </View>
-                                <View style={styles.progressWrapper}>
-                                    <Text style={styles.progressText}>
+                                <View style={dashboardStyles.progressWrapper}>
+                                    <Text style={dashboardStyles.progressText}>
                                         <FontAwesome name="check-circle" size={18} color="#4F46E5" />{' '}
                                         הצלחת ב-{(progressData.progress * 100).toFixed(0)}% מהשאלות שפתרת
                                     </Text>
 
-                                    <View style={styles.progressBarContainer}>
+                                    <View style={dashboardStyles.progressBarContainer}>
                                         <ProgressBar
                                             progress={progressData.progress}
                                             color={
@@ -248,38 +246,28 @@ export default function Dashboard() {
                                                         ? Colors.primary
                                                         : Colors.danger
                                             }
-                                            style={styles.progress}
+                                            style={dashboardStyles.progress}
                                         />
-                                        <Text
-                                            style={[
-                                                styles.percentageLabel,
-                                                {
-                                                    left: `${(progressData.progress * 100).toFixed(0)}%`,
-                                                    transform: [{ translateX: -15 }],
-                                                },
-                                            ]}
-                                        >
-                                            {(progressData.progress * 100).toFixed(0)}%
-                                        </Text>
+
                                     </View>
                                 </View>
                             </View>
 
-                            <Text style={styles.cardPercentage}>
+                            <Text style={dashboardStyles.cardPercentage}>
                                 {(progressData.progress * 100).toFixed(0)}%
                             </Text>
 
                             <TouchableOpacity
                                 onPress={() => router.push('/(tabs)/MyCourses')}
-                                style={styles.pillButtonPurple}
+                                style={dashboardStyles.pillButtonPurple}
                             >
                                 <Feather name="play" size={28} color="#fff" />
-                                <Text style={styles.buttonText}>התחל תרגול</Text>
+                                <Text style={dashboardStyles.buttonText}>התחל תרגול</Text>
                             </TouchableOpacity>
                         </View>
 
                         {/* Mini cards */}
-                        <View style={styles.grid}>
+                        <View style={dashboardStyles.grid}>
 
 
 
@@ -291,405 +279,4 @@ export default function Dashboard() {
     );
 }
 
-const width = Dimensions.get('window').width;
 
-const styles = StyleSheet.create({
-    scrollContainer: {
-        alignItems: 'center',
-        paddingVertical: 24,
-        backgroundColor: Colors.background,
-    },
-    rowWrapper: {
-        flexDirection: 'row', // כדי שהריבוע יהיה בשמאל
-        justifyContent:'flex-end',
-        alignItems: 'flex-start',
-        width: '90%',
-        marginRight:300,
-        marginTop:25,
-        gap: 30, // רווח בין הצדדים
-    },
-
-    columnWrapper:{
-        flexDirection:'column',
-        alignItems:'space-between',
-        justifyContent:'space-between',
-        paddingTop: 5,
-        paddingRight:100
-    },
-
-achievementsBox: {
-        width: 220,
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
-    },
-
-
-
-    achievementsDescription: {
-        fontSize: 14,
-        color: '#555',
-        textAlign: 'center',
-        marginBottom: 16,
-    },
-
-    achievementsButton: {
-        backgroundColor: Colors.accent,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 24,
-        marginTop: 8,
-        alignSelf: 'stretch',
-        alignItems: 'center',
-    },
-
-    achievementsButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 14,
-    },
-
-    statisticsBox: {
-        width: 220,
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
-        marginTop:160
-    },
-
-
-
-    statisticsDescription: {
-        fontSize: 14,
-        color: '#555',
-        textAlign: 'center',
-        marginBottom: 16,
-    },
-
-    statisticsButton: {
-        backgroundColor: Colors.accent,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 24,
-        marginTop: 8,
-        alignSelf: 'stretch',
-        alignItems: 'center',
-    },
-
-    statisticsButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 14,
-    },
-
-    marathonBox: {
-        width: 220,
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 16,
-        marginBottom:70,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
-    },
-
-    iconCircle: {
-        width: 48,
-        height: 48,
-        borderRadius: 24,
-        backgroundColor: '#ede9fe',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 12,
-    },
-
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#111',
-        marginBottom: 4,
-        textAlign: 'center',
-    },
-
-
-    marathonDescription: {
-        fontSize: 14,
-        color: '#555',
-        textAlign: 'center',
-        marginBottom: 16,
-    },
-
-    marathonButton: {
-        backgroundColor: Colors.accent,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 24,
-        marginTop: 8,
-        alignSelf: 'stretch',
-        alignItems: 'center',
-    },
-
-    marathonButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 14,
-    },
-
-    mainCard: {
-        width: width > 768 ? 709 : '96%',
-        padding: 24,
-        borderRadius: 20,
-        backgroundColor: '#fff',
-        marginRight: 50,
-        height: '90%'
-    },
-    gradientTitleWrapper: {
-        borderRadius: 20,
-        padding: 10,
-        alignSelf:'center',
-        width:500,
-        height: 55
-
-
-    },
-    gradientTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        color: '#fff',
-    },
-    emojiWrapper: {
-        alignItems: 'center',
-        marginVertical: 8,
-    },
-    emojiCircle: {
-        backgroundColor: Colors.light,
-        borderRadius: 100,
-        width: 40,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
-    },
-    emoji: {
-        fontSize: 40,
-    },
-    greetingText: {
-        marginTop:20,
-        marginRight:130,
-        textAlign: 'center',
-        fontSize: 20,
-        fontWeight: '600',
-        color: Colors.secondary,
-        marginBottom: 24,
-    },
-    secondGreetingText: {
-        marginTop:20,
-        marginLeft:40,
-        textAlign: 'center',
-        fontSize: 20,
-        fontWeight: '600',
-        color: Colors.secondary,
-        marginBottom: 24,
-    },
-    cardContainer: {
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 16,
-        shadowColor: '#000',
-        shadowOpacity: 0.05,
-        shadowRadius: 6,
-        elevation: 3,
-        marginBottom: 24,
-    },
-    cardHeader: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 4,
-        color: Colors.secondary,
-    },
-    cardSubtext: {
-        textAlign: 'center',
-        fontSize: 14,
-        color: '#555',
-        marginBottom: 8,
-    },
-    progressBarWrapper: {
-        height: 12,
-        borderRadius: 10,
-        backgroundColor: '#e5e5e5',
-        overflow: 'hidden',
-    },
-    header: {
-        width: '90%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: 16,
-
-    },
-
-    logo: {
-        fontSize: 25,
-        fontWeight: 'bold',
-        marginLeft: 10
-    },
-
-    logoutIconButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderColor: Colors.primary,
-        borderWidth: 1,
-        borderRadius: 24,
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-    },
-
-    logoutLabel: {
-        color: Colors.primary,
-        fontWeight: '600',
-        marginRight: 6,
-        fontSize: 14,
-    },
-
-    progressInner: {
-        height: '100%',
-        borderRadius: 10,
-    },
-    cardPercentage: {
-        textAlign: 'center',
-        marginTop: 4,
-        fontWeight: '500',
-        fontSize: 12,
-    },
-    buttonGroup: {
-        gap: 16,
-        marginBottom: 24,
-    },
-    pillButtonPurple: {
-        marginTop: 30,
-        backgroundColor: Colors.primary,
-        paddingVertical: 14,
-        borderRadius: 100,
-        alignItems: 'center',
-    },
-    pillButtonOrange: {
-        backgroundColor: Colors.accent,
-        paddingVertical: 14,
-        borderRadius: 100,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    logoutButton: {
-        marginTop: 8,
-        padding: 14,
-        backgroundColor: Colors.danger,
-        borderRadius: 12,
-        alignItems: 'center',
-    },
-    logoutText: {
-        color: '#fff',
-        fontWeight: '600',
-        fontSize: 16,
-    },
-    floatingSymbol: {
-        position: 'absolute',
-        top: 100,
-        right: 20,
-        opacity: 0.15,
-    },
-    bottomLeft: {
-        top: undefined,
-        bottom: 150,
-        left: 20,
-        right: undefined,
-    },
-    floatingText: {
-        fontSize: 64,
-    },
-    loading: {
-        textAlign: 'center',
-        marginTop: 50,
-        fontSize: 18,
-    },
-
-    imageStyle: {
-        width: '100%',
-        height: 150,
-        borderRadius: 16,
-        marginBottom: 16,
-    },
-
-    progress: {
-        height: 15,
-        borderRadius: 10,
-        marginTop: 30,
-
-    },
-
-    grid: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 24,
-    },
-
-    progressText: {
-        color: '#000',
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginTop: 4,
-        marginBottom: 4,
-        textAlign: 'center',
-    },
-    progressWrapper: {
-        marginTop: 30,
-        marginBottom: 16,
-    },
-
-    progressBarContainer: {
-        position: 'relative',
-        height: 25,
-        justifyContent: 'center',
-    },
-
-    percentageLabel: {
-        position: 'absolute',
-        top: -22,
-        fontSize: 14,
-        fontWeight: 'bold',
-        backgroundColor: '#fff',
-        color: '#000',
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: 6,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        elevation: 2,
-    },
-
-
-
-});
