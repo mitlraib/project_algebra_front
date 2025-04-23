@@ -193,7 +193,7 @@ export default function MyProfile() {
                 </View>
                     <View>
                         <View style={styles.statisticContainer}>
-                         <Text style={styles.sectionTitle}>סטטיסטיקה</Text>
+                         <Text style={styles.sectionTitle}> סטטיסטיקה אישית</Text>
                             <View style={{flexDirection: "row-reverse"}}>
                                 <LinearGradient
                                     colors={['#bfd4eb', '#e3e7f4']} // כהה → בהיר כמו בתמונה שלך
