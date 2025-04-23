@@ -1,12 +1,21 @@
-//MyCourses
-
 import React from 'react';
-import { Text, View, FlatList, Pressable, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, Text, Pressable, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { Card } from 'react-native-paper';
-import styles from '../../styles/styles';
-import { courses } from '../../constants/CoursesNames';
+import { useRouter } from 'expo-router';
 import ProtectedRoute from '../../components/ProtectedRoute';
+import { courses } from '../../constants/CoursesNames';
+
+const width = Dimensions.get('window').width;
+
+const Colors = {
+    primary: '#8b5cf6',
+    accent: '#fb923c',
+    background: '#f8f6ff',
+    light: '#ede9fe',
+    text: '#111827',
+    cardBg: '#ffffff',
+    shadow: '#000',
+};
 
 export default function MyCourses() {
     const router = useRouter();
@@ -17,49 +26,97 @@ export default function MyCourses() {
 
     return (
         <ProtectedRoute requireAuth={true}>
+            <ScrollView contentContainerStyle={styles.container}>
+                <Text style={styles.title}>הקורסים שלי</Text>
 
-        <View style={styles.container}>
-            <Text style={styles.title}>הקורסים שלי</Text>
+                <Pressable onPress={handleGoBack} style={styles.backButton}>
+                    <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
+                </Pressable>
 
-            {/* כפתור חזרה בצד שמאל */}
-            <Pressable onPress={handleGoBack} style={styles.backButton}>
-                <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
-            </Pressable>
+                {courses.map((course) => (
+                    <View key={course.id} style={styles.courseBox}>
+                        <Text style={styles.courseTitle}>{course.title}</Text>
 
-            <FlatList
-                data={courses}
-                keyExtractor={(course) => course.id.toString()}
-                renderItem={({ item: course }) => (
-                    <View style={styles.container}>
-                        <Text style={styles.title}>{course.title}</Text>
-
-                        {/* הצגת הנושאים ככרטיסים */}
-                        <FlatList
-                            data={course.topics}
-                            keyExtractor={(topic) => topic.id.toString()}
-                            numColumns={4}
-                            columnWrapperStyle={styles.row}
-                            renderItem={({ item: topic }) => (
+                        <View style={styles.topicGrid}>
+                            {course.topics.map((topic) => (
                                 <Pressable
+                                    key={topic.id}
                                     onPress={() => router.push(`/course/${topic.id}`)}
-                                    style={{ margin: 5 }}
+                                    style={styles.topicCardWrapper}
                                 >
-                                    <Card style={styles.card}>
+                                    <Card style={styles.topicCard}>
                                         <Card.Content>
-                                            <Text style={styles.cardTitle}>{topic.name}</Text>
+                                            <Text style={styles.topicText}>{topic.name}</Text>
                                         </Card.Content>
                                     </Card>
                                 </Pressable>
-                            )}
-                        />
+                            ))}
+                        </View>
                     </View>
-                )}
-            />
-        </View>
+                ))}
+            </ScrollView>
         </ProtectedRoute>
-
     );
-};
+}
 
-
-// end of MyCourses
+const styles = StyleSheet.create({
+    container: {
+        padding: 24,
+        backgroundColor: Colors.background,
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: Colors.primary,
+        marginBottom: 16,
+    },
+    backButton: {
+        alignSelf: 'flex-start',
+        marginBottom: 24,
+    },
+    backButtonText: {
+        fontSize: 16,
+        color: Colors.accent,
+        fontWeight: '600',
+    },
+    courseBox: {
+        width: width * 0.9,
+        marginBottom: 32,
+        backgroundColor: Colors.cardBg,
+        borderRadius: 16,
+        padding: 16,
+        shadowColor: Colors.shadow,
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 4,
+    },
+    courseTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: Colors.text,
+        marginBottom: 16,
+        textAlign: 'center',
+    },
+    topicGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+    },
+    topicCardWrapper: {
+        width: '48%',
+        marginBottom: 12,
+    },
+    topicCard: {
+        backgroundColor: Colors.light,
+        borderRadius: 12,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+    },
+    topicText: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: Colors.primary,
+        textAlign: 'center',
+    },
+});

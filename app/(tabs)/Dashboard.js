@@ -14,7 +14,7 @@ const Colors = {
     background: '#f8f6ff',
     light: '#ede9fe',
     secondary: '#7c3aed',
-    success: '#10B981',
+    success: '#fb923c',
     danger: '#EF4444',
 };
 
@@ -202,7 +202,7 @@ export default function Dashboard() {
                     <View style={styles.mainCard}>
 
 
-                        <Text style={styles.subtitle}>
+                        <Text style={styles.title}>
                             האתר שלנו נועד לעזור לך ללמוד חשבון בצורה חכמה ומהנה, עם שאלות מותאמות אישית והתקדמות לפי היכולת שלך.
                         </Text>
 
@@ -472,12 +472,6 @@ achievementsBox: {
         fontWeight: 'bold',
         textAlign: 'center',
         color: '#fff',
-    },
-    subtitle: {
-        textAlign: 'center',
-        fontSize: 16,
-        color: '#555',
-        marginBottom: 16,
     },
     emojiWrapper: {
         alignItems: 'center',

@@ -91,6 +91,7 @@ export default function Statistics() {
         <ProtectedRoute requireAuth={true}>
 
     <View style={styles.container}>
+
             <Text style={styles.title}>📊 סטטיסטיקה כללית (כלל המשתמשים)</Text>
             <Text>סה"כ ניסיונות שבוצעו על ידי כלל המשתמשים: {overallStats.totalAttempts}</Text>
             <Text>סה"כ טעויות שבוצעו: {overallStats.totalMistakes}</Text>
