@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import { Card } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { courses } from '../../constants/CoursesNames';
+import { Feather } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const width = Dimensions.get('window').width;
 
@@ -15,6 +16,17 @@ const Colors = {
     text: '#111827',
     cardBg: '#ffffff',
     shadow: '#000',
+};
+
+const topicIcons = {
+    "חיבור": "plus-circle",
+    "חיסור": "minus-circle",
+    "כפל": "x-circle",
+    "חילוק": "divide-circle",
+    "חיבור שברים": "plus-square",
+    "חיסור שברים": "minus-square",
+    "כפל שברים": "x-square",
+    "חילוק שברים": "divide-square",
 };
 
 export default function MyCourses() {
@@ -35,20 +47,32 @@ export default function MyCourses() {
 
                 {courses.map((course) => (
                     <View key={course.id} style={styles.courseBox}>
-                        <Text style={styles.courseTitle}>{course.title}</Text>
+                        <LinearGradient
+                            colors={[Colors.primary, Colors.accent]}
+                            start={{ x: 1, y: 0 }}
+                            end={{ x: 0, y: 0 }}
+                            style={styles.courseHeader}
+                        >
+                            <Text style={styles.courseTitle}>{course.title}</Text>
+                        </LinearGradient>
 
                         <View style={styles.topicGrid}>
-                            {course.topics.map((topic) => (
+                            {course.topics.map((topic, i) => (
                                 <Pressable
                                     key={topic.id}
                                     onPress={() => router.push(`/course/${topic.id}`)}
-                                    style={styles.topicCardWrapper}
+                                    style={[styles.topicCardWrapper, { marginTop: i % 2 === 0 ? 0 : 12 }]}
                                 >
-                                    <Card style={styles.topicCard}>
-                                        <Card.Content>
-                                            <Text style={styles.topicText}>{topic.name}</Text>
-                                        </Card.Content>
-                                    </Card>
+                                    <LinearGradient
+                                        colors={['#ede9fe', '#c4b5fd']}
+                                        style={styles.topicCard}
+                                    >
+                                        <Feather
+                                            name={topicIcons[topic.name] || "book"}
+                                            size={30}
+                                            color={Colors.primary}
+                                        />                                        <Text style={styles.topicText}>{topic.name}</Text>
+                                    </LinearGradient>
                                 </Pressable>
                             ))}
                         </View>
@@ -84,39 +108,50 @@ const styles = StyleSheet.create({
         width: width * 0.9,
         marginBottom: 32,
         backgroundColor: Colors.cardBg,
-        borderRadius: 16,
-        padding: 16,
+        borderRadius: 20,
         shadowColor: Colors.shadow,
         shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 4,
+        overflow: 'hidden',
+    },
+    courseHeader: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        backgroundColor: Colors.primary,
     },
     courseTitle: {
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: 'bold',
-        color: Colors.text,
-        marginBottom: 16,
+        color: '#fff',
         textAlign: 'center',
     },
     topicGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
+        padding: 16,
     },
     topicCardWrapper: {
-        width: '48%',
-        marginBottom: 12,
+        width: 100,
+        marginBottom: 20,
     },
     topicCard: {
-        backgroundColor: Colors.light,
-        borderRadius: 12,
-        paddingVertical: 12,
-        paddingHorizontal: 10,
+        height: 100,
+        borderRadius: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 12,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 3,
     },
     topicText: {
-        fontSize: 16,
-        fontWeight: '500',
+        fontSize: 14,
+        fontWeight: '600',
         color: Colors.primary,
         textAlign: 'center',
+        marginTop: 6,
     },
 });
