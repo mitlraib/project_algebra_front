@@ -693,11 +693,13 @@ const myCoursesStyles = StyleSheet.create({
         fontSize: 28,
         fontWeight: 'bold',
         color: '#8b5cf6',
-        marginBottom: 16,
+        marginBottom: 25,
     },
     backButton: {
         alignSelf: 'flex-start',
         marginBottom: 24,
+        marginTop:15,
+        marginLeft:15
     },
     backButtonText: {
         fontSize: 16,
@@ -799,7 +801,7 @@ const myProfileStyles = StyleSheet.create({
     backButton: {
         marginBottom: 16,
         alignSelf: 'flex-start',
-        marginLeft:15
+        marginLeft:15,
 
     },
     backButtonText: {
