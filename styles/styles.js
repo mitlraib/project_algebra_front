@@ -928,7 +928,31 @@ const myProfileStyles = StyleSheet.create({
         margin: 10,
         width: 50,
         height: 50,
+    },
+    backButtonGradient: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        alignSelf: 'flex-start',
+        marginRight: 16,
+        marginTop: 8,
+        width: 200, // קטן יותר
+    },
+    saveButtonGradient: {
+        paddingVertical: 14,
+        paddingHorizontal: 25,
+        borderRadius: 8,
+        alignSelf: 'center',
+        marginVertical: 16,
+        width: 350, // גדול יותר
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
     }
+
 
 });
 

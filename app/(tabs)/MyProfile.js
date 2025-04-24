@@ -7,7 +7,7 @@ import axios from 'axios';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import {myProfileStyles} from '../../styles/styles'
+import {myProfileStyles, dashboardStyles} from '../../styles/styles';
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://localhost:8080';
 
@@ -91,15 +91,11 @@ export default function MyProfile() {
         router.push('/Dashboard');
     }
 
-    function saveUserDataLocally() {
-        alert('שינויים נשמרו (לוקלי בלבד)');
-    }
-
     async function saveChanges() {
         if (detailedSolutions !== origDetailedSolutions) {
             try {
                 await axios.put("/api/user/preferences", { detailedSolutions });
-                setOrigDetailedSolutions(detailedSolutions);      // מעדכן נק’ ייחוס חדשה
+                setOrigDetailedSolutions(detailedSolutions);
                 alert("ההעדפה נשמרה ✔");
             } catch (e) {
                 alert("❌  שמירה נכשלה");
@@ -110,7 +106,7 @@ export default function MyProfile() {
     }
 
     const TopicProgressBar = ({ topicName, level }) => {
-        const percentage = Math.min((level / 10) * 100, 10); // מבטיח שלא יעבור 10
+        const percentage = Math.min((level / 10) * 100, 100);
         return (
             <View style={{ marginBottom: 12 }}>
                 <Text style={{ textAlign: 'center', fontSize: 16, marginBottom: 10 }}>
@@ -118,15 +114,15 @@ export default function MyProfile() {
                 </Text>
                 <View style={{
                     height: 15,
-                    width:500,
-                    backgroundColor: '#e3e7f4',
+                    width: 500,
+                    backgroundColor: '#f1f5f9',
                     borderRadius: 10,
                     overflow: 'hidden',
                     flexDirection: 'row'
                 }}>
                     <View style={{
                         width: `${percentage}%`,
-                        backgroundColor: '#818cf8',
+                        backgroundColor: '#8b5cf6',
                         borderRadius: 10
                     }} />
                 </View>
@@ -134,113 +130,95 @@ export default function MyProfile() {
         );
     };
 
-
     return (
         <ProtectedRoute requireAuth={true}>
             <ScrollView contentContainerStyle={myProfileStyles.scrollContainer}>
-                <Pressable onPress={handleGoToDashboard} style={myProfileStyles.backButton}>
-                    <Text style={myProfileStyles.backButtonText}>⬅ חזרה לעמוד הבית </Text>
-                </Pressable>
-
-                <View style={{flexDirection: "row-reverse", alignSelf:"flex-end"}}>
-                <View style={myProfileStyles.profileContainer}>
-
-                    <Text style={myProfileStyles.profileSectionTitle}>פרופיל אישי </Text>
-
-                    <View style={myProfileStyles.avatarWrapper}>
-                        <FontAwesome name="user" size={100} color="#6366F1" />
-                    </View>
-                    <View style={{alignSelf:"center"}}>
-                        <Text style={myProfileStyles.name}>{name}</Text>
-
-                        <View style={{flexDirection:"row-reverse"}}>
-                            <Text style={myProfileStyles.subText}>
-                                {role} <Text style={{ fontSize: 20 }}>•</Text> רמה {level}
-                            </Text>
+                <LinearGradient
+                    colors={['#8b5cf6', '#fb923c']}
+                    style={myProfileStyles.backButtonGradient}
+                >
+                    <Pressable onPress={handleGoToDashboard}>
+                        <Text style={myProfileStyles.buttonText}>⬅ חזרה לעמוד הבית</Text>
+                    </Pressable>
+                </LinearGradient>
+                <View style={{ flexDirection: "row-reverse", alignSelf: "flex-end" }}>
+                    <View style={myProfileStyles.profileContainer}>
+                        <Text style={myProfileStyles.profileSectionTitle}>פרופיל אישי </Text>
+                        <View style={myProfileStyles.avatarWrapper}>
+                            <FontAwesome name="user" size={100} color="#8b5cf6" />
                         </View>
-
+                        <View style={{ alignSelf: "center" }}>
+                            <Text style={myProfileStyles.name}>{name}</Text>
+                            <View style={{ flexDirection: "row-reverse" }}>
+                                <Text style={myProfileStyles.subText}>
+                                    {role} <Text style={{ fontSize: 20 }}>•</Text> רמה {level}
+                                </Text>
+                            </View>
                         </View>
                         {isLoading ? (
                             <Text style={myProfileStyles.loadingText}>טוען נתוני משתמש...</Text>
                         ) : (
-
                             <View style={myProfileStyles.profileLabels}>
-                                <FontAwesome name="envelope" size={14} color="#4F46E5" style={{ marginLeft: 8, marginTop:5, marginBottom:30 }} />
+                                <FontAwesome name="envelope" size={14} color="#8b5cf6" style={{ marginLeft: 8, marginTop: 5, marginBottom: 30 }} />
                                 <Text style={myProfileStyles.label}>{email}</Text>
                             </View>
                         )}
 
-                  <View>
-                      <Pressable onPress={()=>{alert("מצטערים, כרגע אנחנו תומכים רק בעברית....")}}>
-
-                      <View style={{flexDirection:"row-reverse"}} >
-                            <Text style={{fontSize:16, padding:5}}>שפת ממשק:</Text>
-                          <FontAwesome name="language" size={25} color="#6366F1" style={{paddingRight:10}}/>
-                          <Text style={myProfileStyles.input} > עברית </Text>
-                      </View>
-                      </Pressable>
-
-                      <View style={myProfileStyles.switchContainer}>
-                                <Text style={myProfileStyles.label}>הצגת פתרונות מודרכים:</Text>
-                          <Switch value={detailedSolutions}
-                                  onValueChange={setDetailedSolutions} />                            </View>
-
-                            <Pressable onPress={saveChanges} style={myProfileStyles.saveButton}>
-                                <Text style={myProfileStyles.saveButtonText}>שמור שינויים</Text>
+                        <View>
+                            <Pressable onPress={() => { alert("מצטערים, כרגע אנחנו תומכים רק בעברית....") }}>
+                                <View style={{ flexDirection: "row-reverse" }} >
+                                    <Text style={{ fontSize: 16, padding: 5 }}>שפת ממשק:</Text>
+                                    <FontAwesome name="language" size={25} color="#8b5cf6" style={{ paddingRight: 10 }} />
+                                    <Text style={myProfileStyles.input} > עברית </Text>
+                                </View>
                             </Pressable>
+                            <View style={myProfileStyles.switchContainer}>
+                                <Text style={myProfileStyles.label}>הצגת פתרונות מודרכים:</Text>
+                                <Switch value={detailedSolutions} onValueChange={setDetailedSolutions} />
+                            </View>
+                            <LinearGradient
+                                colors={['#8b5cf6', '#fb923c']}
+                                style={myProfileStyles.saveButtonGradient}
+                            >
+                                <Pressable onPress={saveChanges}>
+                                    <Text style={myProfileStyles.buttonText}>שמור שינויים</Text>
+                                </Pressable>
+                            </LinearGradient>
 
                         </View>
-                </View>
+                    </View>
+
                     <View>
                         <View style={myProfileStyles.statisticContainer}>
-                         <Text style={myProfileStyles.sectionTitle}> סטטיסטיקה אישית</Text>
-                            <View style={{flexDirection: "row-reverse"}}>
-                                <LinearGradient
-                                    colors={['#bfd4eb', '#e3e7f4']} // כהה → בהיר כמו בתמונה שלך
-                                    style={myProfileStyles.statisticSquere}
-                                >
+                            <Text style={myProfileStyles.sectionTitle}> סטטיסטיקה אישית</Text>
+                            <View style={{ flexDirection: "row-reverse" }}>
+                                <LinearGradient colors={["#ede9fe", "#f5f3ff"]} style={myProfileStyles.statisticSquere}>
                                     <View style={myProfileStyles.iconBox}>
-
-                                    <FontAwesome name="user" size={25} color="#6366F1" />
-                            </View>
-                                    <Text style={{ color: '#000', fontSize: 24 , fontWeight:"bold", marginRight:5}}> {level}</Text>
+                                        <FontAwesome name="user" size={25} color="#8b5cf6" />
+                                    </View>
+                                    <Text style={{ color: '#000', fontSize: 24, fontWeight: "bold", marginRight: 5 }}> {level}</Text>
                                     <Text style={{ color: '#000', fontSize: 16 }}> רמה כללית </Text>
-
                                 </LinearGradient>
 
-
-                                <LinearGradient
-                                    colors={['#bfd4eb', '#e3e7f4']} // כהה → בהיר כמו בתמונה שלך
-                                    style={myProfileStyles.statisticSquere}
-                                >
+                                <LinearGradient colors={["#ede9fe", "#f5f3ff"]} style={myProfileStyles.statisticSquere}>
                                     <View style={myProfileStyles.iconBox}>
-
-                                    <Feather name="book-open" size={25} color="#6366F1" />
+                                        <Feather name="book-open" size={25} color="#8b5cf6" />
                                     </View>
-                                    <Text style={{ color: '#000', fontSize: 24 , fontWeight:"bold", marginRight:5}}> {totalExercises}</Text>
+                                    <Text style={{ color: '#000', fontSize: 24, fontWeight: "bold", marginRight: 5 }}> {totalExercises}</Text>
                                     <Text style={{ color: '#000', fontSize: 16 }}> סה"כ תרגילים </Text>
-
                                 </LinearGradient>
 
-
-
-                                <LinearGradient
-                                    colors={['#bfd4eb', '#e3e7f4']} // כהה → בהיר כמו בתמונה שלך
-                                    style={myProfileStyles.statisticSquere}
-                                >
+                                <LinearGradient colors={["#ede9fe", "#f5f3ff"]} style={myProfileStyles.statisticSquere}>
                                     <View style={myProfileStyles.iconBox}>
-                                    <FontAwesome name="info-circle" size={25} color="#6366F1" />
+                                        <FontAwesome name="info-circle" size={25} color="#8b5cf6" />
                                     </View>
-
-                                    <Text style={{ color: '#000', fontSize: 24 , fontWeight:"bold", marginRight:5}}> {totalMistakes}</Text>
+                                    <Text style={{ color: '#000', fontSize: 24, fontWeight: "bold", marginRight: 5 }}> {totalMistakes}</Text>
                                     <Text style={{ color: '#000', fontSize: 16 }}> סה"כ שגיאות </Text>
-
                                 </LinearGradient>
                             </View>
-
                         </View>
-                        <View style={myProfileStyles.levelsContainer}>
 
+                        <View style={myProfileStyles.levelsContainer}>
                             <Text style={myProfileStyles.sectionTitle}>רמות בכל נושא:</Text>
                             {topicLevels.map((t) => (
                                 <View key={t.topicId} style={myProfileStyles.topicRow}>
@@ -263,14 +241,11 @@ export default function MyProfile() {
                                 </View>
                             ))}
                         </View>
-
                     </View>
                 </View>
             </ScrollView>
         </ProtectedRoute>
     );
 }
-
-
 
 //end of MyProfile
