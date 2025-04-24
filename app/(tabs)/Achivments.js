@@ -136,7 +136,14 @@ export default function AchievementsPage() {
                     <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
                 </Pressable>
                 <View style={styles.container}>
-                    <Text style={styles.title}>🎖️ ההישגים שלך</Text>
+                    <LinearGradient
+                        colors={["#8b5cf6", "#fb923c"]}
+                        start={{ x: 1, y: 0 }}
+                        end={{ x: 0, y: 0 }}
+                        style={styles.titleBox}
+                    >
+                        <Text style={styles.title}>🎖️ ההישגים שלך</Text>
+                    </LinearGradient>
                     <View style={styles.starsRow}>
                         <FontAwesome name="star" size={20} color="#FACC15" />
                         <Text style={styles.starsText}>{stars.totalStars} כוכבים</Text>
@@ -144,7 +151,7 @@ export default function AchievementsPage() {
                         <Text style={styles.starsText}>{stars.totalCandles} גביעים</Text>
                     </View>
 
-                    {Object.entries(BADGES).map(([key, badge]) => {
+                    {Object.entries(BADGES).map(([key, badge], index) => {
                         const count =
                             key === "complex_fractions"
                                 ? stats.fractionAddition +
@@ -185,14 +192,11 @@ export default function AchievementsPage() {
                                 </View>
                                 <View style={styles.progressRow}>
                                     <View style={styles.progressBar}>
-                                        <View
-                                            style={[
-                                                styles.progressFill,
-                                                {
-                                                    backgroundColor: badge.color,
-                                                    width: `${progress}%`,
-                                                },
-                                            ]}
+                                        <LinearGradient
+                                            colors={["#8b5cf6", "#fb923c"]}
+                                            start={{ x: 1, y: 0 }}
+                                            end={{ x: 0, y: 0 }}
+                                            style={[styles.progressFill, { width: `${progress}%` }]}
                                         />
                                     </View>
                                     <Text style={styles.progressText}>{count}/{nextThreshold}</Text>
@@ -239,12 +243,17 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         fontSize: 18,
     },
+    titleBox: {
+        paddingVertical: 10,
+        paddingHorizontal: 24,
+        borderRadius: 16,
+        marginBottom: 20,
+    },
     title: {
         fontSize: 26,
         fontWeight: "bold",
         textAlign: "center",
-        marginBottom: 24,
-        color: "#8b5cf6",
+        color: "white",
     },
     starsRow: {
         flexDirection: "row",
@@ -293,10 +302,10 @@ const styles = StyleSheet.create({
     },
     progressBar: {
         flex: 1,
-        backgroundColor: "#E5E7EB",
         height: 8,
         borderRadius: 8,
         overflow: "hidden",
+        backgroundColor: "#E5E7EB",
     },
     progressFill: {
         height: 8,

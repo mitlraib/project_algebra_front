@@ -88,7 +88,9 @@ export default function Statistics() {
     return (
         <ProtectedRoute requireAuth={true}>
             <View style={styles.container}>
-                <Text style={styles.pageTitle}>📊 סטטיסטיקה כללית (כלל המשתמשים)</Text>
+                <LinearGradient colors={[Colors.primary, Colors.accent]} style={styles.gradientTitleBox}>
+                    <Text style={styles.pageTitle}>📊 סטטיסטיקה כללית (כלל המשתמשים)</Text>
+                </LinearGradient>
                 <View style={styles.cardContainer}>
                     <Text style={styles.infoText}>סה"כ ניסיונות: {overallStats.totalAttempts}</Text>
                     <Text style={styles.infoText}>סה"כ טעויות: {overallStats.totalMistakes}</Text>
@@ -103,7 +105,9 @@ export default function Statistics() {
                     </Text>
                 </View>
 
-                <Text style={styles.pageTitle}>📚 סטטיסטיקה לפי נושא</Text>
+                <LinearGradient colors={[Colors.primary, Colors.accent]} style={styles.gradientTitleBox}>
+                    <Text style={styles.pageTitle}>📚 סטטיסטיקה לפי נושא</Text>
+                </LinearGradient>
 
                 <FlatList
                     data={topicStats}
@@ -128,12 +132,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: Colors.background,
     },
+    gradientTitleBox: {
+        borderRadius: 16,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginBottom: 16,
+    },
     pageTitle: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: Colors.primary,
+        color: 'white',
         textAlign: 'center',
-        marginBottom: 16,
     },
     cardContainer: {
         backgroundColor: '#fff',
