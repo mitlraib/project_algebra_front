@@ -7,6 +7,7 @@ import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
 import { HomeButton } from '../utils/Utils';
 
+
 const BADGES = {
     addition_master: {
         name: "מאסטר חיבור",

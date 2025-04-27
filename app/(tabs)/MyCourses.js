@@ -7,14 +7,13 @@ import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {myCoursesStyles} from '../../styles/styles'
 import { HomeButton } from '../utils/Utils';
+import { Colors } from '../../constants/Colors';
+
 
 
 const width = Dimensions.get('window').width;
 
-const Colors = {
-    primary: '#8b5cf6',
-    accent: '#fb923c',
-};
+
 
 const topicIcons = {
     "חיבור": "plus-circle",
@@ -60,7 +59,7 @@ export default function MyCourses() {
                                 <Pressable
                                     key={topic.id}
                                     onPress={() => router.push(`/course/${topic.id}`)}
-                                    style={[myCoursesStyles.topicCardWrapper, { marginTop: i % 2 === 0 ? 0 : 12 }]}
+                                    style={[myCoursesStyles.topicCardWrapper]}
                                 >
                                     <LinearGradient
                                         colors={['#ede9fe', '#c4b5fd']}

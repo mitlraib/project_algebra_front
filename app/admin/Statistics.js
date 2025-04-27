@@ -14,17 +14,10 @@ import axios from 'axios';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HomeButton } from '../utils/Utils';
+import { Colors } from '../../constants/Colors';
 
 
-const Colors = {
-    primary: '#8b5cf6',
-    accent: '#fb923c',
-    background: '#f8f6ff',
-    light: '#ede9fe',
-    secondary: '#7c3aed',
-    success: '#10B981',
-    danger: '#EF4444',
-};
+
 
 export default function Statistics() {
     const router = useRouter();

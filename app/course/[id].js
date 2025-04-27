@@ -15,6 +15,9 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import SolutionVisualization from "@/components/SolutionVisualization";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { LinearGradient } from 'expo-linear-gradient'; // אם לא ייבאת, תייבאי!
+import { Colors } from '../../constants/Colors';
+
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:8080";
@@ -122,7 +125,7 @@ export default function StyledCoursePage() {
         axios.get("/api/user")
             .then(r => {setDetailedSolutions(
                 r.data.hasOwnProperty("detailedSolutions") ? r.data.detailedSolutions   // ערך מהשרת
-                               : true );
+                    : true );
             });
     }, []);
 
@@ -395,34 +398,41 @@ ${sign}   ${second}
 
     return (
         <ProtectedRoute requireAuth={true}>
-            <ScrollView contentContainerStyle={styles.container}>
-                <View style={{ alignItems: 'center', marginBottom: 20 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        {isFraction && (question.first.includes('/') || question.second.includes('/')) ? (
-                            <>
-                                {question.first.includes('/') ? (
-                                    <Fraction numerator={question.first.split('/')[0]} denominator={question.first.split('/')[1]} />
-                                ) : (
-                                    <Text style={styles.title}>{question.first}</Text>
-                                )}
+            <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: Colors.background }}>
+                <LinearGradient
+                    colors={[Colors.primary, Colors.accent]}
+                    start={{ x: 1, y: 0 }}
+                    end={{ x: 0, y: 0 }}
+                    style={styles.gradientQuestionBox}
+                >
+                    <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            {isFraction && (question.first.includes('/') || question.second.includes('/')) ? (
+                                <>
+                                    {question.first.includes('/') ? (
+                                        <Fraction numerator={question.first.split('/')[0]} denominator={question.first.split('/')[1]} />
+                                    ) : (
+                                        <Text style={styles.title}>{question.first}</Text>
+                                    )}
 
-                                <Text style={{ fontSize: 20, marginHorizontal: 8 }}>{convertSign(question.operationSign)}</Text>
+                                    <Text style={{ fontSize: 20, marginHorizontal: 8 }}>{convertSign(question.operationSign)}</Text>
 
-                                {question.second.includes('/') ? (
-                                    <Fraction numerator={question.second.split('/')[0]} denominator={question.second.split('/')[1]} />
-                                ) : (
-                                    <Text style={styles.title}>{question.second}</Text>
-                                )}
+                                    {question.second.includes('/') ? (
+                                        <Fraction numerator={question.second.split('/')[0]} denominator={question.second.split('/')[1]} />
+                                    ) : (
+                                        <Text style={styles.title}>{question.second}</Text>
+                                    )}
 
-                                <Text style={{ fontSize: 20, marginLeft: 8 }}>= ?</Text>
-                            </>
-                        ) : (
-                            <Text style={styles.title}>
-                                {question.text}
-                            </Text>
-                        )}
+                                    <Text style={{ fontSize: 20, marginLeft: 8 }}>= ?</Text>
+                                </>
+                            ) : (
+                                <Text style={styles.title}>
+                                    {question.text}
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
+                </LinearGradient>
 
                 {displayAnswers.map((ans, idx) => {
                     const isAnsFraction = typeof ans === 'string' && ans.includes('/');
@@ -484,7 +494,14 @@ ${sign}   ${second}
 
                 { detailedSolutions &&isAddOrSubOrSmallMulOrDiv && (
                     <Pressable onPress={() => setShowSolution(!showSolution)} style={styles.helpButton} disabled={!showResult}>
-                        <Text style={{ color: !showResult ? 'gray' : 'blue' }}>{showSolution ? 'הסתר פתרון' : 'איך פותרים?'}</Text>
+                        <Text style={{
+                            color: !showResult ? 'gray' : '#A47DAB',
+                            fontWeight: showResult ? 'bold' : 'normal',
+                            fontSize: 18,
+                            textDecorationLine: showResult ? 'underline' : 'none'
+                        }}>
+                            {showSolution ? 'הסתר פתרון' : 'איך פותרים?'}
+                        </Text>
                     </Pressable>
                 )}
 
@@ -526,85 +543,132 @@ ${sign}   ${second}
     );
 }
 
-const styles = StyleSheet.create({
+const  styles = StyleSheet.create({
     container: {
         padding: 24,
-        paddingBottom: 60
+        paddingBottom: 60,
+    },
+
+    gradientQuestionBox: {
+        borderRadius: 16,
+        paddingVertical: 24,
+        paddingHorizontal: 20,
+        marginBottom: 24,
+        width: '100%',
+        shadowColor: '#000',
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 4,
+        alignItems: 'center',
     },
 
     title: {
         fontSize: 24,
-        textAlign: "center"
+        textAlign: "center",
+        color: "white",
+        fontWeight: "bold",
     },
+
     answerButton: {
-        padding: 14,
-        borderRadius: 8,
-        backgroundColor: "#f3f4f6",
-        marginBottom: 10,
+        padding: 16,
+        borderRadius: 16,
+        backgroundColor: "#ede9fe",
+        marginBottom: 12,
+        shadowColor: "#000",
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 3,
+        alignItems: 'center',
     },
+
     selectedAnswer: {
-        backgroundColor: "#c7d2fe",
-        transform: [{ scale: 1 }], // מוודא שהכפתור לא משנה את גודלו
-        padding: 14, // שים לב שמילוי הכפתור נשאר קבוע
+        backgroundColor: "#c4b5fd",
+        transform: [{ scale: 1 }],
+        padding: 16,
+        borderRadius: 16,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 5,
+        alignItems: 'center',
     },
+
     answerText: {
         fontSize: 18,
-        textAlign: "center"
+        textAlign: "center",
+        color: '#4b5563',
+        fontWeight: '600',
     },
+
     finishButton: {
-        backgroundColor: "#4F46E5",
+        backgroundColor: "#A47DAB",
         padding: 14,
         borderRadius: 8,
         marginTop: 16,
+        alignItems: 'center',
     },
+
     checkButton: {
-        backgroundColor: "#10B981",
+        backgroundColor: "#A47DAB",
         padding: 14,
         borderRadius: 8,
         marginTop: 16,
+        alignItems: 'center',
     },
+
     primaryText: {
         color: "#fff",
         textAlign: "center",
         fontSize: 16,
-        fontWeight: "bold"
+        fontWeight: "bold",
     },
+
     secondaryButton: {
         backgroundColor: "#E5E7EB",
         padding: 14,
         borderRadius: 8,
         marginTop: 10,
+        alignItems: 'center',
     },
+
     secondaryText: {
         textAlign: "center",
-        fontSize: 16
+        fontSize: 16,
     },
+
     feedback: {
         textAlign: "center",
         fontSize: 16,
         marginTop: 10,
-        fontWeight: "bold"
+        fontWeight: "bold",
     },
+
     helpButton: {
         marginTop: 20,
         alignItems: "center",
     },
+
     explanation: {
         backgroundColor: "#f9fafb",
         padding: 14,
         borderRadius: 8,
         marginTop: 16,
     },
+
     explanationText: {
         fontSize: 16,
-        marginBottom: 8
+        marginBottom: 8,
+        textAlign: 'center',
+        color: '#444',
     },
+
     modalOverlay: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "rgba(0,0,0,0.5)",
     },
+
     modalBox: {
         backgroundColor: "white",
         padding: 24,
@@ -612,37 +676,46 @@ const styles = StyleSheet.create({
         width: "80%",
         alignItems: "center",
     },
+
     modalTitle: {
         fontSize: 22,
         fontWeight: "bold",
-        marginBottom: 8
+        marginBottom: 8,
     },
+
     modalText: {
         fontSize: 16,
-        marginBottom: 20
+        marginBottom: 20,
     },
+
     closeButton: {
         backgroundColor: "#4F46E5",
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 8,
+        alignItems: 'center',
     },
+
     correctAnswer: {
-        backgroundColor: '#d4edda', // ירוק בהיר
+        backgroundColor: '#d4edda',
         borderColor: '#28a745',
         borderWidth: 2,
         borderRadius: 8,
         padding: 16,
         marginVertical: 6,
+        alignItems: 'center',
     },
+
     incorrectAnswer: {
-        backgroundColor: '#f8d7da', // אדום בהיר
+        backgroundColor: '#f8d7da',
         borderColor: '#dc3545',
         borderWidth: 2,
         borderRadius: 8,
         padding: 16,
         marginVertical: 6,
+        alignItems: 'center',
     },
+
     nextButton: {
         backgroundColor: '#A47DAB',
         padding: 14,
@@ -651,13 +724,31 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
     },
+
     nextButtonText: {
         color: '#fff',
         fontSize: 16,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
 
-    closeButtonText: { color: "white", fontWeight: "bold" },
-    sectionTitle: { fontSize: 18, fontWeight: "600", marginBottom: 10 },
-    loading: { textAlign: 'center', marginTop: 40, fontSize: 18 },
+    closeButtonText: {
+        color: "white",
+        fontWeight: "bold",
+    },
+
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: "600",
+        marginBottom: 10,
+        color: '#4b5563',
+        textAlign: 'center',
+    },
+
+    loading: {
+        textAlign: 'center',
+        marginTop: 40,
+        fontSize: 18,
+        color: '#7c3aed',
+    },
 });
+
