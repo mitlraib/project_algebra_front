@@ -72,13 +72,7 @@ export default function TabLayout() {
                 }}
             />
 
-            <Tabs.Screen
-                name="Statistics"
-                options={{
-                    title: 'סטטיסטיקה',
-                    tabBarButton: () => null,
-                }}
-            />
+
 
 
 

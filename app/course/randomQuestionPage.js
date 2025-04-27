@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import { HomeButton } from '../(tabs)/Utils';
+import { HomeButton } from '../utils/Utils';
 
 
 axios.defaults.withCredentials = true;

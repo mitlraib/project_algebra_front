@@ -148,7 +148,7 @@ export default function Dashboard() {
                             </View>
                             <Text style={dashboardStyles.title}>סטטיסטיקה</Text>
                             <Text style={dashboardStyles.statisticsDescription}>סטטיסטיקה למנהלים בלבד !</Text>
-                            <TouchableOpacity style={dashboardStyles.statisticsButton} onPress={() => router.push('/Statistics')}>
+                            <TouchableOpacity style={dashboardStyles.statisticsButton} onPress={() => router.push('admin/Statistics')}>
                                 <Text style={dashboardStyles.statisticsButtonText}>סטטיסטיקה </Text>
                             </TouchableOpacity>
                         </View>

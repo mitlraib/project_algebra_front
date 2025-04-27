@@ -5,7 +5,7 @@ import { router } from "expo-router";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
-import { HomeButton } from './Utils';
+import { HomeButton } from '../utils/Utils';
 
 const BADGES = {
     addition_master: {

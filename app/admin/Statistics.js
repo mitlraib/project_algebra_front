@@ -13,7 +13,7 @@ import { Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
-import { HomeButton } from './Utils';
+import { HomeButton } from '../utils/Utils';
 
 
 const Colors = {

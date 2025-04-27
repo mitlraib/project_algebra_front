@@ -6,7 +6,7 @@ import { courses } from '../../constants/CoursesNames';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {myCoursesStyles} from '../../styles/styles'
-import { HomeButton } from './Utils';
+import { HomeButton } from '../utils/Utils';
 
 
 const width = Dimensions.get('window').width;
