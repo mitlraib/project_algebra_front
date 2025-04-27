@@ -8,6 +8,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {myProfileStyles, dashboardStyles} from '../../styles/styles';
+import { HomeButton } from './Utils';
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://localhost:8080';
 
@@ -133,14 +134,9 @@ export default function MyProfile() {
     return (
         <ProtectedRoute requireAuth={true}>
             <ScrollView contentContainerStyle={myProfileStyles.scrollContainer}>
-                <LinearGradient
-                    colors={['#8b5cf6', '#fb923c']}
-                    style={myProfileStyles.backButtonGradient}
-                >
-                    <Pressable onPress={handleGoToDashboard}>
-                        <Text style={myProfileStyles.buttonText}>⬅ חזרה לעמוד הבית</Text>
-                    </Pressable>
-                </LinearGradient>
+
+                <HomeButton />
+
                 <View style={{ flexDirection: "row-reverse", alignSelf: "flex-end" }}>
                     <View style={myProfileStyles.profileContainer}>
                         <Text style={myProfileStyles.profileSectionTitle}>פרופיל אישי </Text>

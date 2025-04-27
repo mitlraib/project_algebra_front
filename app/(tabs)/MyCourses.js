@@ -6,6 +6,8 @@ import { courses } from '../../constants/CoursesNames';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {myCoursesStyles} from '../../styles/styles'
+import { HomeButton } from './Utils';
+
 
 const width = Dimensions.get('window').width;
 
@@ -34,9 +36,9 @@ export default function MyCourses() {
 
     return (
         <ProtectedRoute requireAuth={true}>
-            <Pressable onPress={handleGoBack} style={myCoursesStyles.backButton}>
-                <Text style={myCoursesStyles.backButtonText}>🔙 חזרה למסך הראשי</Text>
-            </Pressable>
+
+            <HomeButton />
+
             <ScrollView contentContainerStyle={myCoursesStyles.container}>
                 <Text style={myCoursesStyles.title}>הקורסים שלי</Text>
 

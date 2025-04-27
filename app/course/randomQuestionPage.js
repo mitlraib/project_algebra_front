@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Cookies from 'js-cookie';
 import ConfettiCannon from 'react-native-confetti-cannon';
+import { HomeButton } from '../(tabs)/Utils';
 
 
 axios.defaults.withCredentials = true;
@@ -207,9 +208,8 @@ export default function RandomQuestionPage() {
     return (
         <ProtectedRoute requireAuth={true}>
             <View style={[pageStyles.container, pageStyles.centerAll]}>
-                <Pressable onPress={handleGoBack} style={pageStyles.backButton}>
-                    <Text style={pageStyles.backButtonText}>🔙 חזור לדף הבית</Text>
-                </Pressable>
+                <HomeButton />
+
 
                 {/* הצגת השאלה */}
                 {question.operationSign === 'word' ? (

@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
+import { HomeButton } from './Utils';
 
 const BADGES = {
     addition_master: {
@@ -132,9 +133,8 @@ export default function AchievementsPage() {
     return (
         <ProtectedRoute requireAuth={true}>
             <ScrollView contentContainerStyle={styles.scroll}>
-                <Pressable onPress={handleGoBack} style={styles.backButton}>
-                    <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
-                </Pressable>
+                <HomeButton />
+
                 <View style={styles.container}>
                     <LinearGradient
                         colors={["#8b5cf6", "#fb923c"]}

@@ -13,6 +13,8 @@ import { Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
+import { HomeButton } from './Utils';
+
 
 const Colors = {
     primary: '#8b5cf6',
@@ -88,6 +90,8 @@ export default function Statistics() {
     return (
         <ProtectedRoute requireAuth={true}>
             <View style={styles.container}>
+                <HomeButton />
+
                 <LinearGradient colors={[Colors.primary, Colors.accent]} style={styles.gradientTitleBox}>
                     <Text style={styles.pageTitle}>📊 סטטיסטיקה כללית (כלל המשתמשים)</Text>
                 </LinearGradient>
@@ -117,9 +121,6 @@ export default function Statistics() {
                     style={{ width: '100%' }}
                 />
 
-                <Pressable onPress={handleGoBack} style={styles.backButton}>
-                    <Text style={styles.backButtonText}>🔙 חזרה למסך הראשי</Text>
-                </Pressable>
             </View>
         </ProtectedRoute>
     );
