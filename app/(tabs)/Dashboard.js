@@ -8,13 +8,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import {dashboardStyles} from '../../styles/styles'
+import { Colors } from '../../constants/Colors';
 
-const Colors = {
-    primary: '#8b5cf6',
-    accent: '#fb923c',
-    success: '#fb923c',
-    danger: '#EF4444',
-};
 
 export default function Dashboard() {
     const router = useRouter();
@@ -103,22 +98,15 @@ export default function Dashboard() {
         router.replace('/authentication/Login');
     };
 
-    const fakeProgress = {
-        stars: 12,
-        level: 3,
-        progress: 0.33,
-    };
     return (
         <ProtectedRoute requireAuth={true}>
-            <View contentContainerStyle={dashboardStyles.scrollContainer}>
+            <ScrollView contentContainerStyle={dashboardStyles.scrollContainer}>
                 <View style={dashboardStyles.header}>
                     {/* לוגו מצד שמאל */}
                     <Text style={dashboardStyles.logo}>
-                        <Text style={{ color: Colors.primary }}>Math</Text>
-                        <Text style={{ color: Colors.accent }}>Journey</Text>
+                        <Text style={dashboardStyles.mathColor}>Math</Text>
+                        <Text style={dashboardStyles.JourneyColor}>Journey</Text>
                     </Text>
-
-
 
                     {/* כפתור התנתקות מצד ימין */}
                     <TouchableOpacity onPress={handleLogout} style={dashboardStyles.logoutIconButton}>
@@ -155,11 +143,8 @@ export default function Dashboard() {
 
                     )}
 
-
                     {/* ריבוע בצד שמאל */}
                     <View style={dashboardStyles.columnWrapper}>
-
-
                     <View style={dashboardStyles.marathonBox}>
                         <View style={dashboardStyles.iconCircle}>
                             <Feather name="watch" size={24} color={Colors.accent} />
@@ -198,12 +183,14 @@ export default function Dashboard() {
 
                     {/* כל התוכן בתוך mainCard בצד ימין */}
                     <View style={dashboardStyles.mainCard}>
+                        <View style={dashboardStyles.mainBCard}>
 
 
+                            <View style={dashboardStyles.titleWrapper}>
                         <Text style={dashboardStyles.title}>
                             האתר שלנו נועד לעזור לך ללמוד חשבון בצורה חכמה ומהנה, עם שאלות מותאמות אישית והתקדמות לפי היכולת שלך.
                         </Text>
-
+                            </View>
                         <Image
                             source={require('../../assets/images/learning-math.jpg')}
                             style={dashboardStyles.imageStyle}
@@ -211,7 +198,7 @@ export default function Dashboard() {
                         <View style={{flexDirection: 'row-reverse', justifyContent: 'space-between'}}>
                         <Text style={dashboardStyles.greetingText}>שלום! </Text>
 
-                        <View style={dashboardStyles.emojiWrapper}>
+                        <View>
                             <Animated.View style={[dashboardStyles.emojiCircle, { transform: [{ scale: pulseAnim }] }]}>
                                 <Text style={dashboardStyles.emoji}>👋</Text>
                             </Animated.View>
@@ -220,7 +207,7 @@ export default function Dashboard() {
                         <Text style={dashboardStyles.secondGreetingText}> מוכנים ללמוד חשבון?</Text>
                         </View>
                         <View style={dashboardStyles.cardContainer}>
-                            <View style={dashboardStyles.card}>
+                            <View>
                                 <View style={{flexDirection:'row-reverse', justifyContent:'center'}}>
                                 <Text style={dashboardStyles.title}>
                                     {progressData.progress < 0.3
@@ -230,7 +217,7 @@ export default function Dashboard() {
                                             : " כל הכבוד !"}
                                 </Text>
                                 </View>
-                                <View style={dashboardStyles.progressWrapper}>
+                                <View>
                                     <Text style={dashboardStyles.progressText}>
                                         <FontAwesome name="check-circle" size={18} color="#4F46E5" />{' '}
                                         הצלחת ב-{(progressData.progress * 100).toFixed(0)}% מהשאלות שפתרת
@@ -261,7 +248,7 @@ export default function Dashboard() {
                                 onPress={() => router.push('/(tabs)/MyCourses')}
                                 style={dashboardStyles.pillButtonPurple}
                             >
-                                <Feather name="play" size={28} color="#fff" />
+                                <Feather name="play" size={18} color="#fff" />
                                 <Text style={dashboardStyles.buttonText}>התחל תרגול</Text>
                             </TouchableOpacity>
                         </View>
@@ -273,8 +260,10 @@ export default function Dashboard() {
 
                         </View>
                     </View>
+                    </View>
                 </View>
-            </View>
+
+            </ScrollView>
         </ProtectedRoute>
     );
 }

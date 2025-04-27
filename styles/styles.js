@@ -1,8 +1,10 @@
 import {Dimensions, StyleSheet} from 'react-native';
-import { Colors as colors } from '../constants/Colors';
+import { Colors } from '../constants/Colors';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 
 const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
     container: {
@@ -77,7 +79,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     dashboardBackground: {
-        backgroundColor: colors.lightBlue,
+        backgroundColor: Colors.lightBlue,
     },
 
     //  סגנון לכרטיסיות (נושאים)
@@ -286,167 +288,40 @@ const styles = StyleSheet.create({
 const dashboardStyles = StyleSheet.create({
     scrollContainer: {
         alignItems: 'center',
-        paddingVertical: 24,
         backgroundColor: '#f8f6ff',
     },
-    rowWrapper: {
-        flexDirection: 'row', // כדי שהריבוע יהיה בשמאל
-        justifyContent:'flex-end',
-        alignItems: 'flex-start',
-        width: '90%',
-        marginRight:300,
-        marginTop:25,
-        gap: 30, // רווח בין הצדדים
-    },
-
-    columnWrapper:{
-        flexDirection:'column',
-        alignItems:'space-between',
-        justifyContent:'space-between',
-        paddingTop: 5,
-        paddingRight:100
-    },
-
-    achievementsBox: {
-        width: 220,
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 16,
+    header: {
+        width:wp(80),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
+        marginTop: 16,
     },
-
-
-
-    achievementsDescription: {
-        fontSize: 14,
-        color: '#555',
-        textAlign: 'center',
-        marginBottom: 16,
-    },
-
-    achievementsButton: {
-        backgroundColor: '#fb923c',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 24,
-        marginTop: 8,
-        alignSelf: 'stretch',
-        alignItems: 'center',
-    },
-
-    achievementsButtonText: {
-        color: '#fff',
+    logo: {
+        fontSize: 25,
         fontWeight: 'bold',
-        fontSize: 14,
+        marginLeft: 10,
     },
-
-    statisticsBox: {
-        width: 220,
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 16,
+    mathColor:{
+        color: Colors.primary
+    },
+    JourneyColor:{
+        color: Colors.accent
+    },
+    logoutIconButton: {
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
-        marginTop:160
-    },
-
-
-
-    statisticsDescription: {
-        fontSize: 14,
-        color: '#555',
-        textAlign: 'center',
-        marginBottom: 16,
-    },
-
-    statisticsButton: {
-        backgroundColor: '#fb923c',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        borderColor: Colors.primary,
+        borderWidth: 1,
         borderRadius: 24,
-        marginTop: 8,
-        alignSelf: 'stretch',
-        alignItems: 'center',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
     },
-
-    statisticsButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
+    logoutLabel: {
+        color: Colors.primary,
+        fontWeight: '600',
+        marginRight: 6,
         fontSize: 14,
-    },
-
-    marathonBox: {
-        width: 220,
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 16,
-        marginBottom:70,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
-    },
-
-    iconCircle: {
-        width: 48,
-        height: 48,
-        borderRadius: 24,
-        backgroundColor: '#ede9fe',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 12,
-    },
-
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#111',
-        marginBottom: 4,
-        textAlign: 'center',
-    },
-
-
-    marathonDescription: {
-        fontSize: 14,
-        color: '#555',
-        textAlign: 'center',
-        marginBottom: 16,
-    },
-
-    marathonButton: {
-        backgroundColor: '#fb923c',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 24,
-        marginTop: 8,
-        alignSelf: 'stretch',
-        alignItems: 'center',
-    },
-
-    marathonButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 14,
-    },
-
-    mainCard: {
-        width: width > 768 ? 709 : '96%',
-        padding: 24,
-        borderRadius: 20,
-        backgroundColor: '#fff',
-        marginRight: 50,
-        height: '90%'
     },
     gradientTitleWrapper: {
         borderRadius: 20,
@@ -454,156 +329,12 @@ const dashboardStyles = StyleSheet.create({
         alignSelf:'center',
         width:500,
         height: 55
-
-
     },
     gradientTitle: {
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
         color: '#fff',
-    },
-    emojiWrapper: {
-        alignItems: 'center',
-        marginVertical: 8,
-    },
-    emojiCircle: {
-        backgroundColor: '#ede9fe',
-        borderRadius: 100,
-        width: 40,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
-    },
-    emoji: {
-        fontSize: 40,
-    },
-    greetingText: {
-        marginTop:20,
-        marginRight:130,
-        textAlign: 'center',
-        fontSize: 20,
-        fontWeight: '600',
-        color: '#7c3aed',
-        marginBottom: 24,
-    },
-    secondGreetingText: {
-        marginTop:20,
-        marginLeft:40,
-        textAlign: 'center',
-        fontSize: 20,
-        fontWeight: '600',
-        color: '#7c3aed',
-        marginBottom: 24,
-    },
-    cardContainer: {
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 16,
-        shadowColor: '#000',
-        shadowOpacity: 0.05,
-        shadowRadius: 6,
-        elevation: 3,
-        marginBottom: 24,
-    },
-    cardHeader: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 4,
-        color: '#7c3aed',
-    },
-    cardSubtext: {
-        textAlign: 'center',
-        fontSize: 14,
-        color: '#555',
-        marginBottom: 8,
-    },
-    progressBarWrapper: {
-        height: 12,
-        borderRadius: 10,
-        backgroundColor: '#e5e5e5',
-        overflow: 'hidden',
-    },
-    header: {
-        width: '90%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: 16,
-
-    },
-
-    logo: {
-        fontSize: 25,
-        fontWeight: 'bold',
-        marginLeft: 10
-    },
-
-    logoutIconButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderColor: '#8b5cf6',
-        borderWidth: 1,
-        borderRadius: 24,
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-    },
-
-    logoutLabel: {
-        color: '#8b5cf6',
-        fontWeight: '600',
-        marginRight: 6,
-        fontSize: 14,
-    },
-
-    progressInner: {
-        height: '100%',
-        borderRadius: 10,
-    },
-    cardPercentage: {
-        textAlign: 'center',
-        marginTop: 4,
-        fontWeight: '500',
-        fontSize: 12,
-    },
-    buttonGroup: {
-        gap: 16,
-        marginBottom: 24,
-    },
-    pillButtonPurple: {
-        marginTop: 30,
-        backgroundColor: '#8b5cf6',
-        paddingVertical: 14,
-        borderRadius: 100,
-        alignItems: 'center',
-    },
-    pillButtonOrange: {
-        backgroundColor: '#fb923c',
-        paddingVertical: 14,
-        borderRadius: 100,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    logoutButton: {
-        marginTop: 8,
-        padding: 14,
-        backgroundColor: '#EF4444',
-        borderRadius: 12,
-        alignItems: 'center',
-    },
-    logoutText: {
-        color: '#fff',
-        fontWeight: '600',
-        fontSize: 16,
     },
     floatingSymbol: {
         position: 'absolute',
@@ -620,69 +351,252 @@ const dashboardStyles = StyleSheet.create({
     floatingText: {
         fontSize: 64,
     },
-    loading: {
-        textAlign: 'center',
-        marginTop: 50,
-        fontSize: 18,
+    rowWrapper: {
+        flexDirection: 'row', // כדי שהריבוע יהיה בשמאל
+        justifyContent:'center',
+        alignItems: 'center',
+        marginTop:30,
+        gap: wp(2),
     },
-
+    statisticsBox: {
+        width: 210,
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
+    },
+    iconCircle: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        backgroundColor: '#ede9fe',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 12,
+    },
+    titleWrapper: {
+       height: hp(9),
+        width: wp(40),
+    },
+    title: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#111',
+        textAlign: 'center',
+    },
+    statisticsDescription: {
+        fontSize: 14,
+        color: '#555',
+        textAlign: 'center',
+        marginBottom: 16,
+    },
+    statisticsButton: {
+        backgroundColor: Colors.accent,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 24,
+        marginTop: 8,
+        alignSelf: 'stretch',
+        alignItems: 'center',
+    },
+    statisticsButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 14,
+    },
+    columnWrapper:{
+        flexDirection:'column',
+        alignItems:'space-between',
+        justifyContent:'space-between',
+        paddingRight:wp(5)
+    },
+    marathonBox: {
+        width: wp(14),
+        height: hp(30),
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 16,
+        marginBottom:70,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
+    },
+    marathonDescription: {
+        fontSize: 14,
+        color: '#555',
+        textAlign: 'center',
+        marginBottom: 16,
+    },
+    marathonButton: {
+        backgroundColor: Colors.accent,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 24,
+        marginTop: 8,
+        alignSelf: 'stretch',
+        alignItems: 'center',
+    },
+    marathonButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 14,
+    },
+    achievementsBox: {
+        width: wp(14),
+        height: hp (30),
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: wp(1),
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
+    },
+    achievementsDescription: {
+        fontSize: 14,
+        color: '#555',
+        textAlign: 'center',
+        marginBottom: 16,
+    },
+    achievementsButton: {
+        backgroundColor: Colors.accent,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 24,
+        marginTop: 8,
+        alignSelf: 'stretch',
+        alignItems: 'center',
+    },
+    achievementsButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 14,
+    },
+    mainCard: {
+        width: width > 768 ? 709 : '96%',
+        padding: 24,
+        borderRadius: 20,
+        backgroundColor: '#fff',
+        marginRight: 50,
+        height: hp(70)
+    },
+    mainBCard: {
+        width: wp(40),
+        padding: 24,
+        borderRadius: 20,
+        backgroundColor: '#fff',
+        marginRight: 50,
+    },
     imageStyle: {
-        width: '100%',
-        height: 150,
+        width: wp(40),
+        height: hp(25),
         borderRadius: 16,
         marginBottom: 16,
     },
-
-    progress: {
-        height: 15,
-        borderRadius: 10,
-        marginTop: 30,
-
+    greetingText: {
+        marginTop:10,
+        marginRight:60,
+        marginLeft:60,
+        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#7c3aed',
     },
-
-    grid: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 24,
+    emojiCircle: {
+        backgroundColor: '#ede9fe',
+        borderRadius: 100,
+        width: 40,
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
     },
-
+    emoji: {
+        fontSize: 40,
+    },
+    secondGreetingText: {
+        marginTop:10,
+        marginLeft:50,
+        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#7c3aed',
+        marginBottom: 14,
+    },
+    cardContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 16,
+        shadowColor: '#000',
+        shadowOpacity: 0.05,
+        shadowRadius: 6,
+        elevation: 3,
+    },
     progressText: {
         color: '#000',
-        fontSize: 20,
+        fontSize: 14,
         fontWeight: 'bold',
-        marginTop: 4,
-        marginBottom: 4,
         textAlign: 'center',
     },
-    progressWrapper: {
-        marginTop: 30,
-        marginBottom: 16,
-    },
-
     progressBarContainer: {
         position: 'relative',
         height: 25,
         justifyContent: 'center',
     },
+    progress: {
+        height: 15,
+        borderRadius: 10,
+        marginTop: 20,
 
-    percentageLabel: {
-        position: 'absolute',
-        top: -22,
-        fontSize: 14,
-        fontWeight: 'bold',
-        backgroundColor: '#fff',
-        color: '#000',
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: 6,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        elevation: 2,
     },
-
-
-
+    cardPercentage: {
+        marginTop:-5,
+        textAlign: 'center',
+        fontWeight: '500',
+        fontSize: 12,
+    },
+    pillButtonPurple: {
+        height:hp(7),
+        width:wp(35),
+        marginTop: 10,
+        backgroundColor: Colors.primary,
+        paddingVertical: 4,
+        borderRadius: 100,
+        alignItems: 'center',
+    },
+    pillButtonOrange: {
+        backgroundColor: Colors.accent,
+        paddingVertical: 14,
+        borderRadius: 100,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 13,
+        fontWeight: '600',
+    },
+    grid: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
 });
+
+
+
+
 const myCoursesStyles = StyleSheet.create({
     container: {
         padding: 24,
@@ -692,7 +606,7 @@ const myCoursesStyles = StyleSheet.create({
     title: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#8b5cf6',
+        color: Colors.primary,
         marginBottom: 25,
     },
     backButton: {
@@ -703,7 +617,7 @@ const myCoursesStyles = StyleSheet.create({
     },
     backButtonText: {
         fontSize: 16,
-        color: '#fb923c',
+        color: Colors.accent,
         fontWeight: '600',
     },
     courseBox: {
@@ -720,7 +634,7 @@ const myCoursesStyles = StyleSheet.create({
     courseHeader: {
         paddingVertical: 10,
         paddingHorizontal: 20,
-        backgroundColor: '#8b5cf6',
+        backgroundColor: Colors.primary,
     },
     courseTitle: {
         fontSize: 20,
@@ -752,7 +666,7 @@ const myCoursesStyles = StyleSheet.create({
     topicText: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#8b5cf6',
+        color: Colors.primary,
         textAlign: 'center',
         marginTop: 6,
     },

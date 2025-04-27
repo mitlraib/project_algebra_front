@@ -20,7 +20,7 @@ export default function TabLayout() {
         <Tabs
             initialRouteName="Dashboard" // הגדרת הטאב הראשי כ- "Dashboard"
             screenOptions={{
-                tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+                tabBarActiveTintColor: colorScheme === 'dark' ? Colors.accent : Colors.primary,
                 headerShown: false,
                 tabBarButton: HapticTab,
                 tabBarBackground: TabBarBackground,
