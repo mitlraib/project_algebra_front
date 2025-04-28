@@ -18,7 +18,6 @@ export default function Dashboard() {
     const [progressData, setProgressData] = useState({ stars: 0, level: 0, progress: 0 });
 
     const pulseAnim = useRef(new Animated.Value(1)).current;
-    const floatAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         Animated.loop(
@@ -36,20 +35,6 @@ export default function Dashboard() {
             ])
         ).start();
 
-        Animated.loop(
-            Animated.sequence([
-                Animated.timing(floatAnim, {
-                    toValue: -10,
-                    duration: 2000,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(floatAnim, {
-                    toValue: 0,
-                    duration: 2000,
-                    useNativeDriver: true,
-                })
-            ])
-        ).start();
     }, []);
 
     useEffect(() => {
@@ -124,8 +109,6 @@ export default function Dashboard() {
                 >
                     <Text style={dashboardStyles.gradientTitle}>ברוכים הבאים ל MathJourney!</Text>
                 </LinearGradient>
-                <Animated.View style={[dashboardStyles.floatingSymbol, { transform: [{ translateY: floatAnim }] }]}> <Text style={dashboardStyles.floatingText}>➕</Text> </Animated.View>
-                <Animated.View style={[dashboardStyles.floatingSymbol, dashboardStyles.bottomLeft, { transform: [{ translateY: floatAnim }] }]}> <Text style={dashboardStyles.floatingText}>➗</Text> </Animated.View>
 
                 <View style={dashboardStyles.rowWrapper}>
 

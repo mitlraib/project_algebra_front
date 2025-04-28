@@ -1,13 +1,18 @@
 //ProtectedRoute
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { Redirect } from 'expo-router';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import {dashboardStyles} from "../styles/styles";
+import { View, Animated, Text } from 'react-native';
+
 
 export default function ProtectedRoute({ children, requireAuth }) {
     const [isInit, setIsInit] = useState(false);
     const [user, setUser] = useState(null);
+    const floatAnim = useRef(new Animated.Value(0)).current;
+
 
     useEffect(() => {
         // נבדוק /api/user רק אם ממש צריך (או אם requireAuth=true)
@@ -35,6 +40,23 @@ export default function ProtectedRoute({ children, requireAuth }) {
         }
     }, [requireAuth]);
 
+    useEffect(() => {
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(floatAnim, {
+                    toValue: -10,
+                    duration: 2000,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(floatAnim, {
+                    toValue: 0,
+                    duration: 2000,
+                    useNativeDriver: true,
+                }),
+            ])
+        ).start();
+    }, []);
+
     if (!isInit && requireAuth) {
         // בזמן הטעינה
         return null;
@@ -50,8 +72,29 @@ export default function ProtectedRoute({ children, requireAuth }) {
         return <Redirect href="/(tabs)/Dashboard" />;
     }
 
+
+
     // מציגים את הילדים כרגיל
-    return children;
+    return (
+        <View style={{ flex: 1 }}>
+            {children}
+            {/* הסימנים המרחפים */}
+            <Animated.View
+                style={[dashboardStyles.floatingSymbol, { transform: [{ translateY: floatAnim }] }]}
+                pointerEvents="none"
+            >
+                <Text style={dashboardStyles.floatingText} pointerEvents="none">➕</Text>
+            </Animated.View>
+
+            <Animated.View
+                style={[dashboardStyles.floatingSymbol, dashboardStyles.bottomLeft, { transform: [{ translateY: floatAnim }] }]}
+                pointerEvents="none"
+            >
+                <Text style={dashboardStyles.floatingText} pointerEvents="none">➗</Text>
+            </Animated.View>
+
+        </View>
+    );
 }
 
 //end of ProtectedRoute
