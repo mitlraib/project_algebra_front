@@ -591,9 +591,19 @@ ${sign}   ${second}
                 </View>
 
 
-                <Pressable onPress={() => router.push('/MyCourses')} style={[styles.finishButton, { marginTop: 40 }]}>
+                <Pressable
+                    onPress={() => {
+                        if (id === 'random') {
+                            router.push('/Dashboard');
+                        } else {
+                            router.push('/MyCourses');
+                        }
+                    }}
+                    style={[styles.finishButton, { marginTop: 40 }]}
+                >
                     <Text style={styles.primaryText}>סיום תרגול</Text>
                 </Pressable>
+
             </ScrollView>
         </ProtectedRoute>
     );
