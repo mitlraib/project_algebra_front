@@ -29,9 +29,26 @@ const topicIcons = {
 export default function MyCourses() {
     const router = useRouter();
 
-    function handleGoBack() {
-        router.push('/Dashboard');
+     function TopicButton({ iconName, label, onPress }) {
+        return (
+            <Pressable onPress={onPress} style={myCoursesStyles.wrapper}>
+                <LinearGradient
+                    colors={[Colors.light, Colors.lightPurple]}
+                    style={myCoursesStyles.circle}
+                >
+                    <Feather name={iconName} size={30} color={Colors.primary} />
+                    <Text style={myCoursesStyles.label}>{label}</Text>
+                </LinearGradient>
+            </Pressable>
+        );
     }
+
+
+
+
+
+
+
 
     return (
         <ProtectedRoute requireAuth={true}>
@@ -41,41 +58,32 @@ export default function MyCourses() {
             <ScrollView contentContainerStyle={myCoursesStyles.container}>
                 <Text style={myCoursesStyles.title}>הקורסים שלי</Text>
 
+                <View style={myCoursesStyles.topicGrid}>
+                    {courses.map((course) => (
+                        <View key={course.id} style={myCoursesStyles.courseBox}>
+                            <LinearGradient
+                                colors={[Colors.primary, Colors.accent]}
+                                start={{ x: 1, y: 0 }}
+                                end={{ x: 0, y: 0 }}
+                                style={myCoursesStyles.courseHeader}
+                            >
+                                <Text style={myCoursesStyles.courseTitle}>{course.title}</Text>
+                            </LinearGradient>
 
-
-                {courses.map((course) => (
-                    <View key={course.id} style={myCoursesStyles.courseBox}>
-                        <LinearGradient
-                            colors={[Colors.primary, Colors.accent]}
-                            start={{ x: 1, y: 0 }}
-                            end={{ x: 0, y: 0 }}
-                            style={myCoursesStyles.courseHeader}
-                        >
-                            <Text style={myCoursesStyles.courseTitle}>{course.title}</Text>
-                        </LinearGradient>
-
-                        <View style={myCoursesStyles.topicGrid}>
-                            {course.topics.map((topic, i) => (
-                                <Pressable
-                                    key={topic.id}
-                                    onPress={() => router.push(`/course/${topic.id}`)}
-                                    style={[myCoursesStyles.topicCardWrapper]}
-                                >
-                                    <LinearGradient
-                                        colors={['#ede9fe', '#c4b5fd']}
-                                        style={myCoursesStyles.topicCard}
-                                    >
-                                        <Feather
-                                            name={topicIcons[topic.name] || "book"}
-                                            size={30}
-                                            color={Colors.primary}
-                                        />                                        <Text style={myCoursesStyles.topicText}>{topic.name}</Text>
-                                    </LinearGradient>
-                                </Pressable>
-                            ))}
+                            <View style={myCoursesStyles.topicGrid}>
+                                {course.topics.map((topic) => (
+                                    <TopicButton
+                                        key={topic.id}
+                                        iconName={topicIcons[topic.name] || "book"}
+                                        label={topic.name}
+                                        onPress={() => router.push(`/course/${topic.id}`)}
+                                    />
+                                ))}
+                            </View>
                         </View>
-                    </View>
-                ))}
+                    ))}
+
+                </View>
             </ScrollView>
         </ProtectedRoute>
     );

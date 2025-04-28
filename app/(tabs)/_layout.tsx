@@ -63,7 +63,7 @@ export default function TabLayout() {
             />
 
             <Tabs.Screen
-                name="Achivments"
+                name="Achievements"
                 options={{
                     title: 'הישגים',
                     tabBarIcon: ({ color }) => (

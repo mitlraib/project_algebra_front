@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    Pressable,
-    StyleSheet,
-    FlatList,
-    ActivityIndicator,
-    Dimensions,
-} from 'react-native';
+import {View, Text, Pressable, StyleSheet, FlatList, ActivityIndicator, ScrollView,} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import axios from 'axios';
@@ -15,7 +7,7 @@ import ProtectedRoute from '../../components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HomeButton } from '../utils/Utils';
 import { Colors } from '../../constants/Colors';
-
+import {statisticsStyles} from '../../styles/styles'
 
 
 
@@ -60,12 +52,12 @@ export default function Statistics() {
     };
 
     const renderTopicItem = ({ item }) => (
-        <LinearGradient colors={['#ede9fe', '#ddd6fe']} style={styles.topicCard}>
+        <LinearGradient colors={[Colors.light, Colors.grayish]} style={statisticsStyles.topicCard}>
             <Feather name="bar-chart" size={26} color={Colors.primary} style={{ marginBottom: 6 }} />
-            <Text style={styles.topicTitle}>🧩 {topicNames[item.topicId]}</Text>
-            <Text style={styles.topicStat}>ניסיונות: {item.totalAttempts}</Text>
-            <Text style={styles.topicStat}>טעויות: {item.totalMistakes}</Text>
-            <Text style={styles.topicStat}>
+            <Text style={statisticsStyles.topicTitle}>🧩 {topicNames[item.topicId]}</Text>
+            <Text style={statisticsStyles.topicStat}>ניסיונות: {item.totalAttempts}</Text>
+            <Text style={statisticsStyles.topicStat}>טעויות: {item.totalMistakes}</Text>
+            <Text style={statisticsStyles.topicStat}>
                 אחוז הצלחה: {item.successRate != null ? item.successRate.toFixed(1) + '%' : 'אין נתונים'}
             </Text>
         </LinearGradient>
@@ -73,37 +65,40 @@ export default function Statistics() {
 
     if (loading) {
         return (
-            <View style={styles.container}>
+            <View style={statisticsStyles.container}>
                 <ActivityIndicator size="large" color={Colors.primary} />
-                <Text style={styles.loadingText}>טוען סטטיסטיקות...</Text>
+                <Text style={statisticsStyles.loadingText}>טוען סטטיסטיקות...</Text>
             </View>
         );
     }
 
     return (
         <ProtectedRoute requireAuth={true}>
-            <View style={styles.container}>
+            <View style={statisticsStyles.container}>
+                <ScrollView contentContainerStyle={statisticsStyles.scrollView}>
                 <HomeButton />
 
-                <LinearGradient colors={[Colors.primary, Colors.accent]} style={styles.gradientTitleBox}>
-                    <Text style={styles.pageTitle}>📊 סטטיסטיקה כללית (כלל המשתמשים)</Text>
+                <LinearGradient colors={[Colors.primary, Colors.accent]}
+                                style={[statisticsStyles.gradientTitleBox,{marginTop:100}
+                    ]}>
+                    <Text style={statisticsStyles.pageTitle}>📊 סטטיסטיקה כללית (כלל המשתמשים)</Text>
                 </LinearGradient>
-                <View style={styles.cardContainer}>
-                    <Text style={styles.infoText}>סה"כ ניסיונות: {overallStats.totalAttempts}</Text>
-                    <Text style={styles.infoText}>סה"כ טעויות: {overallStats.totalMistakes}</Text>
-                    <Text style={styles.infoText}>
+                <View style={statisticsStyles.cardContainer}>
+                    <Text style={statisticsStyles.infoText}>סה"כ ניסיונות: {overallStats.totalAttempts}</Text>
+                    <Text style={statisticsStyles.infoText}>סה"כ טעויות: {overallStats.totalMistakes}</Text>
+                    <Text style={statisticsStyles.infoText}>
                         אחוז הצלחה ממוצע: {overallStats.successRate != null ? overallStats.successRate.toFixed(2) + '%' : 'אין נתונים'}
                     </Text>
-                    <Text style={styles.infoText}>
+                    <Text style={statisticsStyles.infoText}>
                         הנושא הקשה ביותר: {overallStats.mostDifficultTopic != null ? `נושא #${overallStats.mostDifficultTopic}` : 'אין נתונים'}
                     </Text>
-                    <Text style={styles.infoText}>
+                    <Text style={statisticsStyles.infoText}>
                         הנושא הקל ביותר: {overallStats.easiestTopic != null ? `נושא #${overallStats.easiestTopic}` : 'אין נתונים'}
                     </Text>
                 </View>
 
-                <LinearGradient colors={[Colors.primary, Colors.accent]} style={styles.gradientTitleBox}>
-                    <Text style={styles.pageTitle}>📚 סטטיסטיקה לפי נושא</Text>
+                <LinearGradient colors={[Colors.primary, Colors.accent]} style={statisticsStyles.gradientTitleBox}>
+                    <Text style={statisticsStyles.pageTitle}>📚 סטטיסטיקה לפי נושא</Text>
                 </LinearGradient>
 
                 <FlatList
@@ -113,88 +108,9 @@ export default function Statistics() {
                     contentContainerStyle={{ paddingBottom: 30 }}
                     style={{ width: '100%' }}
                 />
-
+                </ScrollView>
             </View>
         </ProtectedRoute>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 24,
-        alignItems: 'center',
-        backgroundColor: Colors.background,
-    },
-    gradientTitleBox: {
-        borderRadius: 16,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        marginBottom: 16,
-    },
-    pageTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white',
-        textAlign: 'center',
-    },
-    cardContainer: {
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 20,
-        shadowColor: '#000',
-        shadowOpacity: 0.08,
-        shadowRadius: 8,
-        elevation: 4,
-        marginBottom: 30,
-        width: '100%',
-    },
-    infoText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#444',
-        marginBottom: 6,
-        textAlign: 'center',
-    },
-    topicCard: {
-        padding: 20,
-        borderRadius: 20,
-        marginVertical: 8,
-        alignItems: 'center',
-        width: '100%',
-        shadowColor: '#000',
-        shadowOpacity: 0.08,
-        shadowRadius: 8,
-        elevation: 3,
-    },
-    topicTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: Colors.secondary,
-        marginBottom: 8,
-    },
-    topicStat: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: '#444',
-    },
-    loadingText: {
-        marginTop: 12,
-        fontSize: 16,
-        color: Colors.secondary,
-        textAlign: 'center',
-    },
-    backButton: {
-        marginTop: 24,
-        backgroundColor: Colors.primary,
-        paddingVertical: 12,
-        paddingHorizontal: 24,
-        borderRadius: 100,
-        alignItems: 'center',
-    },
-    backButtonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '600',
-    },
-});

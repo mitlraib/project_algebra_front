@@ -9,8 +9,10 @@ import { FontAwesome, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {myProfileStyles, dashboardStyles} from '../../styles/styles';
 import { HomeButton } from '../utils/Utils';
+import { Colors } from '../../constants/Colors';
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://localhost:8080';
+
 
 export default function MyProfile() {
     const router = useRouter();
@@ -26,6 +28,38 @@ export default function MyProfile() {
     const [totalExercises, setTotalExercises] = useState(0);
     const [totalMistakes, setTotalMistakes] = useState(0);
     const [origDetailedSolutions, setOrigDetailedSolutions] = useState(true);
+
+    const personalStats = [
+        {
+            id: 'level',
+            iconFamily: FontAwesome,
+            iconName: 'user',
+            iconColor: Colors.primary,
+            amount: level,
+            caption: 'רמה כללית',
+            colors: [Colors.light, Colors.grayish],
+        },
+        {
+            id: 'exercises',
+            iconFamily: Feather,
+            iconName: 'book-open',
+            iconColor: Colors.primary,
+            amount: totalExercises,
+            caption: 'סה"כ תרגילים',
+            colors: [Colors.light, Colors.grayish],
+        },
+        {
+            id: 'mistakes',
+            iconFamily: FontAwesome,
+            iconName: 'info-circle',
+            iconColor: '#8b5cf6',
+            amount: totalMistakes,
+            caption: 'סה"כ שגיאות',
+            colors: ['#ede9fe', '#f5f3ff'],
+        },
+    ];
+
+
 
     useEffect(() => {
         fetchUserFromServer();
@@ -88,10 +122,6 @@ export default function MyProfile() {
         }
     }
 
-    function handleGoToDashboard() {
-        router.push('/Dashboard');
-    }
-
     async function saveChanges() {
         if (detailedSolutions !== origDetailedSolutions) {
             try {
@@ -116,14 +146,14 @@ export default function MyProfile() {
                 <View style={{
                     height: 15,
                     width: 500,
-                    backgroundColor: '#f1f5f9',
+                    backgroundColor: Colors.grayish,
                     borderRadius: 10,
                     overflow: 'hidden',
                     flexDirection: 'row'
                 }}>
                     <View style={{
                         width: `${percentage}%`,
-                        backgroundColor: '#8b5cf6',
+                        backgroundColor: Colors.primary,
                         borderRadius: 10
                     }} />
                 </View>
@@ -141,7 +171,7 @@ export default function MyProfile() {
                     <View style={myProfileStyles.profileContainer}>
                         <Text style={myProfileStyles.profileSectionTitle}>פרופיל אישי </Text>
                         <View style={myProfileStyles.avatarWrapper}>
-                            <FontAwesome name="user" size={100} color="#8b5cf6" />
+                            <FontAwesome name="user" size={100} color= {Colors.primary} />
                         </View>
                         <View style={{ alignSelf: "center" }}>
                             <Text style={myProfileStyles.name}>{name}</Text>
@@ -155,7 +185,7 @@ export default function MyProfile() {
                             <Text style={myProfileStyles.loadingText}>טוען נתוני משתמש...</Text>
                         ) : (
                             <View style={myProfileStyles.profileLabels}>
-                                <FontAwesome name="envelope" size={14} color="#8b5cf6" style={{ marginLeft: 8, marginTop: 5, marginBottom: 30 }} />
+                                <FontAwesome name="envelope" size={14} color={Colors.primary} style={{ marginLeft: 8, marginTop: 5, marginBottom: 30 }} />
                                 <Text style={myProfileStyles.label}>{email}</Text>
                             </View>
                         )}
@@ -163,8 +193,8 @@ export default function MyProfile() {
                         <View>
                             <Pressable onPress={() => { alert("מצטערים, כרגע אנחנו תומכים רק בעברית....") }}>
                                 <View style={{ flexDirection: "row-reverse" }} >
-                                    <Text style={{ fontSize: 16, padding: 5 }}>שפת ממשק:</Text>
-                                    <FontAwesome name="language" size={25} color="#8b5cf6" style={{ paddingRight: 10 }} />
+                                    <Text style={myProfileStyles.languageLabel}>שפת ממשק:</Text>
+                                    <FontAwesome name="language" size={25} color={Colors.primary} style={{ paddingRight: 10 }} />
                                     <Text style={myProfileStyles.input} > עברית </Text>
                                 </View>
                             </Pressable>
@@ -173,7 +203,7 @@ export default function MyProfile() {
                                 <Switch value={detailedSolutions} onValueChange={setDetailedSolutions} />
                             </View>
                             <LinearGradient
-                                colors={['#8b5cf6', '#fb923c']}
+                                colors={[Colors.primary, Colors.accent]}
                                 style={myProfileStyles.saveButtonGradient}
                             >
                                 <Pressable onPress={saveChanges}>
@@ -186,32 +216,18 @@ export default function MyProfile() {
 
                     <View>
                         <View style={myProfileStyles.statisticContainer}>
-                            <Text style={myProfileStyles.sectionTitle}> סטטיסטיקה אישית</Text>
                             <View style={{ flexDirection: "row-reverse" }}>
-                                <LinearGradient colors={["#ede9fe", "#f5f3ff"]} style={myProfileStyles.statisticSquere}>
-                                    <View style={myProfileStyles.iconBox}>
-                                        <FontAwesome name="user" size={25} color="#8b5cf6" />
-                                    </View>
-                                    <Text style={{ color: '#000', fontSize: 24, fontWeight: "bold", marginRight: 5 }}> {level}</Text>
-                                    <Text style={{ color: '#000', fontSize: 16 }}> רמה כללית </Text>
-                                </LinearGradient>
-
-                                <LinearGradient colors={["#ede9fe", "#f5f3ff"]} style={myProfileStyles.statisticSquere}>
-                                    <View style={myProfileStyles.iconBox}>
-                                        <Feather name="book-open" size={25} color="#8b5cf6" />
-                                    </View>
-                                    <Text style={{ color: '#000', fontSize: 24, fontWeight: "bold", marginRight: 5 }}> {totalExercises}</Text>
-                                    <Text style={{ color: '#000', fontSize: 16 }}> סה"כ תרגילים </Text>
-                                </LinearGradient>
-
-                                <LinearGradient colors={["#ede9fe", "#f5f3ff"]} style={myProfileStyles.statisticSquere}>
-                                    <View style={myProfileStyles.iconBox}>
-                                        <FontAwesome name="info-circle" size={25} color="#8b5cf6" />
-                                    </View>
-                                    <Text style={{ color: '#000', fontSize: 24, fontWeight: "bold", marginRight: 5 }}> {totalMistakes}</Text>
-                                    <Text style={{ color: '#000', fontSize: 16 }}> סה"כ שגיאות </Text>
-                                </LinearGradient>
+                                {personalStats.map((stat) => (
+                                    <LinearGradient key={stat.id} colors={stat.colors} style={myProfileStyles.statisticSquare}>
+                                        <View style={myProfileStyles.iconBox}>
+                                            <stat.iconFamily name={stat.iconName} size={25} color={stat.iconColor} />
+                                        </View>
+                                        <Text style={myProfileStyles.countInput}>{stat.amount}</Text>
+                                        <Text style={myProfileStyles.countDescription}>{stat.caption}</Text>
+                                    </LinearGradient>
+                                ))}
                             </View>
+
                         </View>
 
                         <View style={myProfileStyles.levelsContainer}>

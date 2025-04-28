@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
         //  marginBottom: 10, // רווח מתחת לתמונה
         resizeMode: 'contain', // לשמור על יחס הגובה לרוחב של התמונה
         borderRadius: 100, // קצוות מעוגלים
-        shadowColor: '#000', // צבע הצל
+        shadowColor: Colors.black, // צבע הצל
         shadowOffset: { width: 0, height: 5 }, // מרחק הצל
         shadowOpacity: 0.3, // שקיפות הצל
         shadowRadius: 10, // רדיוס הצל
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     modalBox: {
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         padding: 20,
         borderRadius: 10,
         width: '80%',
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     closeButtonText: {
-        color: '#fff',
+        color: Colors.white,
         fontSize: 16,
     },
     errorMessage: {
@@ -285,13 +285,125 @@ const styles = StyleSheet.create({
         padding: 20,}
 
 });
+const achievementsStyles = StyleSheet.create({
+    scroll: {
+        paddingVertical: 32,
+        alignItems: "center",
+    },
+    container: {
+        marginTop:70,
+        width: "90%",
+        maxWidth: 700,
+    },
+    backButton: {
+        alignSelf: "flex-start",
+        marginBottom: 8,
+        marginLeft: 10,
+    },
+    backButtonText: {
+        color: "#8b5cf6",
+        fontWeight: "600",
+        fontSize: 18,
+    },
+    titleBox: {
+        paddingVertical: 10,
+        paddingHorizontal: 24,
+        borderRadius: 16,
+        marginBottom: 20,
+    },
+    title: {
+        fontSize: 26,
+        fontWeight: "bold",
+        textAlign: "center",
+        color: "white",
+    },
+    starsRow: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 12,
+        marginBottom: 24,
+    },
+    starsText: {
+        fontSize: 18,
+        fontWeight: "bold",
+        color: "#444",
+    },
+    badgeCard: {
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 16,
+    },
+    badgeHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+        marginBottom: 12,
+    },
+    badgeIconCircle: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    badgeTitle: {
+        fontWeight: "bold",
+        fontSize: 16,
+        color: "#111827",
+    },
+    badgeDesc: {
+        color: "#555",
+        fontSize: 13,
+        marginTop: 2,
+    },
+    progressRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+    },
+    progressBar: {
+        flex: 1,
+        height: 8,
+        borderRadius: 8,
+        overflow: "hidden",
+        backgroundColor: "#E5E7EB",
+    },
+    progressFill: {
+        height: 8,
+        borderRadius: 8,
+    },
+    progressText: {
+        fontSize: 11,
+        color: "#444",
+        width: 40,
+        textAlign: "right",
+    },
+    mathChampionBox: {
+        marginTop: 20,
+        borderRadius: 16,
+        padding: 16,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 4,
+    },
+    mathChampionText: {
+        textAlign: "center",
+        fontSize: 16,
+        fontWeight: "600",
+        color: "#4B0082",
+        lineHeight: 26,
+    },
+});
 const dashboardStyles = StyleSheet.create({
     scrollContainer: {
         alignItems: 'center',
         backgroundColor: '#f8f6ff',
     },
     header: {
-        width:wp(80),
+        width:wp(90),
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -334,7 +446,7 @@ const dashboardStyles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#fff',
+        color: Colors.white,
     },
     floatingSymbol: {
         position: 'absolute',
@@ -352,23 +464,12 @@ const dashboardStyles = StyleSheet.create({
         fontSize: 64,
     },
     rowWrapper: {
-        flexDirection: 'row', // כדי שהריבוע יהיה בשמאל
-        justifyContent:'center',
-        alignItems: 'center',
-        marginTop:30,
-        gap: wp(2),
-    },
-    statisticsBox: {
-        width: 210,
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 16,
-        alignItems: 'center',
+        flexDirection: 'row',
         justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
+        alignItems: 'center',
+        marginTop: 30,
+        gap: wp(2),
+        minHeight: hp(70),
     },
     iconCircle: {
         width: 48,
@@ -405,26 +506,26 @@ const dashboardStyles = StyleSheet.create({
         alignItems: 'center',
     },
     statisticsButtonText: {
-        color: '#fff',
+        color: Colors.white,
         fontWeight: 'bold',
         fontSize: 14,
     },
     columnWrapper:{
-        flexDirection:'column',
-        alignItems:'space-between',
-        justifyContent:'space-between',
+        marginTop:8,
+        alignSelf: 'flex-start',
+        alignContent: 'flex-start',
         paddingRight:wp(5)
     },
-    marathonBox: {
+    box: {
         width: wp(14),
         height: hp(30),
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         borderRadius: 16,
         padding: 16,
         marginBottom:70,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: '#000',
+        shadowColor: Colors.black,
         shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 5,
@@ -445,22 +546,9 @@ const dashboardStyles = StyleSheet.create({
         alignItems: 'center',
     },
     marathonButtonText: {
-        color: '#fff',
+        color: Colors.white,
         fontWeight: 'bold',
         fontSize: 14,
-    },
-    achievementsBox: {
-        width: wp(14),
-        height: hp (30),
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: wp(1),
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
     },
     achievementsDescription: {
         fontSize: 14,
@@ -478,23 +566,29 @@ const dashboardStyles = StyleSheet.create({
         alignItems: 'center',
     },
     achievementsButtonText: {
-        color: '#fff',
+        color: Colors.white,
         fontWeight: 'bold',
         fontSize: 14,
     },
     mainCard: {
         width: width > 768 ? 709 : '96%',
-        padding: 24,
+        alignSelf: 'flex-start',
+        alignContent: 'flex-start',
+        alignItems: 'flex-start',
         borderRadius: 20,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         marginRight: 50,
-        height: hp(70)
+        height: hp(100)
     },
     mainBCard: {
+        alignSelf: 'flex-start',
+        alignContent: 'flex-start',
+        alignItems: 'flex-start',
+        height: hp(100),
         width: wp(40),
         padding: 24,
         borderRadius: 20,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         marginRight: 50,
     },
     imageStyle: {
@@ -513,13 +607,14 @@ const dashboardStyles = StyleSheet.create({
         color: '#7c3aed',
     },
     emojiCircle: {
-        backgroundColor: '#ede9fe',
+        backgroundColor: Colors.light,
+        marginLeft: wp(2),
         borderRadius: 100,
         width: 40,
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: '#000',
+        shadowColor: Colors.black,
         shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 5,
@@ -537,16 +632,16 @@ const dashboardStyles = StyleSheet.create({
         marginBottom: 14,
     },
     cardContainer: {
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         borderRadius: 16,
         padding: 16,
-        shadowColor: '#000',
+        shadowColor: Colors.black,
         shadowOpacity: 0.05,
         shadowRadius: 6,
         elevation: 3,
     },
     progressText: {
-        color: '#000',
+        color: Colors.black,
         fontSize: 14,
         fontWeight: 'bold',
         textAlign: 'center',
@@ -557,10 +652,9 @@ const dashboardStyles = StyleSheet.create({
         justifyContent: 'center',
     },
     progress: {
-        height: 15,
+        height: 20,
         borderRadius: 10,
         marginTop: 20,
-
     },
     cardPercentage: {
         marginTop:-5,
@@ -571,7 +665,7 @@ const dashboardStyles = StyleSheet.create({
     pillButtonPurple: {
         height:hp(7),
         width:wp(35),
-        marginTop: 10,
+        marginTop: 30,
         backgroundColor: Colors.primary,
         paddingVertical: 4,
         borderRadius: 100,
@@ -584,7 +678,7 @@ const dashboardStyles = StyleSheet.create({
         alignItems: 'center',
     },
     buttonText: {
-        color: '#fff',
+        color: Colors.white,
         fontSize: 13,
         fontWeight: '600',
     },
@@ -593,10 +687,6 @@ const dashboardStyles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 });
-
-
-
-
 const myCoursesStyles = StyleSheet.create({
     container: {
         padding: 24,
@@ -604,6 +694,7 @@ const myCoursesStyles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
+        marginTop:70,
         fontSize: 28,
         fontWeight: 'bold',
         color: Colors.primary,
@@ -625,7 +716,7 @@ const myCoursesStyles = StyleSheet.create({
         marginBottom: 32,
         backgroundColor: '#ffffff',
         borderRadius: 20,
-        shadowColor: '#000',
+        shadowColor: Colors.black,
         shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 4,
@@ -639,7 +730,7 @@ const myCoursesStyles = StyleSheet.create({
     courseTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#fff',
+        color: Colors.white,
         textAlign: 'center',
     },
     topicGrid: {
@@ -658,7 +749,7 @@ const myCoursesStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 12,
-        shadowColor: '#000',
+        shadowColor: Colors.black,
         shadowOpacity: 0.1,
         shadowRadius: 8,
         elevation: 3,
@@ -670,57 +761,68 @@ const myCoursesStyles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 6,
     },
+    wrapper: {
+        width: 100,  // כפתור ברוחב קבוע
+        marginHorizontal: 15,
+        marginVertical: 10,
+        alignItems: 'center',
+    },
+    circle: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: Colors.black,
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 3,
+        padding: 8,
+    },
+    label: {
+        marginTop: 6,
+        fontSize: 13,
+        fontWeight: '600',
+        color: Colors.primary,
+        textAlign: 'center',
+    },
 });
 const myProfileStyles = StyleSheet.create({
     scrollContainer: {
         paddingVertical: 24,
     },
     profileContainer: {
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         borderRadius: 12,
         padding: 20,
-        width: '90%',
         maxWidth: 600,
         marginRight:20
     },
     statisticContainer: {
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         borderRadius: 12,
         padding: 20,
-        width: 900,
+        width: 850,
         alignSelf: 'flex-end',
         marginRight:20,
         marginBottom:20
     },
-
     levelsContainer: {
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         borderRadius: 12,
         padding: 20,
-        width: 900,
+        width: 850,
         alignSelf: 'flex-end',
         marginRight:20
     },
-
-
-    statisticSquere: {
-        backgroundColor: '#8F9CB3',
+    statisticSquare: {
+        backgroundColor: Colors.coolGray,
         borderRadius: 12,
         padding: 20,
-        width: 200,
+        width: 170,
         textAlign:'center',
         alignItems: 'center',
         margin:50,
-    },
-    backButton: {
-        marginBottom: 16,
-        alignSelf: 'flex-start',
-        marginLeft:15,
-
-    },
-    backButtonText: {
-        color: '#4F46E5',
-        fontWeight: '600',
     },
     avatarWrapper: {
         backgroundColor: '#e3e7f4', // תואם לרקע שבתמונה שלך
@@ -742,7 +844,7 @@ const myProfileStyles = StyleSheet.create({
 
     },
     avatarText: {
-        color: '#fff',
+        color: Colors.white,
         fontSize: 32,
         fontWeight: 'bold',
     },
@@ -772,7 +874,17 @@ const myProfileStyles = StyleSheet.create({
         textAlign:"right",
         margin: 10,
     },
-
+    languageLabel:{
+        fontSize: 16,
+        padding: 5
+    },
+    countInput:  {
+        color: Colors.black,
+        fontSize: 24,
+        fontWeight: "bold",
+        marginRight: 5
+    },
+    countDescription:{ color: Colors.black, fontSize: 16 },
     input: {
         fontSize: 18,
         paddingTop:2
@@ -791,7 +903,7 @@ const myProfileStyles = StyleSheet.create({
         marginTop: 16,
     },
     saveButtonText: {
-        color: '#fff',
+        color: Colors.white,
         fontSize: 16,
         fontWeight: 'bold',
     },
@@ -801,7 +913,6 @@ const myProfileStyles = StyleSheet.create({
         marginBottom: 10,
         color: '#4F46E5',
     },
-
     profileSectionTitle: {
         fontSize: 20,
         fontWeight: '600',
@@ -861,7 +972,7 @@ const myProfileStyles = StyleSheet.create({
         width: 350, // גדול יותר
     },
     buttonText: {
-        color: '#fff',
+        color: Colors.white,
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center',
@@ -869,7 +980,94 @@ const myProfileStyles = StyleSheet.create({
 
 
 });
+const statisticsStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 24,
+        alignItems: 'center',
+        backgroundColor: Colors.background,
+    },
+    scrollView: {
+        flexGrow: 1,
+        minHeight: '100%', // חשוב כדי שיכסה תמיד את כל הגובה
+        alignItems: 'center',
+        padding: 24,
+        width: wp(98),
+        backgroundColor: Colors.background,
+    },
 
+    gradientTitleBox: {
+        borderRadius: 16,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginBottom: 16,
+    },
+    pageTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center',
+    },
+    cardContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 4,
+        marginBottom: 30,
+        width: '100%',
+    },
+    infoText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#444',
+        marginBottom: 6,
+        textAlign: 'center',
+    },
+    topicCard: {
+        padding: 20,
+        borderRadius: 20,
+        marginVertical: 8,
+        alignItems: 'center',
+        width: '100%',
+        shadowColor: '#000',
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 3,
+    },
+    topicTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: Colors.secondary,
+        marginBottom: 8,
+    },
+    topicStat: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#444',
+    },
+    loadingText: {
+        marginTop: 12,
+        fontSize: 16,
+        color: Colors.secondary,
+        textAlign: 'center',
+    },
+    backButton: {
+        marginTop: 24,
+        backgroundColor: Colors.primary,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 100,
+        alignItems: 'center',
+    },
+    backButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+});
 
-export {dashboardStyles,myCoursesStyles, myProfileStyles}
+export {achievementsStyles,dashboardStyles,myCoursesStyles, myProfileStyles,statisticsStyles}
 export default styles;

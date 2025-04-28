@@ -39,7 +39,6 @@ export default function Dashboard() {
 
     useEffect(() => {
         const token = Cookies.get('userToken');
-
         if (!token) {
             // נשתמש ב-setTimeout קטן כדי לא לעשות ניווט מיידי
             setTimeout(() => {
@@ -68,7 +67,6 @@ export default function Dashboard() {
             .finally(() => setLoading(false));
     }, []);
 
-
     if (loading) {
         return <Text>טעינה...</Text>; // או קומפוננטת טעינה אם יש לך כזו
     }
@@ -85,7 +83,7 @@ export default function Dashboard() {
 
     return (
         <ProtectedRoute requireAuth={true}>
-            <ScrollView contentContainerStyle={dashboardStyles.scrollContainer}>
+            <View contentContainerStyle={dashboardStyles.scrollContainer}>
                 <View style={dashboardStyles.header}>
                     {/* לוגו מצד שמאל */}
                     <Text style={dashboardStyles.logo}>
@@ -109,11 +107,10 @@ export default function Dashboard() {
                 >
                     <Text style={dashboardStyles.gradientTitle}>ברוכים הבאים ל MathJourney!</Text>
                 </LinearGradient>
-
+                <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
                 <View style={dashboardStyles.rowWrapper}>
-
                     {isAdmin && (
-                        <View style={dashboardStyles.statisticsBox}>
+                        <View style={dashboardStyles.box}>
                             <View style={dashboardStyles.iconCircle}>
                                 <Feather name="pie-chart" size={24} color={Colors.accent} />
                             </View>
@@ -128,7 +125,7 @@ export default function Dashboard() {
 
                     {/* ריבוע בצד שמאל */}
                     <View style={dashboardStyles.columnWrapper}>
-                    <View style={dashboardStyles.marathonBox}>
+                    <View style={dashboardStyles.box}>
                         <View style={dashboardStyles.iconCircle}>
                             <Feather name="watch" size={24} color={Colors.accent} />
                         </View>
@@ -144,7 +141,7 @@ export default function Dashboard() {
 
                     </View>
 
-                    <View style={dashboardStyles.achievementsBox}>
+                    <View style={dashboardStyles.box}>
                         <View style={dashboardStyles.iconCircle}>
                             <Feather name="award" size={24} color={Colors.accent} />
                         </View>
@@ -153,21 +150,16 @@ export default function Dashboard() {
 
                         <TouchableOpacity
                             style={dashboardStyles.achievementsButton}
-                            onPress={() => router.push('/Achivments')}
+                            onPress={() => router.push('/Achievements')}
                         >
                             <Text style={dashboardStyles.achievementsButtonText}>הישגים</Text>
                         </TouchableOpacity>
                     </View>
-
-
                     </View>
-
-
 
                     {/* כל התוכן בתוך mainCard בצד ימין */}
                     <View style={dashboardStyles.mainCard}>
                         <View style={dashboardStyles.mainBCard}>
-
 
                             <View style={dashboardStyles.titleWrapper}>
                         <Text style={dashboardStyles.title}>
@@ -245,8 +237,9 @@ export default function Dashboard() {
                     </View>
                     </View>
                 </View>
+                </View>
 
-            </ScrollView>
+            </View>
         </ProtectedRoute>
     );
 }
