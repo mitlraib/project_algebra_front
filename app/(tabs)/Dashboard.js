@@ -134,9 +134,9 @@ export default function Dashboard() {
 
                         <TouchableOpacity
                             style={dashboardStyles.marathonButton}
-                            onPress={() => router.push('/course/randomQuestionPage')}
+                            onPress={() => router.push('/course/random?id=random')}
                         >
-                            <Text style={dashboardStyles.marathonButtonText}>אימון</Text>
+                            <Text style={dashboardStyles.marathonButtonText}>אימון שאלות רנדומליות</Text>
                         </TouchableOpacity>
 
                     </View>

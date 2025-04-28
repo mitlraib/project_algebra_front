@@ -39,6 +39,18 @@ function Fraction({ numerator, denominator }) {
     );
 }
 
+// זה לשאלה בלבד
+function FractionInQuestionTitle({ numerator, denominator }) {
+    return (
+        <View style={{ alignItems: 'center', marginHorizontal: 4 }}>
+            <Text style={styles.title}>{numerator}</Text>
+            <View style={{ height: 1, backgroundColor: 'white', width: 30, marginVertical: 2 }} />
+            <Text style={styles.title}>{denominator}</Text>
+        </View>
+    );
+}
+
+
 export default function StyledCoursePage() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
@@ -58,12 +70,18 @@ export default function StyledCoursePage() {
     const [detailedSolutions, setDetailedSolutions] = useState(true);
 
 
+
     useEffect(() => {
-        if (id) {
+        if (!id) return;
+
+        if (id === 'random') {
+            fetchRandomQuestion();
+        } else {
             fetchTopicLevel(id);
             fetchNextQuestion(id);
         }
     }, [id]);
+
 
     useEffect(() => {
         if (showSolution) {
@@ -120,6 +138,40 @@ export default function StyledCoursePage() {
         }
     }
 
+    async function fetchRandomQuestion() {
+        try {
+            const res = await axios.get(`/api/exercises/next-random`);
+            const questionData = res.data;
+
+            setIsCheckDisabled(false);
+
+            // תמיד תשתמשי במחולל השאלות שלך:
+            if (!questionData.text) {
+                questionData.text = generateQuestionText(
+                    questionData.first,
+                    questionData.second,
+                    questionData.operationSign,
+                    myTopicLevel
+                );
+            }
+
+            setQuestion(questionData);
+            setSelectedAnswer(null);
+            setShowResult(false);
+            setResponseMessage('');
+            setShowLevelUpModal(false);
+            setShowConfetti(false);
+            setShowSolution(false);
+            setAnswerFeedbackColor(null);
+        } catch (err) {
+            if (err.response?.status === 401) {
+                Cookies.remove("userToken");
+                router.replace("/authentication/Login");
+            } else {
+                console.log("Error fetching random question:", err);
+            }
+        }
+    }
 
     useEffect(() => {
         axios.get("/api/user")
@@ -187,8 +239,11 @@ export default function StyledCoursePage() {
             alert("בדוק את התשובה לפני מעבר");
             return;
         }
-        if (id) fetchNextQuestion(id);
-    }
+        if (id === 'random') {
+            fetchRandomQuestion();
+        } else {
+            fetchNextQuestion(id);
+        }    }
 
     function convertSign(sign) {
         switch (sign) {
@@ -410,20 +465,20 @@ ${sign}   ${second}
                             {isFraction && (question.first.includes('/') || question.second.includes('/')) ? (
                                 <>
                                     {question.first.includes('/') ? (
-                                        <Fraction numerator={question.first.split('/')[0]} denominator={question.first.split('/')[1]} />
+                                        <FractionInQuestionTitle numerator={question.first.split('/')[0]} denominator={question.first.split('/')[1]} />
                                     ) : (
                                         <Text style={styles.title}>{question.first}</Text>
                                     )}
 
-                                    <Text style={{ fontSize: 20, marginHorizontal: 8 }}>{convertSign(question.operationSign)}</Text>
+                                    <Text style={styles.title}>{convertSign(question.operationSign)}</Text>
 
                                     {question.second.includes('/') ? (
-                                        <Fraction numerator={question.second.split('/')[0]} denominator={question.second.split('/')[1]} />
+                                        <FractionInQuestionTitle numerator={question.second.split('/')[0]} denominator={question.second.split('/')[1]} />
                                     ) : (
                                         <Text style={styles.title}>{question.second}</Text>
                                     )}
 
-                                    <Text style={{ fontSize: 20, marginLeft: 8 }}>= ?</Text>
+                                    <Text style={styles.title}>= ?</Text>
                                 </>
                             ) : (
                                 <Text style={styles.title}>
