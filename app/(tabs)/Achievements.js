@@ -204,19 +204,24 @@ export default function AchievementsPage() {
                         );
                     })}
 
-                    {stars.totalCandles > 0 && (
-                        <LinearGradient
-                            colors={[Colors.light, Colors.lightPurple]}
-                            style={achievementsStyles.mathChampionBox}
-                            start={{ x: 1, y: 0 }}
-                            end={{ x: 0, y: 0 }}
-                        >
+                    <LinearGradient
+                        colors={[Colors.light, Colors.lightPurple]}
+                        style={achievementsStyles.mathChampionBox}
+                        start={{ x: 1, y: 0 }}
+                        end={{ x: 0, y: 0 }}
+                    >
+                        {stars.totalCandles === 0 ? (
+                            <Text style={achievementsStyles.mathChampionText}>
+                                עדיין לא צברת גביעים. השג כוכב בכל אחד מהנושאים כדי לזכות בגביע הראשון שלך!
+                            </Text>
+                        ) : (
                             <Text style={achievementsStyles.mathChampionText}>
                                 🤯 וואו! את אלופת המתמטיקה עם {stars.totalCandles} גביע/ים 🎉{"\n"}
                                 קיבלת גביע על כל סיבוב שבו הצלחת להשיג כוכב בכל נושא – כולל השברים הסוררים! 🏅
                             </Text>
-                        </LinearGradient>
-                    )}
+                        )}
+                    </LinearGradient>
+
                 </View>
             </ScrollView>
         </ProtectedRoute>

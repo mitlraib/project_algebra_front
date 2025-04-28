@@ -130,7 +130,7 @@ export default function Dashboard() {
                             <Feather name="watch" size={24} color={Colors.accent} />
                         </View>
                         <Text style={dashboardStyles.title}>אימון מרתון</Text>
-                        <Text style={dashboardStyles.marathonDescription}>אימון מהיר על כל החומר שלמדת עד כה</Text>
+                        <Text style={dashboardStyles.marathonDescription}>אימון מהיר על כל החומר על פי רמתך</Text>
 
                         <TouchableOpacity
                             style={dashboardStyles.marathonButton}

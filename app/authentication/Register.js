@@ -1,10 +1,14 @@
+// Register.jsx
+
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Pressable, Image, Alert } from 'react-native';
+import { View, Text, TextInput, Pressable, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import styles from '../../styles/styles.js';
+import styles, { dashboardStyles } from '../../styles/styles';
 import { Spacing } from "../../constants/Sizes";
 import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '@/constants/Colors';
 
 export const Register = () => {
     const router = useRouter();
@@ -13,8 +17,8 @@ export const Register = () => {
     const [mail, setMail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [hovered, setHovered] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [hovered, setHovered] = useState(false);
     const [errors, setErrors] = useState({
         firstName: '',
         lastName: '',
@@ -57,7 +61,7 @@ export const Register = () => {
                     newErrors.confirmPassword = 'הסיסמאות אינן תואמות';
                     valid = false;
                 } else {
-                    newErrors.confirmPassword = ' אימות סיסמה תקין ✅';
+                    newErrors.confirmPassword = 'אימות סיסמה תקין ✅';
                 }
                 break;
         }
@@ -137,89 +141,94 @@ export const Register = () => {
         }
     };
 
+
     const moveToLoginPage = () => {
         router.push('/authentication/Login');
     };
 
     return (
         <ProtectedRoute requireAuth={false}>
-            <View style={styles.container}>
-                <Text style={styles.header}>הרשמה</Text>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
+                <View style={{ marginBottom: 100 }}>
+                    <LinearGradient
+                        colors={[Colors.primary, Colors.accent]}
+                        start={{ x: 1, y: 0 }}
+                        end={{ x: 0, y: 0 }}
+                        style={dashboardStyles.gradientTitleWrapper}
+                    >
+                        <Text style={dashboardStyles.gradientTitle}>ברוכים הבאים ל MathJourney!</Text>
+                    </LinearGradient>
+                </View>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="שם פרטי"
-                    value={firstName}
-                    onChangeText={(text) => handleFieldChange('firstName', text)}
-                />
-                {errors.firstName ? <Text style={styles.errorText}>{errors.firstName}</Text> : null}
+                <View style={styles.cardContainer}>
+                    <Text style={styles.bigBoldText}>הרשמה:</Text>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="שם משפחה"
-                    value={lastName}
-                    onChangeText={(text) => handleFieldChange('lastName', text)}
-                />
-                {errors.lastName ? <Text style={styles.errorText}>{errors.lastName}</Text> : null}
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="מייל"
-                    value={mail}
-                    onChangeText={(text) => handleFieldChange('mail', text)}
-                    keyboardType="email-address"
-                />
-                {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
-
-                <View style={styles.passwordContainer}>
-                    <Pressable onPress={toggleShowPassword}>
-                        <Image
-                            source={{ uri: 'https://as2.ftcdn.net/jpg/01/46/11/95/220_F_146119533_BAlUoUk3eo9eSXBnMuMdUDPvLdeLpWJr.jpg' }}
-                            style={styles.eyeIcon}
-                        />
-                    </Pressable>
                     <TextInput
-                        style={styles.input}
-                        placeholder="סיסמה"
-                        value={password}
-                        onChangeText={(text) => handleFieldChange('password', text)}
+                        style={styles.loginInput}
+                        placeholder="שם פרטי"
+                        value={firstName}
+                        onChangeText={(text) => handleFieldChange('firstName', text)}
+                    />
+                    {errors.firstName ? <Text style={styles.errorText}>{errors.firstName}</Text> : null}
+
+                    <TextInput
+                        style={styles.loginInput}
+                        placeholder="שם משפחה"
+                        value={lastName}
+                        onChangeText={(text) => handleFieldChange('lastName', text)}
+                    />
+                    {errors.lastName ? <Text style={styles.errorText}>{errors.lastName}</Text> : null}
+
+                    <TextInput
+                        style={styles.loginInput}
+                        placeholder="אימייל"
+                        value={mail}
+                        onChangeText={(text) => handleFieldChange('mail', text)}
+                        keyboardType="email-address"
+                    />
+                    {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
+
+                    <View style={styles.passwordWrapper}>
+                        <TextInput
+                            style={styles.passwordInput}
+                            placeholder="סיסמה"
+                            value={password}
+                            onChangeText={(text) => handleFieldChange('password', text)}
+                            secureTextEntry={!showPassword}
+                        />
+                        <Pressable onPress={toggleShowPassword} style={styles.emojiButton}>
+                            <Text style={styles.emojiText}>
+                                {showPassword ? '🙈' : '🙉'}
+                            </Text>
+                        </Pressable>
+                    </View>
+                    {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+
+                    <TextInput
+                        style={styles.loginInput}
+                        placeholder="אימות סיסמה"
+                        value={confirmPassword}
+                        onChangeText={(text) => handleFieldChange('confirmPassword', text)}
                         secureTextEntry={!showPassword}
                     />
-                </View>
-                {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+                    {errors.confirmPassword ? (
+                        <Text style={[styles.errorText, errors.confirmPassword.includes('✅') && styles.successText]}>
+                            {errors.confirmPassword}
+                        </Text>
+                    ) : null}
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="אימות סיסמה"
-                    value={confirmPassword}
-                    onChangeText={(text) => handleFieldChange('confirmPassword', text)}
-                    secureTextEntry={!showPassword}
-                />
-                {errors.confirmPassword ? (
-                    <Text style={[styles.errorText, errors.confirmPassword.includes('✅') && styles.successText]}>
-                        {errors.confirmPassword}
-                    </Text>
-                ) : null}
+                    <TouchableOpacity style={styles.primaryButton} onPress={handleRegistration}>
+                        <Text style={styles.primaryButtonText}>הרשם</Text>
+                    </TouchableOpacity>
 
-                <View style={styles.buttonContainer}>
-                    <Button title="הרשם" onPress={handleRegistration} />
+                    <View style={{ marginTop: Spacing.lg, alignItems: 'center' }}>
+                        <Text style={styles.text}>כבר יש לך חשבון אצלנו?</Text>
+                        <Pressable onPress={moveToLoginPage}>
+                            <Text style={[styles.linkText, { marginTop: 4 }]}>התחבר</Text>
+                        </Pressable>
+                    </View>
                 </View>
-
-                <View style={{ flexDirection: "row", marginTop: Spacing.lg, justifyContent: 'center' }}>
-                    <Text style={styles.text}>כבר יש לך חשבון אצלנו?</Text>
-                </View>
-
-                <View style={{ flexDirection: "row", marginTop: Spacing.lg, justifyContent: 'center' }}>
-                    <Pressable
-                        onPress={moveToLoginPage}
-                        onMouseEnter={() => setHovered(true)}
-                        onMouseLeave={() => setHovered(false)}
-                        style={[styles.button, hovered && styles.buttonActive]}
-                    >
-                        <Text style={styles.linkText}>התחבר</Text>
-                    </Pressable>
-                </View>
-            </View>
+            </ScrollView>
         </ProtectedRoute>
     );
 };

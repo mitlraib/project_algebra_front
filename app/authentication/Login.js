@@ -1,14 +1,15 @@
 //Login
 
 import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, Image, Pressable, Button } from 'react-native';
+import { Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter, useRootNavigationState } from 'expo-router';
 import { Spacing } from '@/constants/Sizes';
-import styles from '../../styles/styles';
+import styles, {dashboardStyles} from '../../styles/styles';
 import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
 import Cookies from 'js-cookie';
-
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '@/constants/Colors';
 
 const Login = () => {
     const [mail, setMail] = useState('');
@@ -18,14 +19,10 @@ const Login = () => {
     const [errors, setErrors] = useState({ mail: '', password: '', form: '' });
 
     const router = useRouter();
-    // נבדוק האם ה־Navigation מוכן
     const navigationState = useRootNavigationState();
 
-    // 1. אם כבר מחוברים, נפנה מיד ל־Dashboard
     useEffect(() => {
-        // אם ה־router לא מוכן עדיין, לא לעשות כלום
         if (!navigationState?.key) return;
-
         const userToken = Cookies.get('userToken');
         if (userToken) {
             router.replace('/(tabs)/Dashboard');
@@ -40,12 +37,9 @@ const Login = () => {
         router.push('/authentication/Register');
     };
 
-    // 2. לחיצה על "התחבר"
     const handleLogin = async () => {
-        // ננקה הודעת שגיאה קודמת (אם יש)
         setErrors({ ...errors, form: '' });
 
-        // בדיקה בסיסית של שדות
         if (!mail || !password) {
             setErrors({ ...errors, form: 'אנא מלא אימייל וסיסמה' });
             return;
@@ -60,15 +54,11 @@ const Login = () => {
                 Cookies.set('userToken', response.data.token, { expires: 7 });
                 setMail('');
                 setPassword('');
-                // מעבר ל־Dashboard
                 router.replace('/(tabs)/Dashboard');
             } else {
-                // אם הגיע לכאן בלי success, כנראה שהשרת החזיר status = 200 אבל success=false
-                // נשים הודעת שגיאה כוללת:
                 setErrors({ ...errors, form: response.data.message || 'תקלה לא ידועה' });
             }
         } catch (error) {
-            // אם הסטטוס הוא 401 או 400, נקבל response.data עם message
             if (error.response && error.response.data) {
                 setErrors({ ...errors, form: error.response.data.message });
             } else {
@@ -106,85 +96,77 @@ const Login = () => {
         return valid;
     };
 
-
     return (
         <ProtectedRoute requireAuth={false}>
-            <View style={styles.container}>
-                <View style={styles.innerContainer}>
-                    <Text style={styles.header}>כניסה לאיזור האישי:</Text>
+            <ScrollView contentContainerStyle={styles.container}>
+                <View style={{ marginBottom: 100 }}>
+                    <LinearGradient
+                        colors={[Colors.primary, Colors.accent]}
+                        start={{ x: 1, y: 0 }}
+                        end={{ x: 0, y: 0 }}
+                        style={dashboardStyles.gradientTitleWrapper}
+                    >
+                        <Text style={dashboardStyles.gradientTitle}>ברוכים הבאים ל MathJourney!</Text>
+                    </LinearGradient>
+                </View>
+
+                <View style={styles.cardContainer}>
+
+                    <Text style={styles.bigBoldText}>כניסה לאזור אישי:</Text>
 
                     {errors.form ? (
                         <Text style={styles.errorText}>{errors.form}</Text>
                     ) : null}
 
                     <TextInput
-                        style={styles.input}
+                        style={styles.loginInput}
                         placeholder="אימייל"
                         value={mail}
                         onChangeText={(text) => {
                             setMail(text);
-                            validateField('mail', text);  // בדיקה בזמן אמת
+                            validateField('mail', text);
                         }}
                     />
                     {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
-
-                    {/* סיסמה */}
-                    <View style={styles.passwordContainer}>
-                        <Pressable onPress={toggleShowPassword}>
-                            <Image
-                                source={{ uri: 'https://as2.ftcdn.net/jpg/01/46/11/95/220_F_146119533_BAlUoUk3eo9eSXBnMuMdUDPvLdeLpWJr.jpg' }}
-                                style={styles.eyeIcon}
-                            />
-                        </Pressable>
-
+                    <View style={styles.passwordWrapper}>
                         <TextInput
-                            style={styles.input}
+                            style={styles.passwordInput}
                             placeholder="סיסמה"
                             value={password}
                             onChangeText={(text) => {
                                 setPassword(text);
-                                validateField('password', text);  // בדיקה בזמן אמת
+                                validateField('password', text);
                             }}
                             secureTextEntry={!showPassword}
                         />
-                    </View>
-
-                    {errors.password ? (
-                            <Text style={styles.errorText}>{errors.password}</Text>
-                        ) : null}
-
-                        {/* כפתור התחברות */}
-                    <View style={styles.buttonContainer}>
-                        <Button
-                            title="התחבר"
-                            onPress={handleLogin}
-                        />
-                    </View>
-
-                    {/* מעבר לעמוד הרשמה */}
-                    <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                        <Text style={styles.text}>לא רשומים עדיין לאפליקציה?</Text>
-                    </View>
-                    <View style={{ flexDirection: "row", marginTop: Spacing.lg, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                        <Pressable
-                            onPress={moveToRegistration}
-                            onMouseEnter={() => setHovered(true)}
-                            onMouseLeave={() => setHovered(false)}
-                            style={[
-                                styles.button,
-                                hovered && styles.buttonActive,
-                            ]}
-                        >
-                            <Text style={styles.linkText}>הירשמו!</Text>
+                        <Pressable onPress={toggleShowPassword} style={styles.emojiButton}>
+                            <Text style={styles.emojiText}>
+                                {showPassword ? '🙈' : '🙉'}
+                            </Text>
                         </Pressable>
                     </View>
+
+
+
+                    {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+
+                    <TouchableOpacity style={styles.primaryButton} onPress={handleLogin}>
+                        <Text style={styles.primaryButtonText}>התחבר</Text>
+                    </TouchableOpacity>
+
+                    <View style={{ flexDirection: 'row', marginTop: Spacing.lg, justifyContent: 'center' }}>
+                        <View style={{ marginTop: Spacing.lg, alignItems: 'center' }}>
+                            <Text style={styles.text}>לא רשומים עדיין לאפליקציה?</Text>
+                            <Pressable onPress={moveToRegistration}>
+                                <Text style={[styles.linkText, { marginTop: 4 }]}>הרשמו!</Text>
+                            </Pressable>
+                        </View>
+
+                    </View>
                 </View>
-            </View>
+            </ScrollView>
         </ProtectedRoute>
     );
 };
 
 export default Login;
-
-
-//end of Login

@@ -581,14 +581,15 @@ ${sign}   ${second}
                     </View>
                 </Modal>
 
-                <View style={{ marginTop: 30 }}>
+                <View style={{ marginTop: 30, alignItems: 'center' }}>
                     <Text style={styles.sectionTitle}>היסטוריית תשובות:</Text>
                     {history.map((item, i) => (
-                        <Text key={i} style={{ color: item.correct ? 'green' : 'red' }}>
+                        <Text key={i} style={{ color: item.correct ? 'green' : 'red', textAlign: 'center' }}>
                             {item.question} | ענית: {item.userAnswer} {item.correct ? '✓' : '✗'}
                         </Text>
                     ))}
                 </View>
+
 
                 <Pressable onPress={() => router.push('/MyCourses')} style={[styles.finishButton, { marginTop: 40 }]}>
                     <Text style={styles.primaryText}>סיום תרגול</Text>
@@ -703,12 +704,15 @@ const  styles = StyleSheet.create({
         alignItems: "center",
     },
 
+
     explanation: {
         backgroundColor: "#f9fafb",
         padding: 14,
         borderRadius: 8,
         marginTop: 16,
+        alignItems: 'center', // 💥 זה מה שחסר
     },
+
 
     explanationText: {
         fontSize: 16,
@@ -797,6 +801,7 @@ const  styles = StyleSheet.create({
         marginBottom: 10,
         color: '#4b5563',
         textAlign: 'center',
+
     },
 
     loading: {

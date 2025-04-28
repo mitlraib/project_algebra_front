@@ -19,17 +19,57 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     input: {
-        height: 40,
-        borderColor: 'gray',
+        height: 50,
         borderWidth: 1,
-        marginBottom: 10,
-        paddingLeft: 8,
-        width: '30%',
-        alignSelf: 'center',
-        fontSize: 14,
+        borderColor: Colors.primary,
+        borderRadius: 25,
+        paddingHorizontal: 20,
+        marginBottom: 12,
+        width: '100%',
+        fontSize: 18,
+        backgroundColor: Colors.grayish,
         textAlign: 'right',
-        paddingRight: 10,
+        alignSelf: 'center',
     },
+
+    gradientTitleBox: {
+        borderRadius: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginBottom: 20,
+        alignSelf: 'center',
+        width: '100%',
+        backgroundColor: Colors.primary, // אם צריך רקע fallback
+    },
+
+    cardContainer: {
+        backgroundColor: Colors.white,
+        borderRadius: 16,
+        padding: 24,
+        shadowColor: Colors.black,
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 4,
+        width: '100%',
+        maxWidth: 400,
+        alignSelf: 'center',
+    },
+
+    primaryButton: {
+        backgroundColor: Colors.primary,
+        paddingVertical: 14,
+        borderRadius: 100,
+        alignItems: 'center',
+        marginTop: 20,
+        width: '100%',
+    },
+
+    primaryButtonText: {
+        color: Colors.white,
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+
     errorText: {
         color: 'red',
         fontSize: 12,
@@ -48,22 +88,112 @@ const styles = StyleSheet.create({
         marginTop: 20,
         alignSelf: 'center',
     },
+
+    roundedInput: {
+        height: 50,
+        borderColor: Colors.primary,
+        borderWidth: 1,
+        borderRadius: 25,
+        paddingHorizontal: 20,
+        marginBottom: 12,
+        width: '100%',
+        fontSize: 16,
+        backgroundColor: Colors.white,
+    },
+
+    loginInput: {
+        height: 50,
+        borderWidth: 1,
+        borderColor: Colors.primary,
+        borderRadius: 25,
+        paddingHorizontal: 20,
+        marginBottom: 12,
+        width: '100%',
+        fontSize: 18,
+        backgroundColor: Colors.grayish,
+        textAlign: 'right',
+        alignSelf: 'center',
+    },
+    bigBoldText: {
+        fontSize: 24,      // גודל טקסט גדול
+        fontWeight: 'bold', // טקסט מודגש
+        color: 'black',     // צבע ברור (או כל צבע שתרצי)
+        textAlign: 'center', // יישור למרכז אם צריך
+        marginBottom: 20,   // רווח מלמטה
+    },
+
+    emojiText: {
+        fontSize: 24,
+    },
     passwordContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
         width: '100%',
         alignSelf: 'center',
-        marginLeft: '70%',
+        justifyContent: 'center',
     },
+
+    inputWithEmoji: {
+        height: 50,
+        borderWidth: 1,
+        borderColor: Colors.primary,
+        borderRadius: 25,
+        paddingHorizontal: 20,
+        paddingRight: 50, // רווח לאימוג׳י
+        marginBottom: 12,
+        width: '100%',
+        fontSize: 18,
+        backgroundColor: Colors.grayish,
+        textAlign: 'right',
+    },
+
+    emojiButtonInside: {
+        position: 'absolute',
+        top: 12,
+        left: 20,
+    },
+    passwordWrapper: {
+        position: 'relative',
+        width: '100%',
+        alignSelf: 'center',
+        marginBottom: 12,
+    },
+
+    passwordInput: {
+        height: 50,
+        borderWidth: 1,
+        borderColor: Colors.primary,
+        borderRadius: 25,
+        paddingHorizontal: 20,
+        paddingLeft: 50, // מקום לאימוג'י
+        width: '100%',
+        fontSize: 18,
+        backgroundColor: Colors.grayish,
+        textAlign: 'right',
+    },
+
+    emojiButton: {
+        position: 'absolute',
+        left: 15,
+        top: 10,
+    },
+
+
+
+    eyePressable: {
+        position: 'absolute',
+        right: 20,
+        top: 10,
+    },
+
+
     text: {
         fontSize: 14,
         color: 'black',
         marginBottom: 10,
     },
     linkText: {
-        borderBottomWidth: 1,
-        borderBottomColor: 'black',
+        color: Colors.primary,
+        fontWeight: 'bold',
+        textDecorationLine: 'underline',
     },
     button: {
         padding: 5,
