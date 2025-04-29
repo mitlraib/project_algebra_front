@@ -4,12 +4,10 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 
 
 const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
 
-const styles = StyleSheet.create({
+const authStyles = StyleSheet.create({
     container: {
         flex: 1,
-         justifyContent: 'center',
         padding: 20,
 
     },
@@ -31,7 +29,6 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         alignSelf: 'center',
     },
-
     gradientTitleBox: {
         borderRadius: 20,
         paddingVertical: 10,
@@ -41,7 +38,6 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: Colors.primary, // אם צריך רקע fallback
     },
-
     cardContainer: {
         backgroundColor: Colors.white,
         borderRadius: 16,
@@ -54,7 +50,6 @@ const styles = StyleSheet.create({
         maxWidth: 400,
         alignSelf: 'center',
     },
-
     primaryButton: {
         backgroundColor: Colors.primary,
         paddingVertical: 14,
@@ -63,13 +58,11 @@ const styles = StyleSheet.create({
         marginTop: 20,
         width: '100%',
     },
-
     primaryButtonText: {
         color: Colors.white,
         fontWeight: 'bold',
         fontSize: 16,
     },
-
     errorText: {
         color: 'red',
         fontSize: 12,
@@ -88,7 +81,6 @@ const styles = StyleSheet.create({
         marginTop: 20,
         alignSelf: 'center',
     },
-
     roundedInput: {
         height: 50,
         borderColor: Colors.primary,
@@ -201,7 +193,7 @@ const styles = StyleSheet.create({
         opacity: 1,
     },
     buttonActive: {
-        backgroundColor: '#2196F3',
+        backgroundColor: Colors.dodgerBlue,
     },
     successText: {
         color: 'green',
@@ -217,7 +209,7 @@ const styles = StyleSheet.create({
     card: {
         width: 200,  //  קובע רוחב קבוע
         height: 200, //  קובע גובה קבוע
-        backgroundColor: '#ffffff',
+        backgroundColor: Colors.white,
         justifyContent: 'center',
         alignItems: 'center',
         elevation: 5, // צל לכרטיס
@@ -245,7 +237,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         top: 20,
         left: 10,
-        backgroundColor: '#ddd',
+        backgroundColor: Colors.grayish,
         paddingVertical: 8,
         paddingHorizontal: 15,
         borderRadius: 5,
@@ -278,7 +270,7 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     saveButton: {
-        backgroundColor: '#2196F3',
+        backgroundColor: Colors.dodgerBlue,
         padding: 12,
         borderRadius: 5,
         alignItems: 'center'
@@ -290,8 +282,7 @@ const styles = StyleSheet.create({
     appTitle: {
         fontSize: 60, // גודל גדול
         fontWeight: 'bold', // הגדרת גופן עבה
-        color: '#2196F3', // צבע גופן מעניין (אפשר לשנות לצבע שתרצה)
-        //marginBottom: 10, // רווח בין הטקסט לתמונה או אלמנטים אחרים
+        color: Colors.dodgerBlue, // צבע גופן מעניין (אפשר לשנות לצבע שתרצה)
         fontFamily: 'Lato', //
         marginTop: 120, // הוספת רווח מעל התת-כותרת
 
@@ -299,7 +290,7 @@ const styles = StyleSheet.create({
     appSubtitle: {
         fontSize: 40, // גודל טקסט קטן יותר
         fontWeight: 'normal',
-        color: '#2196F3', // צבע חיוור יותר לטקסט השני
+        color: Colors.dodgerBlue, // צבע חיוור יותר לטקסט השני
         textAlign: 'center', // ממקם את הטקסט במרכז
         marginBottom: 450, // רווח תחת הטקסט
         fontFamily: 'Cochin', // גופן פשוט יותר לקריאות
@@ -333,7 +324,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     selectedAnswer: {
-        backgroundColor: '#ddd'
+        backgroundColor: Colors.grayish
     },
     answerText: {
         fontSize: 16,
@@ -342,7 +333,7 @@ const styles = StyleSheet.create({
     },
     checkButton: {
         marginTop: 20,
-        backgroundColor: '#4CAF50',
+        backgroundColor: Colors.green,
         padding: 15,
         borderRadius: 10,
         alignItems: 'center'
@@ -358,7 +349,7 @@ const styles = StyleSheet.create({
     },
     nextButton: {
         marginTop: 20,
-        backgroundColor: '#2196F3',
+        backgroundColor: Colors.dodgerBlue,
         padding: 15,
         borderRadius: 10,
         alignItems: 'center'
@@ -394,7 +385,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     closeButton: {
-        backgroundColor: '#2196F3',
+        backgroundColor: Colors.dodgerBlue,
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: 8,
@@ -530,7 +521,7 @@ const achievementsStyles = StyleSheet.create({
 const dashboardStyles = StyleSheet.create({
     scrollContainer: {
         alignItems: 'center',
-        backgroundColor: '#f8f6ff',
+        backgroundColor:Colors.background,
     },
     header: {
         width:wp(90),
@@ -605,24 +596,24 @@ const dashboardStyles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 24,
-        backgroundColor: '#ede9fe',
+        backgroundColor: Colors.light,
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 12,
     },
     titleWrapper: {
-       height: hp(9),
+        height: hp(9),
         width: wp(40),
     },
     title: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#111',
+        color: Colors.black,
         textAlign: 'center',
     },
     statisticsDescription: {
         fontSize: 14,
-        color: '#555',
+        color: Colors.darkGray,
         textAlign: 'center',
         marginBottom: 16,
     },
@@ -662,7 +653,7 @@ const dashboardStyles = StyleSheet.create({
     },
     marathonDescription: {
         fontSize: 14,
-        color: '#555',
+        color: Colors.darkGray,
         textAlign: 'center',
         marginBottom: 16,
     },
@@ -676,13 +667,14 @@ const dashboardStyles = StyleSheet.create({
         alignItems: 'center',
     },
     marathonButtonText: {
+        textAlign:'center',
         color: Colors.white,
         fontWeight: 'bold',
         fontSize: 14,
     },
     achievementsDescription: {
         fontSize: 14,
-        color: '#555',
+        color: Colors.darkGray,
         textAlign: 'center',
         marginBottom: 16,
     },
@@ -734,7 +726,7 @@ const dashboardStyles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         fontWeight: '600',
-        color: '#7c3aed',
+        color: Colors.secondary
     },
     emojiCircle: {
         backgroundColor: Colors.light,
@@ -758,7 +750,7 @@ const dashboardStyles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         fontWeight: '600',
-        color: '#7c3aed',
+        color: Colors.secondary,
         marginBottom: 14,
     },
     cardContainer: {
@@ -820,7 +812,7 @@ const dashboardStyles = StyleSheet.create({
 const myCoursesStyles = StyleSheet.create({
     container: {
         padding: 24,
-        backgroundColor: '#f8f6ff',
+        backgroundColor: Colors.background,
         alignItems: 'center',
     },
     title: {
@@ -844,7 +836,7 @@ const myCoursesStyles = StyleSheet.create({
     courseBox: {
         width: width * 0.9,
         marginBottom: 32,
-        backgroundColor: '#ffffff',
+        backgroundColor: Colors.white,
         borderRadius: 20,
         shadowColor: Colors.black,
         shadowOpacity: 0.1,
@@ -955,7 +947,7 @@ const myProfileStyles = StyleSheet.create({
         margin:50,
     },
     avatarWrapper: {
-        backgroundColor: '#e3e7f4', // תואם לרקע שבתמונה שלך
+        backgroundColor: Colors.triteWhite, // תואם לרקע שבתמונה שלך
         borderRadius: 100,
         padding: 20,
         alignItems: 'center',
@@ -970,8 +962,7 @@ const myProfileStyles = StyleSheet.create({
         height: 150,
         borderRadius: 100,
         resizeMode: 'cover',
-        backgroundColor: '#ddd'
-
+        backgroundColor: Colors.grayish
     },
     avatarText: {
         color: Colors.white,
@@ -984,12 +975,12 @@ const myProfileStyles = StyleSheet.create({
         marginTop:20
     },
     subText: {
-        color: '#555',
+        color: Colors.darkGray,
         marginBottom: 20,
         fontSize:16
     },
     card: {
-        backgroundColor: '#F3F4F6',
+        backgroundColor: Colors.grayish,
         borderRadius: 12,
         padding: 16,
         marginBottom: 20,
@@ -1026,7 +1017,7 @@ const myProfileStyles = StyleSheet.create({
         marginVertical: 12,
     },
     saveButton: {
-        backgroundColor: '#4F46E5',
+        backgroundColor: Colors.majorelleBlue,
         padding: 14,
         borderRadius: 8,
         alignItems: 'center',
@@ -1041,13 +1032,13 @@ const myProfileStyles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '600',
         marginBottom: 10,
-        color: '#4F46E5',
+        color: Colors.majorelleBlue,
     },
     profileSectionTitle: {
         fontSize: 20,
         fontWeight: '600',
         marginBottom: 50,
-        color: '#4F46E5',
+        color: Colors.majorelleBlue,
         textAlign:'center',
     },
     topicRow: {
@@ -1061,13 +1052,13 @@ const myProfileStyles = StyleSheet.create({
         flex: 1,
     },
     lowerButton: {
-        backgroundColor: '#E5E7EB',
+        backgroundColor: Colors.grayish,
         padding: 6,
         borderRadius: 6,
         marginLeft: 10,
     },
     lowerButtonText: {
-        color: '#2563EB',
+        color: Colors.darkerDodgerBlue,
         fontWeight: '500',
     },
     loadingText: {
@@ -1075,7 +1066,7 @@ const myProfileStyles = StyleSheet.create({
         marginTop: 20,
     },
     iconBox: {
-        backgroundColor: '#e3e7f4', // תואם לרקע שבתמונה שלך
+        backgroundColor:Colors.triteWhite,
         borderRadius: 60,
         padding: 20,
         alignItems: 'center',
@@ -1091,7 +1082,7 @@ const myProfileStyles = StyleSheet.create({
         alignSelf: 'flex-start',
         marginRight: 16,
         marginTop: 8,
-        width: 200, // קטן יותר
+        width: 200,
     },
     saveButtonGradient: {
         paddingVertical: 14,
@@ -1125,7 +1116,6 @@ const statisticsStyles = StyleSheet.create({
         width: wp(98),
         backgroundColor: Colors.background,
     },
-
     gradientTitleBox: {
         borderRadius: 16,
         paddingVertical: 10,
@@ -1139,10 +1129,10 @@ const statisticsStyles = StyleSheet.create({
         textAlign: 'center',
     },
     cardContainer: {
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         borderRadius: 16,
         padding: 20,
-        shadowColor: '#000',
+        shadowColor: Colors.black,
         shadowOpacity: 0.08,
         shadowRadius: 8,
         elevation: 4,
@@ -1152,7 +1142,7 @@ const statisticsStyles = StyleSheet.create({
     infoText: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#444',
+        color: Colors.darkGray,
         marginBottom: 6,
         textAlign: 'center',
     },
@@ -1162,7 +1152,7 @@ const statisticsStyles = StyleSheet.create({
         marginVertical: 8,
         alignItems: 'center',
         width: '100%',
-        shadowColor: '#000',
+        shadowColor: Colors.black,
         shadowOpacity: 0.08,
         shadowRadius: 8,
         elevation: 3,
@@ -1176,7 +1166,7 @@ const statisticsStyles = StyleSheet.create({
     topicStat: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#444',
+        color: Colors.darkGray,
     },
     loadingText: {
         marginTop: 12,
@@ -1198,6 +1188,248 @@ const statisticsStyles = StyleSheet.create({
         fontWeight: '600',
     },
 });
+const exercisePageStyles = StyleSheet.create({
+    container: {
+        padding: 24,
+        paddingBottom: 60,
+    },
 
-export {achievementsStyles,dashboardStyles,myCoursesStyles, myProfileStyles,statisticsStyles}
-export default styles;
+    gradientQuestionBox: {
+        borderRadius: 16,
+        paddingVertical: 24,
+        paddingHorizontal: 20,
+        marginBottom: 24,
+        width: '100%',
+        shadowColor: Colors.black,
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 4,
+        alignItems: 'center',
+    },
+
+
+    title: {
+        fontSize: 24,
+        textAlign: "center",
+        color: "white",
+        fontWeight: "bold",
+    },
+
+    answerButton: {
+        padding: 16,
+        borderRadius: 16,
+        backgroundColor: "#ede9fe",
+        marginBottom: 12,
+        shadowColor: "#000",
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 3,
+        alignItems: 'center',
+    },
+
+    selectedAnswer: {
+        backgroundColor: "#c4b5fd",
+        transform: [{ scale: 1 }],
+        padding: 16,
+        borderRadius: 16,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 5,
+        alignItems: 'center',
+    },
+
+    answerText: {
+        fontSize: 18,
+        textAlign: "center",
+        color: Colors.darkGray,
+        fontWeight: '600',
+    },
+
+    finishButton: {
+        backgroundColor:Colors.lilac,
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+        alignItems: 'center',
+    },
+
+    checkButton: {
+        backgroundColor: Colors.lilac,
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+        alignItems: 'center',
+    },
+
+    primaryText: {
+        color: "#fff",
+        textAlign: "center",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+
+    secondaryButton: {
+        backgroundColor: "#E5E7EB",
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 10,
+        alignItems: 'center',
+    },
+
+    secondaryText: {
+        textAlign: "center",
+        fontSize: 16,
+    },
+
+    feedback: {
+        textAlign: "center",
+        fontSize: 16,
+        marginTop: 10,
+        fontWeight: "bold",
+    },
+
+    helpButton: {
+        marginTop: 20,
+        alignItems: "center",
+    },
+
+
+    explanation: {
+        backgroundColor: "#f9fafb",
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+        alignItems: 'center', // 💥 זה מה שחסר
+    },
+
+
+    explanationText: {
+        fontSize: 16,
+        marginBottom: 8,
+        textAlign: 'center',
+        color: Colors.darkGray,
+    },
+
+    modalOverlay: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0,0,0,0.5)",
+    },
+
+    modalBox: {
+        backgroundColor: "white",
+        padding: 24,
+        borderRadius: 12,
+        width: "80%",
+        alignItems: "center",
+    },
+
+    modalTitle: {
+        fontSize: 22,
+        fontWeight: "bold",
+        marginBottom: 8,
+    },
+
+    modalText: {
+        fontSize: 16,
+        marginBottom: 20,
+    },
+
+    closeButton: {
+        backgroundColor: "#4F46E5",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+
+    correctAnswer: {
+        backgroundColor: Colors.aeroBlue,
+        borderColor: Colors.grassGreen,
+        borderWidth: 2,
+        borderRadius: 8,
+        padding: 16,
+        marginVertical: 6,
+        alignItems: 'center',
+    },
+
+    incorrectAnswer: {
+        backgroundColor: Colors.palePink,
+        borderColor: Colors.redish,
+        borderWidth: 2,
+        borderRadius: 8,
+        padding: 16,
+        marginVertical: 6,
+        alignItems: 'center',
+    },
+
+    nextButton: {
+        backgroundColor: Colors.lilac,
+        padding: 14,
+        borderRadius: 8,
+        marginTop: 16,
+        width: '100%',
+        alignItems: 'center',
+    },
+
+    nextButtonText: {
+        color: Colors.white,
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+
+    closeButtonText: {
+        color: "white",
+        fontWeight: "bold",
+    },
+
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: "600",
+        marginBottom: 10,
+        color: Colors.darkGray,
+        textAlign: 'center',
+
+    },
+
+    loading: {
+        textAlign: 'center',
+        marginTop: 40,
+        fontSize: 18,
+        color: Colors.secondary,
+    },
+});
+const homeButtonStyles = StyleSheet.create({
+    buttonWrapper: {
+        position: 'absolute',
+        top: 30,
+        left: 20,
+        zIndex: 10,
+    },
+    gradient: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 50, // פינות מאוד עגולות
+        alignItems: 'center',
+        justifyContent: 'center',
+        minWidth: 180, // שומר על גודל מינימלי יפה
+        shadowColor: Colors.black,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        elevation: 5,
+    },
+    buttonText: {
+        color: Colors.secondary,
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+});
+
+
+
+export {authStyles,achievementsStyles,dashboardStyles,myCoursesStyles,
+    myProfileStyles,statisticsStyles,exercisePageStyles, homeButtonStyles}
+

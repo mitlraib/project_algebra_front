@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter, useRootNavigationState } from 'expo-router';
 import { Spacing } from '@/constants/Sizes';
-import styles, {dashboardStyles} from '../../styles/styles';
+import {authStyles, dashboardStyles} from '../../styles/styles';
 import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
 import Cookies from 'js-cookie';
@@ -98,8 +98,8 @@ const Login = () => {
 
     return (
         <ProtectedRoute requireAuth={false}>
-            <ScrollView contentContainerStyle={styles.container}>
-                <View style={{ marginBottom: 100 }}>
+            <ScrollView contentContainerStyle={authStyles.container}>
+                <View style={{ marginBottom: 40, marginTop:30 }}>
                     <LinearGradient
                         colors={[Colors.primary, Colors.accent]}
                         start={{ x: 1, y: 0 }}
@@ -110,16 +110,16 @@ const Login = () => {
                     </LinearGradient>
                 </View>
 
-                <View style={styles.cardContainer}>
+                <View style={authStyles.cardContainer}>
 
-                    <Text style={styles.bigBoldText}>כניסה לאזור אישי:</Text>
+                    <Text style={authStyles.bigBoldText}>כניסה לאזור אישי:</Text>
 
                     {errors.form ? (
-                        <Text style={styles.errorText}>{errors.form}</Text>
+                        <Text style={authStyles.errorText}>{errors.form}</Text>
                     ) : null}
 
                     <TextInput
-                        style={styles.loginInput}
+                        style={authStyles.loginInput}
                         placeholder="אימייל"
                         value={mail}
                         onChangeText={(text) => {
@@ -127,10 +127,10 @@ const Login = () => {
                             validateField('mail', text);
                         }}
                     />
-                    {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
-                    <View style={styles.passwordWrapper}>
+                    {errors.mail ? <Text style={authStyles.errorText}>{errors.mail}</Text> : null}
+                    <View style={authStyles.passwordWrapper}>
                         <TextInput
-                            style={styles.passwordInput}
+                            style={authStyles.passwordInput}
                             placeholder="סיסמה"
                             value={password}
                             onChangeText={(text) => {
@@ -139,26 +139,26 @@ const Login = () => {
                             }}
                             secureTextEntry={!showPassword}
                         />
-                        <Pressable onPress={toggleShowPassword} style={styles.emojiButton}>
-                            <Text style={styles.emojiText}>
-                                {showPassword ? '🙈' : '🙉'}
+                        <Pressable onPress={toggleShowPassword} style={authStyles.emojiButton}>
+                            <Text style={authStyles.emojiText}>
+                                {showPassword ? '🙉' : '🙈'}
                             </Text>
                         </Pressable>
                     </View>
 
 
 
-                    {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+                    {errors.password ? <Text style={authStyles.errorText}>{errors.password}</Text> : null}
 
-                    <TouchableOpacity style={styles.primaryButton} onPress={handleLogin}>
-                        <Text style={styles.primaryButtonText}>התחבר</Text>
+                    <TouchableOpacity style={authStyles.primaryButton} onPress={handleLogin}>
+                        <Text style={authStyles.primaryButtonText}>התחבר</Text>
                     </TouchableOpacity>
 
                     <View style={{ flexDirection: 'row', marginTop: Spacing.lg, justifyContent: 'center' }}>
                         <View style={{ marginTop: Spacing.lg, alignItems: 'center' }}>
-                            <Text style={styles.text}>לא רשומים עדיין לאפליקציה?</Text>
+                            <Text style={authStyles.text}>לא רשומים עדיין לאתר?</Text>
                             <Pressable onPress={moveToRegistration}>
-                                <Text style={[styles.linkText, { marginTop: 4 }]}>הרשמו!</Text>
+                                <Text style={[authStyles.linkText, { marginTop: 4 }]}>הרשמו!</Text>
                             </Pressable>
                         </View>
 

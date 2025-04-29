@@ -1,23 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-    View,
-    Text,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Modal,
-    Animated,
-    Vibration,
-} from "react-native";
+import {View, Text, Pressable, ScrollView, Modal, Animated, Vibration,} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import SolutionVisualization from "@/components/SolutionVisualization";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { LinearGradient } from 'expo-linear-gradient'; // אם לא ייבאת, תייבאי!
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/Colors';
-
+import {exercisePageStyles} from '../../styles/styles'
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:8080";
@@ -43,9 +34,9 @@ function Fraction({ numerator, denominator }) {
 function FractionInQuestionTitle({ numerator, denominator }) {
     return (
         <View style={{ alignItems: 'center', marginHorizontal: 4 }}>
-            <Text style={styles.title}>{numerator}</Text>
+            <Text style={exercisePageStyles.title}>{numerator}</Text>
             <View style={{ height: 1, backgroundColor: 'white', width: 30, marginVertical: 2 }} />
-            <Text style={styles.title}>{denominator}</Text>
+            <Text style={exercisePageStyles.title}>{denominator}</Text>
         </View>
     );
 }
@@ -271,8 +262,8 @@ export default function StyledCoursePage() {
 
             if (result < 20) {
                 return (
-                    <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
-                        <Text style={styles.explanationText}>
+                    <Animated.View style={[exercisePageStyles.explanation, { opacity: fadeAnim }]}>
+                        <Text style={exercisePageStyles.explanationText}>
                             נניח שיש לנו {second} קבוצות, בכל קבוצה {first} כדורים
                         </Text>
                         <SolutionVisualization
@@ -280,7 +271,7 @@ export default function StyledCoursePage() {
                             secondNum={second}
                             operation="mul"
                         />
-                        <Text style={styles.explanationText}>
+                        <Text style={exercisePageStyles.explanationText}>
                             סה"כ {result} כדורים.
                         </Text>
                     </Animated.View>
@@ -289,8 +280,8 @@ export default function StyledCoursePage() {
             console.log({detailedSolutions, id, isAddOrSubOrSmallMulOrDiv, },"הייי");
             // אם התוצאה >= 20, אפשר להראות פתרון אחר (טור אנכי וכו') או לא להראות בכלל
             return (
-                <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
-                    <Text style={styles.explanationText}>
+                <Animated.View style={[exercisePageStyles.explanation, { opacity: fadeAnim }]}>
+                    <Text style={exercisePageStyles.explanationText}>
                         התוצאה גדולה מדי להצגת עיגולים (לפחות 20).
                     </Text>
                 </Animated.View>
@@ -306,8 +297,8 @@ export default function StyledCoursePage() {
 
             if (dividend <= 20 && divisor > 0 && Number.isInteger(quotient)) {
                 return (
-                    <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
-                        <Text style={styles.explanationText}>
+                    <Animated.View style={[exercisePageStyles.explanation, { opacity: fadeAnim }]}>
+                        <Text style={exercisePageStyles.explanationText}>
                             נניח שיש לנו {dividend} כדורים, אנחנו רוצים לחלק אותם בין {divisor} ילדים
                         </Text>
                         <SolutionVisualization
@@ -315,7 +306,7 @@ export default function StyledCoursePage() {
                             secondNum={divisor}
                             operation="div"
                         />
-                        <Text style={styles.explanationText}>
+                        <Text style={exercisePageStyles.explanationText}>
                             כל אחד יקבל {quotient} כדורים.
                         </Text>
                     </Animated.View>
@@ -323,8 +314,8 @@ export default function StyledCoursePage() {
             }
 
             return (
-                <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
-                    <Text style={styles.explanationText}>
+                <Animated.View style={[exercisePageStyles.explanation, { opacity: fadeAnim }]}>
+                    <Text style={exercisePageStyles.explanationText}>
                         לא ניתן להמחיש את החילוק בעיגולים (או שהוא לא שלם / גדול מדי).
                     </Text>
                 </Animated.View>
@@ -335,8 +326,8 @@ export default function StyledCoursePage() {
         // אחרת זה חיבור/חיסור
         const operationWord = id == 1 ? "נוסיף" : "נחסיר";
         return (
-            <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
-                <Text style={styles.explanationText}>
+            <Animated.View style={[exercisePageStyles.explanation, { opacity: fadeAnim }]}>
+                <Text style={exercisePageStyles.explanationText}>
                     נניח שיש לנו {question.first} כדורים, {operationWord} {question.second}
                 </Text>
                 <SolutionVisualization
@@ -344,7 +335,7 @@ export default function StyledCoursePage() {
                     secondNum={Number(question.second)}
                     operation={id == 1 ? "add" : "sub"}
                 />
-                <Text style={styles.explanationText}>
+                <Text style={exercisePageStyles.explanationText}>
                     ונקבל {eval(`${question.first}${convertSign(question.operationSign)}${question.second}`)} כדורים.
                 </Text>
             </Animated.View>
@@ -357,9 +348,9 @@ export default function StyledCoursePage() {
         const second = Number(question.second);
         const result = eval(`${first}${sign}${second}`);
         return (
-            <Animated.View style={[styles.explanation, { opacity: fadeAnim }]}>
-                <Text style={styles.explanationText}>פתרון במאונך:</Text>
-                <Text style={[styles.explanationText, { textAlign: 'right', marginTop: 10 }]}>  {`
+            <Animated.View style={[exercisePageStyles.explanation, { opacity: fadeAnim }]}>
+                <Text style={exercisePageStyles.explanationText}>פתרון במאונך:</Text>
+                <Text style={[exercisePageStyles.explanationText, { textAlign: 'right', marginTop: 10 }]}>  {`
     ${first}
 ${sign}   ${second}
 ---------
@@ -368,7 +359,7 @@ ${sign}   ${second}
         );
     }
 
-    if (!id || !question) return <Text style={styles.loading}>טוען...</Text>;
+    if (!id || !question) return <Text style={exercisePageStyles.loading}>טוען...</Text>;
 
     const isFraction = typeof question.first === "string" && question.first.includes("/");
     const displayAnswers = isFraction
@@ -391,6 +382,15 @@ ${sign}   ${second}
 
 
     const isVisual = myTopicLevel <= 2;
+
+    function decodeFraction(encoded) {
+        const num = Math.floor(encoded / 1000);
+        const den = encoded % 1000;
+        if (den === 0) return '∞';
+        if (num % den === 0) return `${num / den}`;
+        return `${num}/${den}`;
+    }
+
 
     function generateQuestionText(first, second, sign, topicLevel) {
         const op = convertSign(sign);
@@ -453,12 +453,13 @@ ${sign}   ${second}
 
     return (
         <ProtectedRoute requireAuth={true}>
-            <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: Colors.background }}>
+            <ScrollView contentContainerStyle={exercisePageStyles.container}
+                        style={{ backgroundColor: Colors.background }}>
                 <LinearGradient
                     colors={[Colors.primary, Colors.accent]}
                     start={{ x: 1, y: 0 }}
                     end={{ x: 0, y: 0 }}
-                    style={styles.gradientQuestionBox}
+                    style={exercisePageStyles.gradientQuestionBox}
                 >
                     <View style={{ alignItems: 'center', marginBottom: 20 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -467,21 +468,21 @@ ${sign}   ${second}
                                     {question.first.includes('/') ? (
                                         <FractionInQuestionTitle numerator={question.first.split('/')[0]} denominator={question.first.split('/')[1]} />
                                     ) : (
-                                        <Text style={styles.title}>{question.first}</Text>
+                                        <Text style={exercisePageStyles.title}>{question.first}</Text>
                                     )}
 
-                                    <Text style={styles.title}>{convertSign(question.operationSign)}</Text>
+                                    <Text style={exercisePageStyles.title}>{convertSign(question.operationSign)}</Text>
 
                                     {question.second.includes('/') ? (
                                         <FractionInQuestionTitle numerator={question.second.split('/')[0]} denominator={question.second.split('/')[1]} />
                                     ) : (
-                                        <Text style={styles.title}>{question.second}</Text>
+                                        <Text style={exercisePageStyles.title}>{question.second}</Text>
                                     )}
 
-                                    <Text style={styles.title}>= ?</Text>
+                                    <Text style={exercisePageStyles.title}>= ?</Text>
                                 </>
                             ) : (
-                                <Text style={styles.title}>
+                                <Text style={exercisePageStyles.title}>
                                     {question.text}
                                 </Text>
                             )}
@@ -496,16 +497,16 @@ ${sign}   ${second}
                     const isSelected = selectedAnswer === idx;
                     const isCorrectAnswer = question.answers[idx] === question.correctAnswer;
 
-                    let answerStyle = styles.answerButton;
+                    let answerStyle = exercisePageStyles.answerButton;
 
                     if (showResult) {
                         if (isSelected) {
-                            answerStyle = isCorrectAnswer ? styles.correctAnswer : styles.incorrectAnswer;
+                            answerStyle = isCorrectAnswer ? exercisePageStyles.correctAnswer : exercisePageStyles.incorrectAnswer;
                         } else if (isCorrectAnswer) {
-                            answerStyle = styles.correctAnswer;
+                            answerStyle = exercisePageStyles.correctAnswer;
                         }
                     } else if (isSelected) {
-                        answerStyle = styles.selectedAnswer;
+                        answerStyle = exercisePageStyles.selectedAnswer;
                     }
 
                     return (
@@ -518,13 +519,13 @@ ${sign}   ${second}
                             <View style={{ alignItems: 'center' }}>
                                 {isAnsFraction ? (
                                     (formatFraction(Number(num), Number(den)) === "1" || formatFraction(Number(num), Number(den)) === "0") ? (
-                                        <Text style={styles.answerText}>{formatFraction(Number(num), Number(den))}</Text>
+                                        <Text style={exercisePageStyles.answerText}>{formatFraction(Number(num), Number(den))}</Text>
                                     ) : (
                                         <Fraction numerator={num} denominator={den} />
                                     )
 
                                 ) : (
-                                    <Text style={styles.answerText}>{ans}</Text>
+                                    <Text style={exercisePageStyles.answerText}>{ans}</Text>
                                 )}
                             </View>
                         </Pressable>
@@ -533,22 +534,22 @@ ${sign}   ${second}
 
                 <Pressable
                     onPress={handleCheckAnswer}
-                    style={[styles.checkButton, isCheckDisabled && { opacity: 0.5 }]}
+                    style={[exercisePageStyles.checkButton, isCheckDisabled && { opacity: 0.5 }]}
                     disabled={isCheckDisabled}
                 >
-                    <Text style={styles.primaryText}>בדיקה</Text>
+                    <Text style={exercisePageStyles.primaryText}>בדיקה</Text>
                 </Pressable>
 
 
-                {responseMessage !== '' && <Text style={styles.feedback}>{responseMessage}</Text>}
+                {responseMessage !== '' && <Text style={exercisePageStyles.feedback}>{responseMessage}</Text>}
 
-                <Pressable onPress={handleNextQuestion} style={[styles.nextButton, !showResult && { opacity: 0.5 }]}>
-                    <Text style={styles.nextButtonText}>שאלה הבאה</Text>
+                <Pressable onPress={handleNextQuestion} style={[exercisePageStyles.nextButton, !showResult && { opacity: 0.5 }]}>
+                    <Text style={exercisePageStyles.nextButtonText}>שאלה הבאה</Text>
                 </Pressable>
 
 
                 { detailedSolutions &&isAddOrSubOrSmallMulOrDiv && (
-                    <Pressable onPress={() => setShowSolution(!showSolution)} style={styles.helpButton} disabled={!showResult}>
+                    <Pressable onPress={() => setShowSolution(!showSolution)} style={exercisePageStyles.helpButton} disabled={!showResult}>
                         <Text style={{
                             color: !showResult ? 'gray' : '#A47DAB',
                             fontWeight: showResult ? 'bold' : 'normal',
@@ -570,23 +571,24 @@ ${sign}   ${second}
                 )}
 
                 <Modal visible={showLevelUpModal} transparent animationType="slide">
-                    <View style={styles.modalOverlay}>
-                        <View style={styles.modalBox}>
-                            <Text style={styles.modalTitle}>כל הכבוד!</Text>
-                            <Text style={styles.modalText}>עלית רמה!</Text>
-                            <Pressable onPress={() => setShowLevelUpModal(false)} style={styles.closeButton}>
-                                <Text style={styles.closeButtonText}>סגור</Text>
+                    <View style={exercisePageStyles.modalOverlay}>
+                        <View style={exercisePageStyles.modalBox}>
+                            <Text style={exercisePageStyles.modalTitle}>כל הכבוד!</Text>
+                            <Text style={exercisePageStyles.modalText}>עלית רמה!</Text>
+                            <Pressable onPress={() => setShowLevelUpModal(false)} style={exercisePageStyles.closeButton}>
+                                <Text style={exercisePageStyles.closeButtonText}>סגור</Text>
                             </Pressable>
                         </View>
                     </View>
                 </Modal>
 
                 <View style={{ marginTop: 30, alignItems: 'center' }}>
-                    <Text style={styles.sectionTitle}>היסטוריית תשובות:</Text>
+                    <Text style={exercisePageStyles.sectionTitle}>היסטוריית תשובות:</Text>
                     {history.map((item, i) => (
                         <Text key={i} style={{ color: item.correct ? 'green' : 'red', textAlign: 'center' }}>
-                            {item.question} | ענית: {item.userAnswer} {item.correct ? '✓' : '✗'}
+                            {item.question} | ענית: {decodeFraction(item.userAnswer)} {item.correct ? '✓' : '✗'}
                         </Text>
+
                     ))}
                 </View>
 
@@ -599,9 +601,9 @@ ${sign}   ${second}
                             router.push('/MyCourses');
                         }
                     }}
-                    style={[styles.finishButton, { marginTop: 40 }]}
+                    style={[exercisePageStyles.finishButton, { marginTop: 40 }]}
                 >
-                    <Text style={styles.primaryText}>סיום תרגול</Text>
+                    <Text style={exercisePageStyles.primaryText}>סיום תרגול</Text>
                 </Pressable>
 
             </ScrollView>
@@ -609,216 +611,4 @@ ${sign}   ${second}
     );
 }
 
-const  styles = StyleSheet.create({
-    container: {
-        padding: 24,
-        paddingBottom: 60,
-    },
-
-    gradientQuestionBox: {
-        borderRadius: 16,
-        paddingVertical: 24,
-        paddingHorizontal: 20,
-        marginBottom: 24,
-        width: '100%',
-        shadowColor: '#000',
-        shadowOpacity: 0.08,
-        shadowRadius: 8,
-        elevation: 4,
-        alignItems: 'center',
-    },
-
-    title: {
-        fontSize: 24,
-        textAlign: "center",
-        color: "white",
-        fontWeight: "bold",
-    },
-
-    answerButton: {
-        padding: 16,
-        borderRadius: 16,
-        backgroundColor: "#ede9fe",
-        marginBottom: 12,
-        shadowColor: "#000",
-        shadowOpacity: 0.08,
-        shadowRadius: 8,
-        elevation: 3,
-        alignItems: 'center',
-    },
-
-    selectedAnswer: {
-        backgroundColor: "#c4b5fd",
-        transform: [{ scale: 1 }],
-        padding: 16,
-        borderRadius: 16,
-        shadowColor: "#000",
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 5,
-        alignItems: 'center',
-    },
-
-    answerText: {
-        fontSize: 18,
-        textAlign: "center",
-        color: '#4b5563',
-        fontWeight: '600',
-    },
-
-    finishButton: {
-        backgroundColor: "#A47DAB",
-        padding: 14,
-        borderRadius: 8,
-        marginTop: 16,
-        alignItems: 'center',
-    },
-
-    checkButton: {
-        backgroundColor: "#A47DAB",
-        padding: 14,
-        borderRadius: 8,
-        marginTop: 16,
-        alignItems: 'center',
-    },
-
-    primaryText: {
-        color: "#fff",
-        textAlign: "center",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-
-    secondaryButton: {
-        backgroundColor: "#E5E7EB",
-        padding: 14,
-        borderRadius: 8,
-        marginTop: 10,
-        alignItems: 'center',
-    },
-
-    secondaryText: {
-        textAlign: "center",
-        fontSize: 16,
-    },
-
-    feedback: {
-        textAlign: "center",
-        fontSize: 16,
-        marginTop: 10,
-        fontWeight: "bold",
-    },
-
-    helpButton: {
-        marginTop: 20,
-        alignItems: "center",
-    },
-
-
-    explanation: {
-        backgroundColor: "#f9fafb",
-        padding: 14,
-        borderRadius: 8,
-        marginTop: 16,
-        alignItems: 'center', // 💥 זה מה שחסר
-    },
-
-
-    explanationText: {
-        fontSize: 16,
-        marginBottom: 8,
-        textAlign: 'center',
-        color: '#444',
-    },
-
-    modalOverlay: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "rgba(0,0,0,0.5)",
-    },
-
-    modalBox: {
-        backgroundColor: "white",
-        padding: 24,
-        borderRadius: 12,
-        width: "80%",
-        alignItems: "center",
-    },
-
-    modalTitle: {
-        fontSize: 22,
-        fontWeight: "bold",
-        marginBottom: 8,
-    },
-
-    modalText: {
-        fontSize: 16,
-        marginBottom: 20,
-    },
-
-    closeButton: {
-        backgroundColor: "#4F46E5",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-
-    correctAnswer: {
-        backgroundColor: '#d4edda',
-        borderColor: '#28a745',
-        borderWidth: 2,
-        borderRadius: 8,
-        padding: 16,
-        marginVertical: 6,
-        alignItems: 'center',
-    },
-
-    incorrectAnswer: {
-        backgroundColor: '#f8d7da',
-        borderColor: '#dc3545',
-        borderWidth: 2,
-        borderRadius: 8,
-        padding: 16,
-        marginVertical: 6,
-        alignItems: 'center',
-    },
-
-    nextButton: {
-        backgroundColor: '#A47DAB',
-        padding: 14,
-        borderRadius: 8,
-        marginTop: 16,
-        width: '100%',
-        alignItems: 'center',
-    },
-
-    nextButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-
-    closeButtonText: {
-        color: "white",
-        fontWeight: "bold",
-    },
-
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: "600",
-        marginBottom: 10,
-        color: '#4b5563',
-        textAlign: 'center',
-
-    },
-
-    loading: {
-        textAlign: 'center',
-        marginTop: 40,
-        fontSize: 18,
-        color: '#7c3aed',
-    },
-});
 

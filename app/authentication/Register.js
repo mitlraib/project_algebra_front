@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Pressable, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import styles, { dashboardStyles } from '../../styles/styles';
+import  { authStyles, dashboardStyles } from '../../styles/styles';
 import { Spacing } from "../../constants/Sizes";
 import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
@@ -113,7 +113,7 @@ export const Register = () => {
             const response = await axios.post('http://localhost:8080/api/register', userData);
 
             if (response.data.success) {
-                Alert.alert("הצלחה", "ההרשמה הצליחה!");
+                alert( "ההרשמה הצליחה!");
                 // איפוס
                 setFirstName('');
                 setLastName('');
@@ -148,8 +148,8 @@ export const Register = () => {
 
     return (
         <ProtectedRoute requireAuth={false}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
-                <View style={{ marginBottom: 100 }}>
+            <View contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+                <View style={{ marginBottom: 40, marginTop:30 }}>
                     <LinearGradient
                         colors={[Colors.primary, Colors.accent]}
                         start={{ x: 1, y: 0 }}
@@ -160,75 +160,75 @@ export const Register = () => {
                     </LinearGradient>
                 </View>
 
-                <View style={styles.cardContainer}>
-                    <Text style={styles.bigBoldText}>הרשמה:</Text>
+                <View style={authStyles.cardContainer}>
+                    <Text style={authStyles.bigBoldText}>הרשמה:</Text>
 
                     <TextInput
-                        style={styles.loginInput}
+                        style={authStyles.loginInput}
                         placeholder="שם פרטי"
                         value={firstName}
                         onChangeText={(text) => handleFieldChange('firstName', text)}
                     />
-                    {errors.firstName ? <Text style={styles.errorText}>{errors.firstName}</Text> : null}
+                    {errors.firstName ? <Text style={authStyles.errorText}>{errors.firstName}</Text> : null}
 
                     <TextInput
-                        style={styles.loginInput}
+                        style={authStyles.loginInput}
                         placeholder="שם משפחה"
                         value={lastName}
                         onChangeText={(text) => handleFieldChange('lastName', text)}
                     />
-                    {errors.lastName ? <Text style={styles.errorText}>{errors.lastName}</Text> : null}
+                    {errors.lastName ? <Text style={authStyles.errorText}>{errors.lastName}</Text> : null}
 
                     <TextInput
-                        style={styles.loginInput}
+                        style={authStyles.loginInput}
                         placeholder="אימייל"
                         value={mail}
                         onChangeText={(text) => handleFieldChange('mail', text)}
                         keyboardType="email-address"
                     />
-                    {errors.mail ? <Text style={styles.errorText}>{errors.mail}</Text> : null}
+                    {errors.mail ? <Text style={authStyles.errorText}>{errors.mail}</Text> : null}
 
-                    <View style={styles.passwordWrapper}>
+                    <View style={authStyles.passwordWrapper}>
                         <TextInput
-                            style={styles.passwordInput}
+                            style={authStyles.passwordInput}
                             placeholder="סיסמה"
                             value={password}
                             onChangeText={(text) => handleFieldChange('password', text)}
                             secureTextEntry={!showPassword}
                         />
-                        <Pressable onPress={toggleShowPassword} style={styles.emojiButton}>
-                            <Text style={styles.emojiText}>
-                                {showPassword ? '🙈' : '🙉'}
+                        <Pressable onPress={toggleShowPassword} style={authStyles.emojiButton}>
+                            <Text style={authStyles.emojiText}>
+                                {showPassword ? '🙉' : '🙈'}
                             </Text>
                         </Pressable>
                     </View>
-                    {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+                    {errors.password ? <Text style={authStyles.errorText}>{errors.password}</Text> : null}
 
                     <TextInput
-                        style={styles.loginInput}
+                        style={authStyles.loginInput}
                         placeholder="אימות סיסמה"
                         value={confirmPassword}
                         onChangeText={(text) => handleFieldChange('confirmPassword', text)}
                         secureTextEntry={!showPassword}
                     />
                     {errors.confirmPassword ? (
-                        <Text style={[styles.errorText, errors.confirmPassword.includes('✅') && styles.successText]}>
+                        <Text style={[authStyles.errorText, errors.confirmPassword.includes('✅') && authStyles.successText]}>
                             {errors.confirmPassword}
                         </Text>
                     ) : null}
 
-                    <TouchableOpacity style={styles.primaryButton} onPress={handleRegistration}>
-                        <Text style={styles.primaryButtonText}>הרשם</Text>
+                    <TouchableOpacity style={authStyles.primaryButton} onPress={handleRegistration}>
+                        <Text style={authStyles.primaryButtonText}>הרשם</Text>
                     </TouchableOpacity>
 
                     <View style={{ marginTop: Spacing.lg, alignItems: 'center' }}>
-                        <Text style={styles.text}>כבר יש לך חשבון אצלנו?</Text>
+                        <Text style={authStyles.text}>כבר יש לך חשבון אצלנו?</Text>
                         <Pressable onPress={moveToLoginPage}>
-                            <Text style={[styles.linkText, { marginTop: 4 }]}>התחבר</Text>
+                            <Text style={[authStyles.linkText, { marginTop: 4 }]}>התחבר</Text>
                         </Pressable>
                     </View>
                 </View>
-            </ScrollView>
+            </View>
         </ProtectedRoute>
     );
 };
