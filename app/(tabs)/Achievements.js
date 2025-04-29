@@ -185,8 +185,9 @@ export default function AchievementsPage() {
                                     <View style={{ flex: 1 }}>
                                         <Text style={achievementsStyles.badgeTitle}>{badge.name}</Text>
                                         <Text style={achievementsStyles.badgeDesc}>
-                                            את בדרך הנכונה! רק עוד {20 - (count % 20 || 20)} תרגילים לכוכב הבא 🌟
+                                            את בדרך הנכונה! רק עוד {count % 20 === 0 ? 20 : 20 - (count % 20)} תרגילים לכוכב הבא 🌟
                                         </Text>
+
                                     </View>
                                 </View>
                                 <View style={achievementsStyles.progressRow}>

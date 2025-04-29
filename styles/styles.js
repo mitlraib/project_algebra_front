@@ -721,9 +721,9 @@ const dashboardStyles = StyleSheet.create({
     },
     greetingText: {
         marginTop:10,
+        marginBottom:20,
         marginRight:60,
         marginLeft:60,
-        textAlign: 'center',
         fontSize: 20,
         fontWeight: '600',
         color: Colors.secondary
@@ -743,16 +743,9 @@ const dashboardStyles = StyleSheet.create({
     },
     emoji: {
         fontSize: 40,
+
     },
-    secondGreetingText: {
-        marginTop:10,
-        marginLeft:50,
-        textAlign: 'center',
-        fontSize: 20,
-        fontWeight: '600',
-        color: Colors.secondary,
-        marginBottom: 14,
-    },
+
     cardContainer: {
         backgroundColor: Colors.white,
         borderRadius: 16,

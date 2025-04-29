@@ -170,7 +170,7 @@ export default function Dashboard() {
                             source={require('../../assets/images/learning-math.jpg')}
                             style={dashboardStyles.imageStyle}
                         />
-                        <View style={{flexDirection: 'row-reverse', justifyContent: 'space-between'}}>
+                        <View style={{flexDirection: 'row-reverse', justifyContent: 'space-between',}}>
                         <Text style={dashboardStyles.greetingText}>שלום! </Text>
 
                         <View>
@@ -179,14 +179,14 @@ export default function Dashboard() {
                             </Animated.View>
                         </View>
 
-                        <Text style={dashboardStyles.secondGreetingText}> מוכנים ללמוד חשבון?</Text>
+                        <Text style={dashboardStyles.greetingText}> מוכנים ללמוד חשבון?</Text>
                         </View>
                         <View style={dashboardStyles.cardContainer}>
                             <View>
                                 <View style={{flexDirection:'row-reverse', justifyContent:'center'}}>
                                 <Text style={dashboardStyles.title}>
                                     {progressData.progress < 0.3
-                                        ? "אתה בתחילת הדרך! המשך ללמוד כדי להשתפר..."
+                                        ? "אתה בתחילת הדרך! תלמד כדי להשתפר..."
                                         : progressData.progress < 0.6
                                             ? " אתה בדרך הנכונה!"
                                             : " כל הכבוד !"}
