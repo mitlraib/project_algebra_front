@@ -5,21 +5,16 @@ import ConfettiCannon from "react-native-confetti-cannon";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import SolutionVisualization from "@/components/SolutionVisualization";
 import Cookies from "js-cookie";
-import axios from "axios";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/Colors';
 import {exercisePageStyles} from '../../styles/styles'
-import {URL} from '../../constants/Network';
+import { api } from  'components/api';
 
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = URL;
 
 function formatFraction(numerator, denominator) {
     if (numerator === 0) return "0";
     if (numerator === denominator) return "1";
-    return `${numerator}/${denominator}`;
-}
-
+    return `${numerator}/${denominator}`**********************************`***************************************************************************`
 
 function Fraction({ numerator, denominator }) {
     return (
@@ -89,7 +84,8 @@ export default function StyledCoursePage() {
 
     async function fetchTopicLevel(topicId) {
         try {
-            const res = await axios.get("/api/user/topics-levels");
+            const res = await api.get("/api/user/topics-levels");   // עכשיו ילך לבק-אנד בענן
+
             if (res.data.success) {
                 const found = res.data.topics.find((t) => t.topicId == topicId);
                 if (found) setMyTopicLevel(found.level);
@@ -101,7 +97,8 @@ export default function StyledCoursePage() {
 
     async function fetchNextQuestion(topicId) {
         try {
-            const res = await axios.get(`/api/exercises/next?topicId=${topicId}`);
+            const res = await api.get(`/api/exercises/next?topicId=${topicId}`);
+
             const questionData = res.data;
             setIsCheckDisabled(false); // מאפשר בדיקה בשאלה חדשה
 
@@ -132,7 +129,8 @@ export default function StyledCoursePage() {
 
     async function fetchRandomQuestion() {
         try {
-            const res = await axios.get(`/api/exercises/next-random`);
+            const res = await api.get(`/api/exercises/next-random`);
+
             const questionData = res.data;
 
             setIsCheckDisabled(false);
@@ -166,8 +164,9 @@ export default function StyledCoursePage() {
     }
 
     useEffect(() => {
-        axios.get("/api/user")
-            .then(r => {setDetailedSolutions(
+        api.get("/api/user")
+
+    .then(r => {setDetailedSolutions(
                 r.data.hasOwnProperty("detailedSolutions") ? r.data.detailedSolutions   // ערך מהשרת
                     : true );
             });
@@ -188,8 +187,9 @@ export default function StyledCoursePage() {
 
         try {
             const userAnswerValue = question.answers[selectedAnswer];
-            const res = await axios.post("/api/exercises/answer", { answer: userAnswerValue });
-            setShowResult(true);
+            const res = await api.post("/api/exercises/answer", { answer: userAnswerValue });
+
+                setShowResult(true);
 
             const correct = res.data.isCorrect;
             const correctAnswer = res.data.correctAnswer || question.correctAnswer;

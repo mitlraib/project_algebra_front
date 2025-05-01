@@ -5,14 +5,13 @@ import { Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView }
 import { useRootNavigationState } from 'expo-router';
 import { Spacing } from '@/constants/Sizes';
 import {authStyles, dashboardStyles} from '../../styles/styles';
-import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { storage } from '../utils/storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/Colors';
-import {URL} from "../../constants/Network";
 import { useRouter } from 'expo-router';
-import { router } from 'expo-router';
+import { api } from  '../../components/api';
+
 
 const Login = () => {
     const [mail, setMail] = useState('');
@@ -28,7 +27,7 @@ const Login = () => {
         if (!navigationState?.key) return;
 
         (async () => {
-            const userToken = await storage.get('userToken');   // ⬅️  הקריאה הנכונה
+            const userToken = await storage.get('userToken');
 
             if (userToken) {
                 router.replace('(tabs)/Dashboard');
@@ -59,9 +58,8 @@ const Login = () => {
         try {
             const loginData = { mail, password };
 
-            const response = await axios.post(`${URL}/api/login`, loginData, {
-                validateStatus: () => true, // ✅ זה מונע כניסה אוטומטית ל־catch
-            });
+            const response = await api.post("/api/login", loginData);
+
 
             console.log("Status:", response.status);
             console.log("Response data:", response.data);

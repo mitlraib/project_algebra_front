@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, Pressable, StyleSheet, FlatList, ActivityIndicator, ScrollView,} from 'react-native';
+import {View, Text, FlatList, ActivityIndicator, ScrollView,} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import axios from 'axios';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HomeButton } from '../../src/utils/Utils';
 import { Colors } from '../../constants/Colors';
 import {statisticsStyles} from '../../styles/styles'
-import {URL} from '../../constants/Network';
+import { api } from  'components/api';
 
 
 export default function Statistics() {
@@ -21,8 +20,9 @@ export default function Statistics() {
         const fetchData = async () => {
             try {
                 const [overallRes, topicRes] = await Promise.all([
-                    axios.get(`${URL}/api/statistics`),
-                    axios.get(`${URL}/api/statistics/by-topic'`),
+
+                    api.get('/api/statistics'),
+                    api.get('/api/statistics/by-topic')
                 ]);
                 setOverallStats(overallRes.data);
                 setTopicStats(topicRes.data);
@@ -36,9 +36,6 @@ export default function Statistics() {
         fetchData();
     }, []);
 
-    function handleGoBack() {
-        router.push('/Dashboard');
-    }
 
     const topicNames = {
         1: 'חיבור',

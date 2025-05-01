@@ -1,15 +1,14 @@
 // Register.jsx
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Pressable, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import  { authStyles, dashboardStyles } from '../../styles/styles';
 import { Spacing } from "../../constants/Sizes";
-import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/Colors';
-import {URL} from "../../constants/Network";
+import { api } from  'components/api';
 
 export const Register = () => {
     const router = useRouter();
@@ -111,7 +110,8 @@ export const Register = () => {
 
         try {
             const userData = { firstName, lastName, mail, password };
-            const response = await axios.post(`${URL}/api/register`, userData);
+
+            const response = await api.post('/api/register', userData);
 
             if (response.data.success) {
                 alert( "ההרשמה הצליחה!");

@@ -3,9 +3,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 import { Redirect } from 'expo-router';
 import Cookies from 'js-cookie';
-import axios from 'axios';
 import {dashboardStyles} from "../styles/styles";
 import { View, Animated, Text } from 'react-native';
+import { api } from './api';
 
 
 export default function ProtectedRoute({ children, requireAuth }) {
@@ -18,7 +18,7 @@ export default function ProtectedRoute({ children, requireAuth }) {
         // נבדוק /api/user רק אם ממש צריך (או אם requireAuth=true)
         // או שאפשר תמיד לבדוק.
         if (requireAuth) {
-            axios.get('/api/user')
+            api.get('/api/user')
                 .then(res => {
                     if (res.data && res.data.success) {
                         setUser(res.data);

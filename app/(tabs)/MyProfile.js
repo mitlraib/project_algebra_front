@@ -1,18 +1,15 @@
 //MyProfile
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Pressable, Switch, ScrollView, StyleSheet, Image } from 'react-native';
+import { View, Text, Pressable, Switch, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import axios from 'axios';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import {myProfileStyles, dashboardStyles} from '../../styles/styles';
+import {myProfileStyles} from '../../styles/styles';
 import { HomeButton } from '../../src/utils/Utils';
 import { Colors } from '../../constants/Colors';
-import {URL} from '../../constants/Network';
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = URL;
+import { api } from  'components/api';
 
 
 export default function MyProfile() {
@@ -69,7 +66,7 @@ export default function MyProfile() {
 
     async function fetchUserFromServer() {
         try {
-            const res = await axios.get('/api/user');
+            const res = await api.get('/api/user');
             if (res.data && res.data.success) {
                 setName(`${res.data.firstName} ${res.data.lastName}`);
                 setEmail(res.data.mail);
@@ -89,7 +86,7 @@ export default function MyProfile() {
 
     async function fetchUserTopics() {
         try {
-            const res = await axios.get('/api/user/topics-levels');
+            const res = await api.get('/api/user/topics-levels');
             if (res.data.success) {
                 setTopicLevels(res.data.topics);
             }
@@ -111,7 +108,7 @@ export default function MyProfile() {
 
     async function updateTopicLevel(topicId, newLevel) {
         try {
-            const res = await axios.put('/api/user/topics-levels', { topicId, newLevel });
+            const res = await api.put('/api/user/topics-levels', { topicId, newLevel });
             if (res.data.success) {
                 alert(`עודכן רמה ל-${newLevel} בנושא: ${topicNames[topicId]}`);
                 fetchUserTopics();
@@ -126,7 +123,7 @@ export default function MyProfile() {
     async function saveChanges() {
         if (detailedSolutions !== origDetailedSolutions) {
             try {
-                await axios.put("/api/user/preferences", { detailedSolutions });
+                await api.put("/api/user/preferences", { detailedSolutions });
                 setOrigDetailedSolutions(detailedSolutions);
                 alert("ההעדפה נשמרה ✔");
             } catch (e) {

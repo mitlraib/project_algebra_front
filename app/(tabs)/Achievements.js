@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, ScrollView} from "react-native";
+import { View, Text, ScrollView, StyleSheet, Dimensions, Pressable } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import ProtectedRoute from "../../components/ProtectedRoute";
-import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
-import { HomeButton } from '../../src/utils/Utils';
+import { HomeButton } from '../utils/Utils';
 import {achievementsStyles} from '../../styles/styles';
 import {Colors} from '../../constants/Colors';
-import {URL} from '../../constants/Network';
+import { api } from  'components/api';
 
 
 const BADGES = {
@@ -64,7 +63,7 @@ export default function AchievementsPage() {
     useEffect(() => {
         async function fetchUser() {
             try {
-                const res = await axios.get("/api/user");
+                const res = await api.get("/api/user");
                 if (res.data.success) {
                     setUserId(res.data.userId);
                 }
@@ -80,7 +79,7 @@ export default function AchievementsPage() {
 
         async function fetchAchievements() {
             try {
-                const res = await axios.get(`${URL}/api/achievements/${userId}`);
+                const res = await api.get(`/api/achievements/${userId}`);
                 const data = res.data;
 
                 setStats(data);

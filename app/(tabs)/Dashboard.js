@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {View, Text, TouchableOpacity, ScrollView, Image, Dimensions, StyleSheet, Animated,} from 'react-native';
+import {View, Text, TouchableOpacity, Image, Animated,} from 'react-native';
 import { useRouter } from 'expo-router';
 import { ProgressBar } from 'react-native-paper';
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
-import axios from 'axios';
 import { storage } from '../utils/storage';
 import {dashboardStyles} from '../../styles/styles'
 import { Colors } from '../../constants/Colors';
+import { api } from  'components/api';
 
 
 export default function Dashboard() {
@@ -37,35 +37,30 @@ export default function Dashboard() {
 
     }, []);
 
-// 1. טעינת המשתמש והתקדמות
     useEffect(() => {
-        let isMounted = true;                    // דגל ביטול-מניעת setState אחרי unmount
+        let isMounted = true;
 
         (async () => {
             try {
-                // ── שולפים את הטוקן מה-storage (עובד גם בווב וגם במובייל) ──
+                // ── שולפים את הטוקן מה־storage ──
                 const token = await storage.get('userToken');
-
                 if (!token) {
-                    // אין טוקן? מחזירים למסך התחברות
                     if (isMounted) router.replace('/authentication/Login');
                     return;
                 }
 
                 // ── מבקשים את פרטי המשתמש מהשרת ──
-                const { data } = await axios.get('/api/user', { withCredentials: true });
-
+                const { data } = await api.get('/api/user');
                 if (!isMounted) return;
 
-                // אם הוא אדמין
                 setIsAdmin(data.success && data.role?.toUpperCase() === 'ADMIN');
 
-                // חישוב פרוגרס
+                // ── חישוב פרוגרס ──
                 const { level, totalExercises, totalMistakes } = data;
                 const correct     = totalExercises - totalMistakes;
                 const progressPct = totalExercises > 0 ? correct / totalExercises : 0;
-
                 setProgressData({ stars: correct, level, progress: progressPct });
+
             } catch (err) {
                 console.log('ERROR:', err);
                 if (isMounted) setIsAdmin(false);
@@ -74,19 +69,20 @@ export default function Dashboard() {
             }
         })();
 
-        return () => { isMounted = false; };     // ניקוי כשמרכיב יוצא
-    }, []); // ← רץ פעם אחת כשה-Dashboard נטען
+        return () => { isMounted = false; };
+    }, []);
+
 
 
 
 
     if (loading) {
-        return <Text>טעינה...</Text>; // או קומפוננטת טעינה אם יש לך כזו
+        return <Text>טעינה...</Text>;
     }
 
     const handleLogout = async () => {
         try {
-            await axios.post('/api/logout');
+            await api.post('/api/logout');
         } catch (e) {
             console.log('Logout error:', e);
         }

@@ -4,7 +4,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { Slot, Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import axios from 'axios';
+import { api } from '@/components/api';
 import { View, Text, ActivityIndicator } from 'react-native';
 import '../src/api/axiosConfig';
 
@@ -15,7 +15,7 @@ export default function RootLayout() {
 
     useEffect(() => {
         // נבדוק פעם אחת אם המשתמש מחובר
-        axios.get('/api/user')
+        api.get('/api/user')
             .then(res => {
                 if (res.data && res.data.success) {
                     setUser(res.data); // שומר את פרטי המשתמש
