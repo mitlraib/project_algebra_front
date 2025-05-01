@@ -14,7 +14,7 @@ import { api } from  '../../components/api';
 function formatFraction(numerator, denominator) {
     if (numerator === 0) return "0";
     if (numerator === denominator) return "1";
-    return `${numerator}/${denominator}`
+    return `${numerator}/${denominator}`}
 
 function Fraction({ numerator, denominator }) {
     return (
@@ -610,6 +610,6 @@ ${sign}   ${second}
             </ScrollView>
         </ProtectedRoute>
     );
-}}
+}
 
 
