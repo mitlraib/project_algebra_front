@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { storage } from '../utils/storage';
 import {dashboardStyles} from '../../styles/styles'
 import { Colors } from '../../constants/Colors';
-import { api } from  'components/api';
+import { api } from  '../../components/api';
 
 
 export default function Dashboard() {

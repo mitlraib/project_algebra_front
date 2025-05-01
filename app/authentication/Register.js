@@ -8,7 +8,7 @@ import { Spacing } from "../../constants/Sizes";
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/Colors';
-import { api } from  'components/api';
+import { api } from  '../../components/api';
 
 export const Register = () => {
     const router = useRouter();

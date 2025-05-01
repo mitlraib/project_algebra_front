@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { HomeButton } from '../../src/utils/Utils';
 import { Colors } from '../../constants/Colors';
 import {statisticsStyles} from '../../styles/styles'
-import { api } from  'components/api';
+import { api } from  '../../components/api';
 
 
 export default function Statistics() {

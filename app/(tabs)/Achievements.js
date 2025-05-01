@@ -6,7 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { HomeButton } from '../../src/utils/Utils';
 import {achievementsStyles} from '../../styles/styles';
 import {Colors} from '../../constants/Colors';
-import { api } from  'components/api';
+import { api } from  '../../components/api';
 
 
 const BADGES = {

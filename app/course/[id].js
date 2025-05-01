@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/Colors';
 import {exercisePageStyles} from '../../styles/styles'
-import { api } from  'components/api';
+import { api } from  '../../components/api';
 
 
 function formatFraction(numerator, denominator) {

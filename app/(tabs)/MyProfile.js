@@ -9,7 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import {myProfileStyles} from '../../styles/styles';
 import { HomeButton } from '../../src/utils/Utils';
 import { Colors } from '../../constants/Colors';
-import { api } from  'components/api';
+import { api } from  '../../components/api';
 
 
 export default function MyProfile() {
