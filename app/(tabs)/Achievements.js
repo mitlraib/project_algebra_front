@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet, Dimensions, Pressable } from "react
 import { FontAwesome } from "@expo/vector-icons";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { LinearGradient } from "expo-linear-gradient";
-import { HomeButton } from '../utils/Utils';
+import { HomeButton } from '../../src/utils/Utils';
 import {achievementsStyles} from '../../styles/styles';
 import {Colors} from '../../constants/Colors';
 import { api } from  'components/api';
