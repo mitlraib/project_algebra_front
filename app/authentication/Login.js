@@ -2,14 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView } from 'react-native';
-import { useRouter, useRootNavigationState } from 'expo-router';
+import { useRootNavigationState } from 'expo-router';
 import { Spacing } from '@/constants/Sizes';
 import {authStyles, dashboardStyles} from '../../styles/styles';
 import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
-import Cookies from 'js-cookie';
+import { storage } from '../utils/storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/Colors';
+import {URL} from "../../constants/Network";
+import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
 
 const Login = () => {
     const [mail, setMail] = useState('');
@@ -23,11 +26,16 @@ const Login = () => {
 
     useEffect(() => {
         if (!navigationState?.key) return;
-        const userToken = Cookies.get('userToken');
-        if (userToken) {
-            router.replace('/(tabs)/Dashboard');
-        }
+
+        (async () => {
+            const userToken = await storage.get('userToken');   // ⬅️  הקריאה הנכונה
+
+            if (userToken) {
+                router.replace('(tabs)/Dashboard');
+            }
+        })();
     }, [navigationState?.key, router]);
+
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -36,6 +44,9 @@ const Login = () => {
     const moveToRegistration = () => {
         router.push('/authentication/Register');
     };
+
+
+
 
     const handleLogin = async () => {
         setErrors({ ...errors, form: '' });
@@ -47,23 +58,27 @@ const Login = () => {
 
         try {
             const loginData = { mail, password };
-            const response = await axios.post('http://localhost:8080/api/login', loginData);
 
-            if (response.data.success) {
+            const response = await axios.post(`${URL}/api/login`, loginData, {
+                validateStatus: () => true, // ✅ זה מונע כניסה אוטומטית ל־catch
+            });
+
+            console.log("Status:", response.status);
+            console.log("Response data:", response.data);
+
+            if (response.status === 200 && response.data.success) {
                 alert("ההתחברות הצליחה!");
-                Cookies.set('userToken', response.data.token, { expires: 7 });
+                await storage.set('userToken', response.data.token);   // אין expires במובייל
                 setMail('');
                 setPassword('');
-                router.replace('/(tabs)/Dashboard');
+                router.replace('(tabs)/Dashboard');
             } else {
-                setErrors({ ...errors, form: response.data.message || 'תקלה לא ידועה' });
+                setErrors({ ...errors, form: response.data.message || 'שגיאה בהתחברות' });
             }
+
         } catch (error) {
-            if (error.response && error.response.data) {
-                setErrors({ ...errors, form: error.response.data.message });
-            } else {
-                setErrors({ ...errors, form: 'שגיאה כללית בשרת' });
-            }
+            console.error("שגיאה ב-catch:", error);
+            setErrors({ ...errors, form: 'שגיאה כללית בשרת' });
         }
     };
 

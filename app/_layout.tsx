@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { View, Text, ActivityIndicator } from 'react-native';
+import '../src/api/axiosConfig';
+
 
 export default function RootLayout() {
     const [authChecked, setAuthChecked] = useState(false);

@@ -5,10 +5,10 @@ import { Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
-import { HomeButton } from '../utils/Utils';
+import { HomeButton } from '../../src/utils/Utils';
 import { Colors } from '../../constants/Colors';
 import {statisticsStyles} from '../../styles/styles'
-
+import {URL} from '../../constants/Network';
 
 
 export default function Statistics() {
@@ -21,8 +21,8 @@ export default function Statistics() {
         const fetchData = async () => {
             try {
                 const [overallRes, topicRes] = await Promise.all([
-                    axios.get('http://localhost:8080/api/statistics'),
-                    axios.get('http://localhost:8080/api/statistics/by-topic'),
+                    axios.get(`${URL}/api/statistics`),
+                    axios.get(`${URL}/api/statistics/by-topic'`),
                 ]);
                 setOverallStats(overallRes.data);
                 setTopicStats(topicRes.data);

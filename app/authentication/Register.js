@@ -9,6 +9,7 @@ import axios from "axios";
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/Colors';
+import {URL} from "../../constants/Network";
 
 export const Register = () => {
     const router = useRouter();
@@ -110,7 +111,7 @@ export const Register = () => {
 
         try {
             const userData = { firstName, lastName, mail, password };
-            const response = await axios.post('http://localhost:8080/api/register', userData);
+            const response = await axios.post(`${URL}/api/register`, userData);
 
             if (response.data.success) {
                 alert( "ההרשמה הצליחה!");

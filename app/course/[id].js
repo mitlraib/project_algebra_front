@@ -9,9 +9,10 @@ import axios from "axios";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/Colors';
 import {exercisePageStyles} from '../../styles/styles'
+import {URL} from '../../constants/Network';
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://localhost:8080";
+axios.defaults.baseURL = URL;
 
 function formatFraction(numerator, denominator) {
     if (numerator === 0) return "0";

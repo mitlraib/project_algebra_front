@@ -8,10 +8,11 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {myProfileStyles, dashboardStyles} from '../../styles/styles';
-import { HomeButton } from '../utils/Utils';
+import { HomeButton } from '../../src/utils/Utils';
 import { Colors } from '../../constants/Colors';
+import {URL} from '../../constants/Network';
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = URL;
 
 
 export default function MyProfile() {

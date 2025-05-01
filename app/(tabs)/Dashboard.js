@@ -6,7 +6,7 @@ import { FontAwesome, Feather } from '@expo/vector-icons';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import { storage } from '../utils/storage';
 import {dashboardStyles} from '../../styles/styles'
 import { Colors } from '../../constants/Colors';
 
@@ -37,35 +37,48 @@ export default function Dashboard() {
 
     }, []);
 
+// 1. טעינת המשתמש והתקדמות
     useEffect(() => {
-        const token = Cookies.get('userToken');
-        if (!token) {
-            // נשתמש ב-setTimeout קטן כדי לא לעשות ניווט מיידי
-            setTimeout(() => {
-                router.replace('/authentication/Login');
-            }, 0);
-            return;
-        }
+        let isMounted = true;                    // דגל ביטול-מניעת setState אחרי unmount
 
-        axios.get('/api/user', { withCredentials: true })
-            .then(response => {
-                const data = response.data;
-                if (data.success && data.role?.toUpperCase() === "ADMIN") {
-                    setIsAdmin(true);
-                } else {
-                    setIsAdmin(false);
+        (async () => {
+            try {
+                // ── שולפים את הטוקן מה-storage (עובד גם בווב וגם במובייל) ──
+                const token = await storage.get('userToken');
+
+                if (!token) {
+                    // אין טוקן? מחזירים למסך התחברות
+                    if (isMounted) router.replace('/authentication/Login');
+                    return;
                 }
+
+                // ── מבקשים את פרטי המשתמש מהשרת ──
+                const { data } = await axios.get('/api/user', { withCredentials: true });
+
+                if (!isMounted) return;
+
+                // אם הוא אדמין
+                setIsAdmin(data.success && data.role?.toUpperCase() === 'ADMIN');
+
+                // חישוב פרוגרס
                 const { level, totalExercises, totalMistakes } = data;
-                const correctAnswers = totalExercises - totalMistakes;
-                const progress = totalExercises > 0 ? correctAnswers / totalExercises : 0;
-                setProgressData({ stars: correctAnswers, level, progress });
-            })
-            .catch(error => {
-                console.log("ERROR:", error);
-                setIsAdmin(false);
-            })
-            .finally(() => setLoading(false));
-    }, []);
+                const correct     = totalExercises - totalMistakes;
+                const progressPct = totalExercises > 0 ? correct / totalExercises : 0;
+
+                setProgressData({ stars: correct, level, progress: progressPct });
+            } catch (err) {
+                console.log('ERROR:', err);
+                if (isMounted) setIsAdmin(false);
+            } finally {
+                if (isMounted) setLoading(false);
+            }
+        })();
+
+        return () => { isMounted = false; };     // ניקוי כשמרכיב יוצא
+    }, []); // ← רץ פעם אחת כשה-Dashboard נטען
+
+
+
 
     if (loading) {
         return <Text>טעינה...</Text>; // או קומפוננטת טעינה אם יש לך כזו
@@ -77,9 +90,11 @@ export default function Dashboard() {
         } catch (e) {
             console.log('Logout error:', e);
         }
-        Cookies.remove('userToken');
-        router.replace('/authentication/Login');
+        await storage.remove('userToken');        // מוחקים את הטוקן מהמכשיר
+        router.replace('/authentication/Login');  // חזרה למסך התחברות
     };
+
+
 
     return (
         <ProtectedRoute requireAuth={true}>
@@ -127,7 +142,7 @@ export default function Dashboard() {
                     <View style={dashboardStyles.columnWrapper}>
                     <View style={dashboardStyles.box}>
                         <View style={dashboardStyles.iconCircle}>
-                            <Feather name="watch" size={24} color={Colors.accent} />
+                            <Feather name="watch" size={24} co  lor={Colors.accent} />
                         </View>
                         <Text style={dashboardStyles.title}>אימון מרתון</Text>
                         <Text style={dashboardStyles.marathonDescription}>אימון מהיר על כל החומר על פי רמתך</Text>
