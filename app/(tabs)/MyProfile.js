@@ -1,15 +1,15 @@
 //MyProfile
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, Pressable, Switch, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import ProtectedRoute from '@/components/ProtectedRoute';
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { View, Text, Pressable, Switch, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import {myProfileStyles} from '../../styles/styles';
 import { HomeButton } from '../../src/utils/Utils';
 import { Colors } from '../../constants/Colors';
-import { api } from  '../../components/api';
+import api  from  '../../src/api/axiosConfig';
 
 
 export default function MyProfile() {
@@ -20,7 +20,6 @@ export default function MyProfile() {
     const [email, setEmail] = useState('');
     const [level, setLevel] = useState(1);
     const [role, setRole] = useState();
-    const [language, setLanguage] = useState('עברית');
     const [detailedSolutions, setDetailedSolutions] = useState(true);
     const [topicLevels, setTopicLevels] = useState([]);
     const [totalExercises, setTotalExercises] = useState(0);

@@ -1,57 +1,49 @@
-// RootLayout
+// app/_layout.tsx
 
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Slot, Redirect } from 'expo-router';
-import { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import { api } from '@/components/api';
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { Slot } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
+import  api  from  '../src/api/axiosConfig';
+import  storage  from './utils/storage';
 import '../src/api/axiosConfig';
-
 
 export default function RootLayout() {
     const [authChecked, setAuthChecked] = useState(false);
-    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        // נבדוק פעם אחת אם המשתמש מחובר
-        api.get('/api/user')
-            .then(res => {
-                if (res.data && res.data.success) {
-                    setUser(res.data); // שומר את פרטי המשתמש
-                } else {
-                    Cookies.remove('userToken');
-                    setUser(null);
+        // מגדירים פונקציה אסינכרונית ומייד מריצים אותה
+        (async () => {
+            try {
+                const { data } = await api.get('/api/user');
+                if (!data?.success) {
+                    // אין התחברות תקפה -> ננקה טוקן
+                    await storage.remove('userToken');
                 }
-            })
-            .catch(() => {
-                // לא מחובר או שגיאה
-                Cookies.remove('userToken');
-                setUser(null);
-            })
-            .finally(() => {
+                // אם data.success === true, אפשר לאחסן את נתוני המשתמש ב־global state אם רוצים
+            } catch (err) {
+                // שגיאה ב-API -> ננקה טוקן
+                await storage.remove('userToken');
+            } finally {
                 setAuthChecked(true);
-            });
+            }
+        })();
     }, []);
 
+    // בזמן הטעינה – נציג גלגל מסתובב
     if (!authChecked) {
-        // בזמן שהבדיקה מתבצעת
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator size="large" color="#000" />
+                <ActivityIndicator size="large" color={DefaultTheme.colors.text} />
                 <Text>טוען...</Text>
             </View>
         );
     }
 
-    // בשלב הזה, authChecked=true, ויש לנו user=null או user={...}.
+    // ברגע שהבדיקה הסתיימה, נמשיך ל־Slot (כל המסכים עטופים כאן)
     return (
         <ThemeProvider value={DefaultTheme}>
-            {/* ה-Slot ירנדר את שאר המסכים */}
             <Slot />
         </ThemeProvider>
     );
 }
-
-
-//end of  RootLayout

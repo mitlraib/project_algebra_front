@@ -1,14 +1,15 @@
+// /app/(tabs)/Dashboard
 import React, { useEffect, useState, useRef } from 'react';
 import {View, Text, TouchableOpacity, Image, Animated,} from 'react-native';
 import { useRouter } from 'expo-router';
 import { ProgressBar } from 'react-native-paper';
 import { FontAwesome, Feather } from '@expo/vector-icons';
-import ProtectedRoute from '@/components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
-import { storage } from '../utils/storage';
+import ProtectedRoute from '../../components/ProtectedRoute';
+import  storage  from '../utils/storage';
 import {dashboardStyles} from '../../styles/styles'
 import { Colors } from '../../constants/Colors';
-import { api } from  '../../components/api';
+import  api  from  '../../src/api/axiosConfig';
 
 
 export default function Dashboard() {
@@ -81,11 +82,7 @@ export default function Dashboard() {
     }
 
     const handleLogout = async () => {
-        try {
-            await api.post('/api/logout');
-        } catch (e) {
-            console.log('Logout error:', e);
-        }
+
         await storage.remove('userToken');        // מוחקים את הטוקן מהמכשיר
         router.replace('/authentication/Login');  // חזרה למסך התחברות
     };

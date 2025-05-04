@@ -1,23 +1,22 @@
-//Login
+// /app/authentication/Login
 
 import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, TextInput, Pressable, TouchableOpacity, ScrollView } from 'react-native';
 import { useRootNavigationState } from 'expo-router';
-import { Spacing } from '@/constants/Sizes';
-import {authStyles, dashboardStyles} from '../../styles/styles';
-import ProtectedRoute from '../../components/ProtectedRoute';
-import { storage } from '../utils/storage';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
-import { api } from  '../../components/api';
+import { LinearGradient } from 'expo-linear-gradient';
+import ProtectedRoute from '../../components/ProtectedRoute';
+import { Spacing } from '../../constants/Sizes';
+import {authStyles, dashboardStyles} from '../../styles/styles';
+import storage  from '../utils/storage';
+import { Colors } from '../../constants/Colors';
+import  api  from  '../../src/api/axiosConfig';
 
 
 const Login = () => {
     const [mail, setMail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [hovered, setHovered] = useState(false);
     const [errors, setErrors] = useState({ mail: '', password: '', form: '' });
 
     const router = useRouter();

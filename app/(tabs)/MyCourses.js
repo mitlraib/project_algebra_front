@@ -1,19 +1,14 @@
+//(tabs)/MyCourses
 import React from 'react';
-import { View, Text, Pressable, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { View, Text, Pressable, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import ProtectedRoute from '../../components/ProtectedRoute';
-import { courses } from '../../constants/CoursesNames';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import ProtectedRoute from '../../components/ProtectedRoute';
+import { courses } from '../../constants/CoursesNames';
 import {myCoursesStyles} from '../../styles/styles'
 import { HomeButton } from '../../src/utils/Utils';
 import { Colors } from '../../constants/Colors';
-
-
-
-const width = Dimensions.get('window').width;
-
-
 
 const topicIcons = {
     "חיבור": "plus-circle",

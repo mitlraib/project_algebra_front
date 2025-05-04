@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Pressable, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import  { authStyles, dashboardStyles } from '../../styles/styles';
 import { Spacing } from "../../constants/Sizes";
 import ProtectedRoute from '../../components/ProtectedRoute';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Colors } from '@/constants/Colors';
-import { api } from  '../../components/api';
+import { Colors } from '../../constants/Colors';
+import  api  from  '../../src/api/axiosConfig';
 
 export const Register = () => {
     const router = useRouter();

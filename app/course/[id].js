@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import {View, Text, Pressable, ScrollView, Modal, Animated, Vibration,} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import SolutionVisualization from "@/components/SolutionVisualization";
-import Cookies from "js-cookie";
 import { LinearGradient } from 'expo-linear-gradient';
+import ProtectedRoute from "../../components/ProtectedRoute";
+import SolutionVisualization from "../../components/SolutionVisualization";
+import  storage  from '../utils/storage';
 import { Colors } from '../../constants/Colors';
 import {exercisePageStyles} from '../../styles/styles'
-import { api } from  '../../components/api';
+import  api  from  '../../src/api/axiosConfig';
 
 
 function formatFraction(numerator, denominator) {
@@ -121,8 +121,9 @@ export default function StyledCoursePage() {
 
         } catch (err) {
             if (err.response?.status === 401) {
-                Cookies.remove("userToken");
-                router.replace("/authentication/Login");
+                await storage.remove('userToken');
+                router.replace('/authentication/Login');
+
             }
         }
     }
@@ -155,8 +156,9 @@ export default function StyledCoursePage() {
             setAnswerFeedbackColor(null);
         } catch (err) {
             if (err.response?.status === 401) {
-                Cookies.remove("userToken");
-                router.replace("/authentication/Login");
+                await storage.remove('userToken');
+                router.replace('/authentication/Login');
+
             } else {
                 console.log("Error fetching random question:", err);
             }

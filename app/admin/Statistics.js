@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import {View, Text, FlatList, ActivityIndicator, ScrollView,} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import ProtectedRoute from '../../components/ProtectedRoute';
 import { LinearGradient } from 'expo-linear-gradient';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import { HomeButton } from '../../src/utils/Utils';
 import { Colors } from '../../constants/Colors';
 import {statisticsStyles} from '../../styles/styles'
-import { api } from  '../../components/api';
+import  api  from  '../../src/api/axiosConfig';
 
 
 export default function Statistics() {

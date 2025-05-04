@@ -1,100 +1,82 @@
-//ProtectedRoute
-
-import React, {useEffect, useRef, useState} from 'react';
+// /components/ProtectedRoute.js
+import React, { useEffect, useRef, useState } from 'react';
 import { Redirect } from 'expo-router';
-import Cookies from 'js-cookie';
-import {dashboardStyles} from "../styles/styles";
 import { View, Animated, Text } from 'react-native';
-import { api } from './api';
-
+import  api  from  '../src/api/axiosConfig';
+import storage from '../app/utils/storage';
+import { dashboardStyles } from '../styles/styles';
 
 export default function ProtectedRoute({ children, requireAuth }) {
     const [isInit, setIsInit] = useState(false);
-    const [user, setUser] = useState(null);
+    const [user, setUser]     = useState(null);
     const floatAnim = useRef(new Animated.Value(0)).current;
 
-
     useEffect(() => {
-        // נבדוק /api/user רק אם ממש צריך (או אם requireAuth=true)
-        // או שאפשר תמיד לבדוק.
-        if (requireAuth) {
-            api.get('/api/user')
-                .then(res => {
-                    if (res.data && res.data.success) {
-                        setUser(res.data);
-                    } else {
-                        Cookies.remove('userToken');
-                        setUser(null);
-                    }
-                })
-                .catch(() => {
-                    Cookies.remove('userToken');
+        async function checkAuth() {
+            // אם הדף לא דורש auth, נסתיים מיד
+            if (!requireAuth) {
+                setIsInit(true);
+                return;
+            }
+
+            try {
+                const { data } = await api.get('/api/user');
+                if (data.success) {
+                    setUser(data);
+                } else {
+                    await storage.remove('userToken');
                     setUser(null);
-                })
-                .finally(() => {
-                    setIsInit(true);
-                });
-        } else {
-            // עמוד שלא דורש auth
-            setIsInit(true);
+                }
+            } catch (err) {
+                await storage.remove('userToken');
+                setUser(null);
+            } finally {
+                setIsInit(true);
+            }
         }
+
+        checkAuth();
     }, [requireAuth]);
 
+    // האנימציה של הסימנים הכיפיים
     useEffect(() => {
         Animated.loop(
             Animated.sequence([
-                Animated.timing(floatAnim, {
-                    toValue: -10,
-                    duration: 2000,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(floatAnim, {
-                    toValue: 0,
-                    duration: 2000,
-                    useNativeDriver: true,
-                }),
+                Animated.timing(floatAnim, { toValue: -10, duration: 2000, useNativeDriver: true }),
+                Animated.timing(floatAnim, { toValue:   0, duration: 2000, useNativeDriver: true }),
             ])
         ).start();
     }, []);
 
-    if (!isInit && requireAuth) {
-        // בזמן הטעינה
-        return null;
-    }
+    // בזמן הטעינה בדפים שדורשים auth
+    if (requireAuth && !isInit) return null;
 
-    // אם הדף דורש התחברות אבל אין user => להפנות ל-login
+    // אם הדף דורש auth ואין user => נסטה למסך הלוגין
     if (requireAuth && !user) {
         return <Redirect href="/authentication/Login" />;
     }
 
-    // אם הדף לא דורש התחברות, אבל יש user => להפנות ל-dashboard
+    // אם הדף **לא** דורש auth, ויש user => כבר מחובר, נקפוץ לדשבורד
     if (!requireAuth && user) {
         return <Redirect href="/(tabs)/Dashboard" />;
     }
 
-
-
-    // מציגים את הילדים כרגיל
+    // אחרת, מציגים את מה שיש בתוך ה־ProtectedRoute
     return (
         <View style={{ flex: 1 }}>
             {children}
-            {/* הסימנים המרחפים */}
             <Animated.View
                 style={[dashboardStyles.floatingSymbol, { transform: [{ translateY: floatAnim }] }]}
                 pointerEvents="none"
             >
-                <Text style={dashboardStyles.floatingText} pointerEvents="none">➕</Text>
+                <Text style={dashboardStyles.floatingText}>➕</Text>
             </Animated.View>
-
             <Animated.View
                 style={[dashboardStyles.floatingSymbol, dashboardStyles.bottomLeft, { transform: [{ translateY: floatAnim }] }]}
                 pointerEvents="none"
             >
-                <Text style={dashboardStyles.floatingText} pointerEvents="none">➗</Text>
+                <Text style={dashboardStyles.floatingText}>➗</Text>
             </Animated.View>
-
         </View>
     );
 }
-
-//end of ProtectedRoute

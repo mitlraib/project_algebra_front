@@ -1,12 +1,14 @@
+// /(tabs)/Achievements
+
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, ScrollView, StyleSheet, Dimensions, Pressable } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import ProtectedRoute from "../../components/ProtectedRoute";
 import { LinearGradient } from "expo-linear-gradient";
+import ProtectedRoute from "../../components/ProtectedRoute";
 import { HomeButton } from '../../src/utils/Utils';
 import {achievementsStyles} from '../../styles/styles';
 import {Colors} from '../../constants/Colors';
-import { api } from  '../../components/api';
+import api  from  '../../src/api/axiosConfig';
 
 
 const BADGES = {

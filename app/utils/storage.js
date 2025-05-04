@@ -1,21 +1,31 @@
+// /app/utils/storage.js
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Cookie from 'js-cookie';     // נשאר לשימוש ב-Web
 
-export const storage = {
-    async set(key, value, options) {
-        return Platform.OS === 'web'
-            ? Cookie.set(key, value, options)
-            : AsyncStorage.setItem(key, value);
+const storage = {
+    async set(key, value) {
+        if (Platform.OS === 'web') {
+            localStorage.setItem(key, JSON.stringify(value));
+        } else {
+            await AsyncStorage.setItem(key, JSON.stringify(value));
+        }
     },
     async get(key) {
-        return Platform.OS === 'web'
-            ? Cookie.get(key)
-            : AsyncStorage.getItem(key);
+        if (Platform.OS === 'web') {
+            const json = localStorage.getItem(key);
+            return json ? JSON.parse(json) : null;
+        } else {
+            const json = await AsyncStorage.getItem(key);
+            return json ? JSON.parse(json) : null;
+        }
     },
     async remove(key) {
-        return Platform.OS === 'web'
-            ? Cookie.remove(key)
-            : AsyncStorage.removeItem(key);
+        if (Platform.OS === 'web') {
+            localStorage.removeItem(key);
+        } else {
+            await AsyncStorage.removeItem(key);
+        }
     },
 };
+
+export default storage;

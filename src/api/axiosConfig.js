@@ -1,15 +1,27 @@
 // src/api/axiosConfig.js
 import axios from 'axios';
+import storage from '../../app/utils/storage';
 import { Platform } from 'react-native';
 
-// כתובת ה-Backend – אנדרואיד אמולאטור צריך 10.0.2.2
+// production בפרודקשן ישתמש ב־env, בפיתוח ב־emulator/local
 const BASE_URL =
-    Platform.OS === 'android'
+    process.env.EXPO_PUBLIC_API_BASE_URL
+    ?? (Platform.OS === 'android'
         ? 'http://10.0.2.2:8080'
-        : 'http://localhost:8080';
+        : 'http://localhost:8080');
 
-// instance יחידה של axios
-export const api = axios.create({
+const api = axios.create({
     baseURL: BASE_URL,
-    withCredentials: true,    // ⬅️ שולח ומקבל cookies
+    withCredentials: false,   // אנחנו לא עובדים עם עוגיות, אלא עם ה־Authorization header
 });
+
+// שולחים אוטומטית לכל קריאה את ה־Bearer token
+api.interceptors.request.use(async config => {
+    const token = await storage.get('userToken');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+export default api;
