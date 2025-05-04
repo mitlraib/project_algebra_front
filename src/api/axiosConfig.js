@@ -15,12 +15,21 @@ const api = axios.create({
     withCredentials: false,   // אנחנו לא עובדים עם עוגיות, אלא עם ה־Authorization header
 });
 
-// שולחים אוטומטית לכל קריאה את ה־Bearer token
+
 api.interceptors.request.use(async config => {
+    // 1. שולפים את הטוקן
     const token = await storage.get('userToken');
+
+    // 2. מוסיפים כאן את הלוג כדי לראות מה הקונסול שולח
+    console.log('sending token:', token);
+
+    // 3. אם יש טוקן, דואגים להוסיף אותו ל־Authorization header
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+    const saved = await storage.get('userToken');
+    console.log('saved token', saved);        // ← אמור להחזיר מחרוזת JWT
+
     return config;
 });
 
