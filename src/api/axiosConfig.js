@@ -10,14 +10,18 @@ const BASE_URL =
         ? 'http://10.0.2.2:8080'
         : 'http://localhost:8080');
 
+
 const api = axios.create({
     baseURL: BASE_URL,
+
     withCredentials: false,   // אנחנו לא עובדים עם עוגיות, אלא עם ה־Authorization header
 });
 
 
 api.interceptors.request.use(async config => {
     // 1. שולפים את הטוקן
+    console.log('BASE_URL =', BASE_URL);
+
     const token = await storage.get('userToken');
 
     // 2. מוסיפים כאן את הלוג כדי לראות מה הקונסול שולח
