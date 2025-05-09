@@ -189,9 +189,13 @@ export default function StyledCoursePage() {
 
         try {
             const userAnswerValue = question.answers[selectedAnswer];
-            const res = await api.post("/api/exercises/answer", { answer: userAnswerValue });
+            const res = await api.post("/api/exercises/answer", {
+                answer: userAnswerValue,
+                question: question
+            });
 
-                setShowResult(true);
+
+            setShowResult(true);
 
             const correct = res.data.isCorrect;
             const correctAnswer = res.data.correctAnswer || question.correctAnswer;
