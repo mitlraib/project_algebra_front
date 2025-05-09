@@ -54,7 +54,8 @@ export default function Login() {
     /**
      * Submit credentials → receive JWT → save & redirect.
      */
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {debugger;
+        e.preventDefault();
         setErrors((e) => ({ ...e, form: '' }));
 
         if (!mail || !password) {
@@ -65,8 +66,8 @@ export default function Login() {
         try {
             const { data } = await api.post('/api/login', { mail, password });
             console.log('login response', data);
-
             if (data.success && data.token) {
+
                 await storage.set('userToken', data.token);
                 setMail('');
                 setPassword('');
