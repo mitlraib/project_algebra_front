@@ -223,7 +223,7 @@ export default function StyledCoursePage() {
                 ...prev,
                 {
                     question: `${question.first} ${convertSign(question.operationSign)} ${question.second}`,
-                    userAnswer: question.answers[selectedAnswer],
+                    userAnswer: question.answers[selectedAnswer], // שמירה על הערך המקודד
                     correct,
                 },
             ]);
@@ -593,7 +593,7 @@ ${sign}   ${second}
                     <Text style={exercisePageStyles.sectionTitle}>היסטוריית תשובות:</Text>
                     {history.map((item, i) => (
                         <Text key={i} style={{ color: item.correct ? 'green' : 'red', textAlign: 'center' }}>
-                            {item.question} | ענית: {decodeFraction(item.userAnswer)} {item.correct ? '✓' : '✗'}
+                            {item.question} | ענית: {item.userAnswer} {item.correct ? '✓' : '✗'}
                         </Text>
 
                     ))}
