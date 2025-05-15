@@ -1,67 +1,38 @@
 // /components/ProtectedRoute.js
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useContext, useState } from 'react';
 import { Redirect } from 'expo-router';
 import { View, Animated, Text } from 'react-native';
-import  api  from  '../src/api/axiosConfig';
-import storage from '../app/utils/storage';
+import { AuthContext } from './ui/AuthProvider';
 import { dashboardStyles } from '../styles/styles';
 
 export default function ProtectedRoute({ children, requireAuth }) {
-    const [isInit, setIsInit] = useState(false);
-    const [user, setUser]     = useState(null);
+    const { user, isInit } = useContext(AuthContext);
     const floatAnim = useRef(new Animated.Value(0)).current;
+    const [redirected, setRedirected] = useState(false); // ✅ מנגנון מניעת לולאה
 
-    useEffect(() => {
-        async function checkAuth() {
-            // אם הדף לא דורש auth, נסתיים מיד
-            if (!requireAuth) {
-                setIsInit(true);
-                return;
-            }
-
-            try {
-                const { data } = await api.get('/api/user');
-                if (data.success) {
-                    setUser(data);
-                } else {
-                    await storage.remove('userToken');
-                    setUser(null);
-                }
-            } catch (err) {
-                await storage.remove('userToken');
-                setUser(null);
-            } finally {
-                setIsInit(true);
-            }
-        }
-
-        checkAuth();
-    }, [requireAuth]);
-
-    // האנימציה של הסימנים הכיפיים
     useEffect(() => {
         Animated.loop(
             Animated.sequence([
                 Animated.timing(floatAnim, { toValue: -10, duration: 2000, useNativeDriver: true }),
-                Animated.timing(floatAnim, { toValue:   0, duration: 2000, useNativeDriver: true }),
+                Animated.timing(floatAnim, { toValue: 0, duration: 2000, useNativeDriver: true }),
             ])
         ).start();
     }, []);
 
-    // בזמן הטעינה בדפים שדורשים auth
-    if (requireAuth && !isInit) return null;
+    // ✅ אם עדיין בטעינה, לא מציגים כלום
+    if (!isInit) return null;
 
-    // אם הדף דורש auth ואין user => נסטה למסך הלוגין
-    if (requireAuth && !user) {
+    // ✅ מנגנון מניעת לולאה: רק פעם אחת נבצע הפניה
+    if (requireAuth && !user && !redirected) {
+        setRedirected(true);
         return <Redirect href="/authentication/Login" />;
     }
 
-    // אם הדף **לא** דורש auth, ויש user => כבר מחובר, נקפוץ לדשבורד
-    if (!requireAuth && user) {
+    if (!requireAuth && user && !redirected) {
+        setRedirected(true);
         return <Redirect href="/(tabs)/Dashboard" />;
     }
 
-    // אחרת, מציגים את מה שיש בתוך ה־ProtectedRoute
     return (
         <View style={{ flex: 1 }}>
             {children}

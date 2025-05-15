@@ -223,7 +223,7 @@ export default function StyledCoursePage() {
                 ...prev,
                 {
                     question: `${question.first} ${convertSign(question.operationSign)} ${question.second}`,
-                    userAnswer: question.answers[selectedAnswer], // שמירה על הערך המקודד
+                    userAnswer: decodeFraction(question.answers[selectedAnswer]), // שימוש בפונקציית decodeFraction להצגה נכונה
                     correct,
                 },
             ]);
