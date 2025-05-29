@@ -1,6 +1,6 @@
 // /app/(tabs)/Dashboard
 import React, { useEffect, useState, useRef } from 'react';
-import {View, Text, TouchableOpacity, Image, Animated,} from 'react-native';
+import {View, Text, TouchableOpacity, Image,ScrollView, Animated,} from 'react-native';
 import { useRouter } from 'expo-router';
 import { ProgressBar } from 'react-native-paper';
 import { FontAwesome, Feather } from '@expo/vector-icons';
@@ -43,27 +43,29 @@ export default function Dashboard() {
 
         (async () => {
             try {
-                // ── שולפים את הטוקן מה־storage ──
+                console.time("⏱️ getUser");
+
                 const token = await storage.get('userToken');
                 if (!token) {
                     if (isMounted) router.replace('/authentication/Login');
                     return;
                 }
 
-                // ── מבקשים את פרטי המשתמש מהשרת ──
                 const { data } = await api.get('/api/user');
-                if (!isMounted) return;
+                console.log("👤 קיבלתי את פרטי המשתמש:", data);
+                console.timeEnd("⏱️ getUser");
 
+                if (!isMounted) return;
                 setIsAdmin(data.success && data.role?.toUpperCase() === 'ADMIN');
 
-                // ── חישוב פרוגרס ──
                 const { level, totalExercises, totalMistakes } = data;
                 const correct     = totalExercises - totalMistakes;
                 const progressPct = totalExercises > 0 ? correct / totalExercises : 0;
                 setProgressData({ stars: correct, level, progress: progressPct });
 
             } catch (err) {
-                console.log('ERROR:', err);
+                console.timeEnd("⏱️ getUser");
+                console.error("❌ שגיאה ב־getUser:", err);
                 if (isMounted) setIsAdmin(false);
             } finally {
                 if (isMounted) setLoading(false);
@@ -90,7 +92,9 @@ export default function Dashboard() {
 
 
     return (
+
         <ProtectedRoute requireAuth={true}>
+            <ScrollView>
             <View contentContainerStyle={dashboardStyles.scrollContainer}>
                 <View style={dashboardStyles.header}>
                     {/* לוגו מצד שמאל */}
@@ -135,7 +139,7 @@ export default function Dashboard() {
                     <View style={dashboardStyles.columnWrapper}>
                     <View style={dashboardStyles.box}>
                         <View style={dashboardStyles.iconCircle}>
-                            <Feather name="watch" size={24} co  lor={Colors.accent} />
+                            <Feather name="watch" size={24} color={Colors.accent} />
                         </View>
                         <Text style={dashboardStyles.title}>אימון מרתון</Text>
                         <Text style={dashboardStyles.marathonDescription}>אימון מהיר על כל החומר על פי רמתך</Text>
@@ -248,6 +252,7 @@ export default function Dashboard() {
                 </View>
 
             </View>
+            </ScrollView>
         </ProtectedRoute>
     );
 }

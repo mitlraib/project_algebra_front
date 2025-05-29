@@ -96,12 +96,15 @@ export default function StyledCoursePage() {
     }
 
     async function fetchNextQuestion(topicId) {
+        console.time("⏱️ fetchNextQuestion");
         try {
+            console.log("📤 שולחת בקשה לשרת עם topicId =", topicId);
             const res = await api.get(`/api/exercises/next?topicId=${topicId}`);
+            console.log("📥 קיבלתי תשובה:", res.data);
+            console.timeEnd("⏱️ fetchNextQuestion");
 
             const questionData = res.data;
-            setIsCheckDisabled(false); // מאפשר בדיקה בשאלה חדשה
-
+            setIsCheckDisabled(false); // מאפשר לחיצה על כפתור בדיקה
 
             questionData.text = generateQuestionText(
                 questionData.first,
@@ -110,7 +113,7 @@ export default function StyledCoursePage() {
                 myTopicLevel
             );
 
-            setQuestion(questionData); // <== רק אחרי שעדכנת
+            setQuestion(questionData);
             setSelectedAnswer(null);
             setShowResult(false);
             setResponseMessage("");
@@ -120,10 +123,15 @@ export default function StyledCoursePage() {
             setAnswerFeedbackColor(null);
 
         } catch (err) {
-            if (err.response?.status === 401) {
-                await storage.remove('userToken');
-                router.replace('/authentication/Login');
+            console.timeEnd("⏱️ fetchNextQuestion");
+            console.error("❌ שגיאה ב־fetchNextQuestion:", err);
 
+            // טיפול במשתמש לא מחובר
+            if (err.response?.status === 401) {
+                await storage.remove("userToken");
+                router.replace("/authentication/Login");
+            } else {
+                alert("שגיאה בשרת בעת טעינת שאלה");
             }
         }
     }
@@ -391,12 +399,14 @@ ${sign}   ${second}
     const isVisual = myTopicLevel <= 2;
 
     function decodeFraction(encoded) {
+        if (encoded < 1000) return encoded.toString(); // אם זה מספר רגיל, לא שבר
         const num = Math.floor(encoded / 1000);
         const den = encoded % 1000;
         if (den === 0) return '∞';
         if (num % den === 0) return `${num / den}`;
         return `${num}/${den}`;
     }
+
 
 
     function generateQuestionText(first, second, sign, topicLevel) {
