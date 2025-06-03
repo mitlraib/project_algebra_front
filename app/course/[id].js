@@ -603,8 +603,8 @@ ${sign}   ${second}
                 <View style={{ marginTop: 30, alignItems: 'center' }}>
                     <Text style={exercisePageStyles.sectionTitle}>היסטוריית תשובות:</Text>
                     {history.map((item, i) => (
-                        <Text key={i} style={{ color: item.correct ? 'green' : 'red', textAlign: 'center' }}>
-                            {item.question} | ענית: {item.userAnswer} {item.correct ? '✓' : '✗'}
+                        <Text key={i} style={{ color: item.correct ? 'green' : 'red', textAlign: 'center', writingDirection: 'rtl' }}>
+                            {item.question.split('').reverse().join('')} | ענית: {item.userAnswer} {item.correct ? '✓' : '✗'}
                         </Text>
 
                     ))}
