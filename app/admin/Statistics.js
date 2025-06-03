@@ -78,10 +78,10 @@ export default function Statistics() {
                         אחוז הצלחה ממוצע: {overallStats.successRate != null ? overallStats.successRate.toFixed(2) + '%' : 'אין נתונים'}
                     </Text>
                     <Text style={statisticsStyles.infoText}>
-                        הנושא הקשה ביותר: {overallStats.mostDifficultTopic != null ? `נושא #${overallStats.mostDifficultTopic}` : 'אין נתונים'}
+                        הנושא הקשה ביותר: {overallStats.mostDifficultTopic != null ? topicNames[overallStats.mostDifficultTopic] : 'אין נתונים'}
                     </Text>
                     <Text style={statisticsStyles.infoText}>
-                        הנושא הקל ביותר: {overallStats.easiestTopic != null ? `נושא #${overallStats.easiestTopic}` : 'אין נתונים'}
+                        הנושא הקל ביותר: {overallStats.easiestTopic != null ? topicNames[overallStats.easiestTopic] : 'אין נתונים'}
                     </Text>
                 </View>
 
