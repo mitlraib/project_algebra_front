@@ -604,7 +604,7 @@ ${sign}   ${second}
                     <Text style={exercisePageStyles.sectionTitle}>היסטוריית תשובות:</Text>
                     {history.map((item, i) => (
                         <Text key={i} style={{ color: item.correct ? 'green' : 'red', textAlign: 'center', writingDirection: 'rtl' }}>
-                            {item.question.split('').reverse().join('')} | ענית: {item.userAnswer} {item.correct ? '✓' : '✗'}
+                            {'\u200E' + item.question} | ענית: {item.userAnswer} {item.correct ? '✓' : '✗'}
                         </Text>
 
                     ))}
