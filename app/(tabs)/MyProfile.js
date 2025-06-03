@@ -10,6 +10,7 @@ import {myProfileStyles} from '../../styles/styles';
 import { HomeButton } from '../../src/utils/Utils';
 import { Colors } from '../../constants/Colors';
 import api  from  '../../src/api/axiosConfig';
+import { topicNames } from '../../constants/CoursesNames';
 
 
 export default function MyProfile() {
@@ -25,6 +26,7 @@ export default function MyProfile() {
     const [totalExercises, setTotalExercises] = useState(0);
     const [totalMistakes, setTotalMistakes] = useState(0);
     const [origDetailedSolutions, setOrigDetailedSolutions] = useState(true);
+
 
     const personalStats = [
         {
@@ -94,16 +96,6 @@ export default function MyProfile() {
         }
     }
 
-    const topicNames = {
-        1: "חיבור",
-        2: "חיסור",
-        3: "כפל",
-        4: "חילוק",
-        5: "חיבור שברים",
-        6: "חיסור שברים",
-        7: "כפל שברים",
-        8: "חילוק שברים"
-    };
 
     async function updateTopicLevel(topicId, newLevel) {
         try {

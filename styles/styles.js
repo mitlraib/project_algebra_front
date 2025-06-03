@@ -606,7 +606,7 @@ const dashboardStyles = StyleSheet.create({
         width: wp(40),
     },
     title: {
-        fontSize: 14,
+        fontSize: 20,
         fontWeight: 'bold',
         color: Colors.black,
         textAlign: 'center',

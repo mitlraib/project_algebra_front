@@ -20,3 +20,8 @@ export const courses = [
         ]
     }
 ];
+
+// נבנה גם מפת topicId -> name כדי להשתמש בקלות
+export const topicNames = Object.fromEntries(
+    courses.flatMap(course => course.topics.map(topic => [topic.id, topic.name]))
+);

@@ -8,7 +8,7 @@ import { HomeButton } from '../../src/utils/Utils';
 import { Colors } from '../../constants/Colors';
 import {statisticsStyles} from '../../styles/styles'
 import  api  from  '../../src/api/axiosConfig';
-
+import { topicNames } from '../../constants/CoursesNames';
 
 export default function Statistics() {
     const router = useRouter();
@@ -37,16 +37,7 @@ export default function Statistics() {
     }, []);
 
 
-    const topicNames = {
-        1: 'חיבור',
-        2: 'חיסור',
-        3: 'כפל',
-        4: 'חילוק',
-        5: 'חיבור שברים',
-        6: 'חיסור שברים',
-        7: 'כפל שברים',
-        8: 'חילוק שברים',
-    };
+
 
     const renderTopicItem = ({ item }) => (
         <LinearGradient colors={[Colors.light, Colors.grayish]} style={statisticsStyles.topicCard}>
