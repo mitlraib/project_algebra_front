@@ -19,8 +19,8 @@ export default function MyProfile() {
     const [isLoading, setIsLoading] = useState(true);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [level, setLevel] = useState(1);
-    const [role, setRole] = useState();
+    const [level, setLevel] = useState(0);
+    const [role, setRole] = useState('');
     const [detailedSolutions, setDetailedSolutions] = useState(true);
     const [topicLevels, setTopicLevels] = useState([]);
     const [totalExercises, setTotalExercises] = useState(0);
@@ -71,7 +71,7 @@ export default function MyProfile() {
             if (res.data && res.data.success) {
                 setName(`${res.data.firstName} ${res.data.lastName}`);
                 setEmail(res.data.mail);
-                setLevel(res.data.level || 1);
+                setLevel(res.data.level);
                 setRole(res.data.role);
                 setTotalExercises(res.data.totalExercises || 0);
                 setTotalMistakes(res.data.totalMistakes || 0);
@@ -103,6 +103,7 @@ export default function MyProfile() {
             if (res.data.success) {
                 alert(`עודכן רמה ל-${newLevel} בנושא: ${topicNames[topicId]}`);
                 fetchUserTopics();
+                fetchUserFromServer(); // ✅ כאן זה מביא את רמת המשתמש המעודכנת
             } else {
                 alert('לא ניתן לעדכן רמה');
             }

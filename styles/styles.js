@@ -610,6 +610,7 @@ const dashboardStyles = StyleSheet.create({
         fontWeight: 'bold',
         color: Colors.black,
         textAlign: 'center',
+        marginBottom: 16, // או יותר אם צריך
     },
     statisticsDescription: {
         fontSize: 14,
@@ -718,6 +719,7 @@ const dashboardStyles = StyleSheet.create({
         height: hp(25),
         borderRadius: 16,
         marginBottom: 16,
+        marginTop: 16, // כדי להרחיק מהכותרת
     },
     greetingText: {
         marginTop:10,
@@ -1392,6 +1394,13 @@ const exercisePageStyles = StyleSheet.create({
         marginTop: 40,
         fontSize: 18,
         color: Colors.secondary,
+    },
+    successIconBase: {
+        position: 'absolute',
+        top: 100,
+        left: '50%',
+        transform: [{ translateX: -50 }], // חלק קבוע
+        zIndex: 999,
     },
 });
 const homeButtonStyles = StyleSheet.create({

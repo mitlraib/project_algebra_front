@@ -1,7 +1,7 @@
 // Register.jsx
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Pressable, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import  { authStyles, dashboardStyles } from '../../styles/styles';
@@ -9,6 +9,7 @@ import { Spacing } from "../../constants/Sizes";
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { Colors } from '../../constants/Colors';
 import  api  from  '../../src/api/axiosConfig';
+
 
 export const Register = () => {
     const router = useRouter();
@@ -149,87 +150,89 @@ export const Register = () => {
 
     return (
         <ProtectedRoute requireAuth={false}>
-            <View contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-                <View style={{ marginBottom: 40, marginTop:30 }}>
-                    <LinearGradient
-                        colors={[Colors.primary, Colors.accent]}
-                        start={{ x: 1, y: 0 }}
-                        end={{ x: 0, y: 0 }}
-                        style={dashboardStyles.gradientTitleWrapper}
-                    >
-                        <Text style={dashboardStyles.gradientTitle}> MathJourney!</Text>
-                    </LinearGradient>
-                </View>
+            <ScrollView contentContainerStyle={authStyles.container}>
+                <View contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+                    <View style={{ marginBottom: 40, marginTop:30 }}>
+                        <LinearGradient
+                            colors={[Colors.primary, Colors.accent]}
+                            start={{ x: 1, y: 0 }}
+                            end={{ x: 0, y: 0 }}
+                            style={dashboardStyles.gradientTitleWrapper}
+                        >
+                            <Text style={dashboardStyles.gradientTitle}> MathJourney!</Text>
+                        </LinearGradient>
+                    </View>
 
-                <View style={authStyles.cardContainer}>
-                    <Text style={authStyles.bigBoldText}>הרשמה:</Text>
+                    <View style={authStyles.cardContainer}>
+                        <Text style={authStyles.bigBoldText}>הרשמה:</Text>
 
-                    <TextInput
-                        style={authStyles.loginInput}
-                        placeholder="שם פרטי"
-                        value={firstName}
-                        onChangeText={(text) => handleFieldChange('firstName', text)}
-                    />
-                    {errors.firstName ? <Text style={authStyles.errorText}>{errors.firstName}</Text> : null}
-
-                    <TextInput
-                        style={authStyles.loginInput}
-                        placeholder="שם משפחה"
-                        value={lastName}
-                        onChangeText={(text) => handleFieldChange('lastName', text)}
-                    />
-                    {errors.lastName ? <Text style={authStyles.errorText}>{errors.lastName}</Text> : null}
-
-                    <TextInput
-                        style={authStyles.loginInput}
-                        placeholder="אימייל"
-                        value={mail}
-                        onChangeText={(text) => handleFieldChange('mail', text)}
-                        keyboardType="email-address"
-                    />
-                    {errors.mail ? <Text style={authStyles.errorText}>{errors.mail}</Text> : null}
-
-                    <View style={authStyles.passwordWrapper}>
                         <TextInput
-                            style={authStyles.passwordInput}
-                            placeholder="סיסמה"
-                            value={password}
-                            onChangeText={(text) => handleFieldChange('password', text)}
+                            style={authStyles.loginInput}
+                            placeholder="שם פרטי"
+                            value={firstName}
+                            onChangeText={(text) => handleFieldChange('firstName', text)}
+                        />
+                        {errors.firstName ? <Text style={authStyles.errorText}>{errors.firstName}</Text> : null}
+
+                        <TextInput
+                            style={authStyles.loginInput}
+                            placeholder="שם משפחה"
+                            value={lastName}
+                            onChangeText={(text) => handleFieldChange('lastName', text)}
+                        />
+                        {errors.lastName ? <Text style={authStyles.errorText}>{errors.lastName}</Text> : null}
+
+                        <TextInput
+                            style={authStyles.loginInput}
+                            placeholder="אימייל"
+                            value={mail}
+                            onChangeText={(text) => handleFieldChange('mail', text)}
+                            keyboardType="email-address"
+                        />
+                        {errors.mail ? <Text style={authStyles.errorText}>{errors.mail}</Text> : null}
+
+                        <View style={authStyles.passwordWrapper}>
+                            <TextInput
+                                style={authStyles.passwordInput}
+                                placeholder="סיסמה"
+                                value={password}
+                                onChangeText={(text) => handleFieldChange('password', text)}
+                                secureTextEntry={!showPassword}
+                            />
+                            <Pressable onPress={toggleShowPassword} style={authStyles.emojiButton}>
+                                <Text style={authStyles.emojiText}>
+                                    {showPassword ? '🙉' : '🙈'}
+                                </Text>
+                            </Pressable>
+                        </View>
+                        {errors.password ? <Text style={authStyles.errorText}>{errors.password}</Text> : null}
+
+                        <TextInput
+                            style={authStyles.loginInput}
+                            placeholder="אימות סיסמה"
+                            value={confirmPassword}
+                            onChangeText={(text) => handleFieldChange('confirmPassword', text)}
                             secureTextEntry={!showPassword}
                         />
-                        <Pressable onPress={toggleShowPassword} style={authStyles.emojiButton}>
-                            <Text style={authStyles.emojiText}>
-                                {showPassword ? '🙉' : '🙈'}
+                        {errors.confirmPassword ? (
+                            <Text style={[authStyles.errorText, errors.confirmPassword.includes('✅') && authStyles.successText]}>
+                                {errors.confirmPassword}
                             </Text>
-                        </Pressable>
-                    </View>
-                    {errors.password ? <Text style={authStyles.errorText}>{errors.password}</Text> : null}
+                        ) : null}
 
-                    <TextInput
-                        style={authStyles.loginInput}
-                        placeholder="אימות סיסמה"
-                        value={confirmPassword}
-                        onChangeText={(text) => handleFieldChange('confirmPassword', text)}
-                        secureTextEntry={!showPassword}
-                    />
-                    {errors.confirmPassword ? (
-                        <Text style={[authStyles.errorText, errors.confirmPassword.includes('✅') && authStyles.successText]}>
-                            {errors.confirmPassword}
-                        </Text>
-                    ) : null}
+                        <TouchableOpacity style={authStyles.primaryButton} onPress={handleRegistration}>
+                            <Text style={authStyles.primaryButtonText}>הרשם</Text>
+                        </TouchableOpacity>
 
-                    <TouchableOpacity style={authStyles.primaryButton} onPress={handleRegistration}>
-                        <Text style={authStyles.primaryButtonText}>הרשם</Text>
-                    </TouchableOpacity>
-
-                    <View style={{ marginTop: Spacing.lg, alignItems: 'center' }}>
-                        <Text style={authStyles.text}>כבר יש לך חשבון אצלנו?</Text>
-                        <Pressable onPress={moveToLoginPage}>
-                            <Text style={[authStyles.linkText, { marginTop: 4 }]}>התחבר</Text>
-                        </Pressable>
+                        <View style={{ marginTop: Spacing.lg, alignItems: 'center' }}>
+                            <Text style={authStyles.text}>כבר יש לך חשבון אצלנו?</Text>
+                            <Pressable onPress={moveToLoginPage}>
+                                <Text style={[authStyles.linkText, { marginTop: 4 }]}>התחבר</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
-            </View>
+            </ScrollView>
         </ProtectedRoute>
     );
 };

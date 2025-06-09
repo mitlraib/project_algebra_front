@@ -17,6 +17,7 @@ export default function Dashboard() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
     const [progressData, setProgressData] = useState({ stars: 0, level: 0, progress: 0 });
+    const [username, setUsername] = useState('');
 
     const pulseAnim = useRef(new Animated.Value(1)).current;
 
@@ -62,6 +63,7 @@ export default function Dashboard() {
                 const correct     = totalExercises - totalMistakes;
                 const progressPct = totalExercises > 0 ? correct / totalExercises : 0;
                 setProgressData({ stars: correct, level, progress: progressPct });
+                setUsername(data.firstName ); // או data.username אם זה השדה
 
             } catch (err) {
                 console.timeEnd("⏱️ getUser");
@@ -117,7 +119,11 @@ export default function Dashboard() {
                     end={{ x: 0, y: 0 }}
                     style={dashboardStyles.gradientTitleWrapper}
                 >
-                    <Text style={dashboardStyles.gradientTitle}>ברוכים הבאים ל MathJourney!</Text>
+                    <Text
+                        style={[dashboardStyles.gradientTitle, { writingDirection: 'rtl' }]}
+                    >
+                        {username},  ברוך הבא ל־MathJourney!
+                    </Text>
                 </LinearGradient>
                 <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
                 <View style={dashboardStyles.rowWrapper}>

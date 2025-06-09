@@ -9,7 +9,7 @@ import  storage  from '../utils/storage';
 import { Colors } from '../../constants/Colors';
 import {exercisePageStyles} from '../../styles/styles'
 import  api  from  '../../src/api/axiosConfig';
-
+import { FontAwesome5 } from '@expo/vector-icons';
 
 function formatFraction(numerator, denominator) {
     if (numerator === 0) return "0";
@@ -55,6 +55,8 @@ export default function StyledCoursePage() {
     const [answerFeedbackColor, setAnswerFeedbackColor] = useState(null);
     const [isCheckDisabled, setIsCheckDisabled] = useState(false);
     const [detailedSolutions, setDetailedSolutions] = useState(true);
+    const successAnim = useRef(new Animated.Value(0)).current;
+    const [showSuccessIcon, setShowSuccessIcon] = useState(false);
 
 
 
@@ -219,6 +221,9 @@ export default function StyledCoursePage() {
                     setResponseMessage(`תשובה נכונה! ${res.data.levelUpMessage}`);
                     setShowLevelUpModal(true);
                     setShowConfetti(true);
+                }
+                else {
+                    triggerSuccessAnimation(); // תשובה נכונה רגילה => אנימציה חדשה
                 }
             } else {
                 setAnswerFeedbackColor("red");
@@ -469,6 +474,22 @@ ${sign}   ${second}
     }
 
 
+    function triggerSuccessAnimation() {
+        setShowSuccessIcon(true);
+        Animated.sequence([
+            Animated.timing(successAnim, {
+                toValue: 1,
+                duration: 500,
+                useNativeDriver: true,
+            }),
+            Animated.timing(successAnim, {
+                toValue: 0,
+                duration: 500,
+                useNativeDriver: true,
+            }),
+        ]).start(() => setShowSuccessIcon(false));
+    }
+
     return (
         <ProtectedRoute requireAuth={true}>
             <ScrollView contentContainerStyle={exercisePageStyles.container}
@@ -624,6 +645,25 @@ ${sign}   ${second}
                     <Text style={exercisePageStyles.primaryText}>סיום תרגול</Text>
                 </Pressable>
 
+
+                {/* 🟢 כאן למטה – אייקון הצלחה אנימטיבי */}
+                {showSuccessIcon && (
+                    <Animated.View style={[
+                        exercisePageStyles.successIconBase,
+                        {
+                            transform: [
+                                { translateX: -50 },
+                                { scale: successAnim.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: [0, 2],
+                                    })}
+                            ],
+                            opacity: successAnim,
+                        }
+                    ]}>
+                        <FontAwesome5 name="grin-stars" size={200} color="#4CAF50" />
+                    </Animated.View>
+                )}
             </ScrollView>
         </ProtectedRoute>
     );
